@@ -11,7 +11,6 @@ import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.renderer.FragmentRenderer;
 import com.liferay.fragment.renderer.FragmentRendererContext;
 import com.liferay.fragment.util.configuration.FragmentEntryConfigurationParser;
-import com.liferay.frontend.data.set.views.web.internal.dataset.provider.SortsProvider;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.rest.dto.v1_0.ObjectEntry;
 import com.liferay.object.rest.manager.v1_0.DefaultObjectEntryManager;
@@ -110,6 +109,21 @@ public class FDSViewFragmentRenderer implements FragmentRenderer {
 
 	public String getLabel(Locale locale) {
 		return _language.get(locale, "data-set");
+	}
+
+	public JSONArray getSortsJSONArray(
+			ObjectEntry fdsView, ObjectDefinition objectDefinition)
+		throws Exception {
+
+		List<ObjectEntry> fdsSortingObjectEntries = new ArrayList<>(
+			_getRelatedObjectEntries(
+				objectDefinition, fdsView, "fdsViewFDSSortRelationship"));
+
+		if (ListUtil.isEmpty(fdsSortingObjectEntries)) {
+			return _jsonFactory.createJSONArray();
+		}
+
+		return _getSortsJSONArray(fdsSortingObjectEntries);
 	}
 
 	public boolean isSelectable(HttpServletRequest httpServletRequest) {
@@ -242,7 +256,8 @@ public class FDSViewFragmentRenderer implements FragmentRenderer {
 			).put(
 				"pagination", _getPaginationJSONObject(fdsViewObjectEntry)
 			).put(
-				"sorts", _getSortsJSONArray(fdsViewObjectDefinition, fdsViewObjectEntry)
+				"sorting",
+				getSortsJSONArray(fdsViewObjectEntry, fdsViewObjectDefinition)
 			).put(
 				"style", "fluid"
 			).put(
@@ -286,6 +301,16 @@ public class FDSViewFragmentRenderer implements FragmentRenderer {
 		sb.append(String.valueOf(properties.get("restEndpoint")));
 
 		return _interpolateURL(sb.toString(), httpServletRequest);
+	}
+
+	private JSONObject _getFDSSortJSONObject(ObjectEntry fdsSort) {
+		Map<String, Object> fdsSortProperties = fdsSort.getProperties();
+
+		return JSONUtil.put(
+			"direction", fdsSortProperties.get("sortingDirection")
+		).put(
+			"key", fdsSortProperties.get("fieldName")
+		);
 	}
 
 	private JSONArray _getFieldsJSONArray(
@@ -338,8 +363,6 @@ public class FDSViewFragmentRenderer implements FragmentRenderer {
 
 						return String.valueOf(fdsFieldProperties.get("name"));
 					}
-				).put(
-					"sorting", _sortsProvider.getSortsJSONArray(fdsFieldObjectEntry)
 				).put(
 					"sortable", (boolean)fdsFieldProperties.get("sortable")
 				);
@@ -481,42 +504,20 @@ public class FDSViewFragmentRenderer implements FragmentRenderer {
 		return relatedObjectEntriesPage.getItems();
 	}
 
-	private JSONArray _getSortsJSONArray(
-		ObjectDefinition fdsViewObjectDefinition, ObjectEntry fdsViewObjectEntry) {
-
+	private JSONArray _getSortsJSONArray(Collection<ObjectEntry> fdsSorts) {
 		try {
-			List<ObjectEntry> fdsSortingObjectEntries = new ArrayList<>(
-				_getRelatedObjectEntries(
-					fdsViewObjectDefinition, fdsViewObjectEntry,
-					"fdsViewFDSSortRelationship"));
-
-			if (ListUtil.isEmpty(fdsSortingObjectEntries)) {
-				return _jsonFactory.createJSONArray();
-			}
-
 			return JSONUtil.toJSONArray(
-				fdsSortingObjectEntries,
-				(ObjectEntry fdsSortingObjectEntry) -> _getSortsJSONObject(
-					fdsSortingObjectEntry));
+				fdsSorts,
+				(ObjectEntry fdsSort) -> _getFDSSortJSONObject(fdsSort));
 		}
 		catch (Exception exception) {
 			if (_log.isWarnEnabled()) {
-				_log.warn("Unable to create FDSSorting from FDSView", exception);
+				_log.warn(
+					"Unable to generate FDS sorts from FDSView", exception);
 			}
 
 			return _jsonFactory.createJSONArray();
 		}
-	}
-
-	private JSONObject _getSortsJSONObject(ObjectEntry fdsSortingObjectEntry) {
-		Map<String, Object> fdsSortingProperties =
-			fdsSortingObjectEntry.getProperties();
-
-		return JSONUtil.put(
-			"direction", fdsSortingProperties.get("sortingDirection")
-		).put(
-			"key", fdsSortingProperties.get("fieldName")
-		);
 	}
 
 	private String _interpolateURL(
@@ -564,8 +565,5 @@ public class FDSViewFragmentRenderer implements FragmentRenderer {
 
 	@Reference
 	private ReactRenderer _reactRenderer;
-
-	@Reference
-	private SortsProvider _sortsProvider;
 
 }
