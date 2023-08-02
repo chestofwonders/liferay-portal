@@ -11,7 +11,6 @@ import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.renderer.FragmentRenderer;
 import com.liferay.fragment.renderer.FragmentRendererContext;
 import com.liferay.fragment.util.configuration.FragmentEntryConfigurationParser;
-import com.liferay.frontend.data.set.views.web.internal.dataset.provider.SortsProvider;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.rest.dto.v1_0.ObjectEntry;
 import com.liferay.object.rest.manager.v1_0.DefaultObjectEntryManager;
@@ -110,6 +109,21 @@ public class FDSViewFragmentRenderer implements FragmentRenderer {
 
 	public String getLabel(Locale locale) {
 		return _language.get(locale, "data-set");
+	}
+
+	public JSONArray getSortsJSONArray(
+			ObjectEntry fdsView, ObjectDefinition objectDefinition)
+		throws Exception {
+
+		List<ObjectEntry> fdsSortingObjectEntries = new ArrayList<>(
+			_getRelatedObjectEntries(
+				objectDefinition, fdsView, "fdsViewFDSSortRelationship"));
+
+		if (ListUtil.isEmpty(fdsSortingObjectEntries)) {
+			return _jsonFactory.createJSONArray();
+		}
+
+		return _getSortsJSONArray(fdsSortingObjectEntries);
 	}
 
 	public boolean isSelectable(HttpServletRequest httpServletRequest) {
@@ -242,6 +256,9 @@ public class FDSViewFragmentRenderer implements FragmentRenderer {
 			).put(
 				"pagination", _getPaginationJSONObject(fdsViewObjectEntry)
 			).put(
+				"sorting",
+				getSortsJSONArray(fdsViewObjectEntry, fdsViewObjectDefinition)
+			).put(
 				"style", "fluid"
 			).put(
 				"views",
@@ -286,19 +303,13 @@ public class FDSViewFragmentRenderer implements FragmentRenderer {
 		return _interpolateURL(sb.toString(), httpServletRequest);
 	}
 
-	private JSONObject _getDateJSONObject(Object object) {
-		Calendar calendar = Calendar.getInstance();
-
-		Timestamp timestamp = (Timestamp)object;
-
-		calendar.setTime(new Date(timestamp.getTime()));
+	private JSONObject _getFDSSortJSONObject(ObjectEntry fdsSort) {
+		Map<String, Object> fdsSortProperties = fdsSort.getProperties();
 
 		return JSONUtil.put(
-			"day", calendar.get(Calendar.DATE)
+			"direction", fdsSortProperties.get("sortingDirection")
 		).put(
-			"month", calendar.get(Calendar.MONTH) + 1
-		).put(
-			"year", calendar.get(Calendar.YEAR)
+			"key", fdsSortProperties.get("fieldName")
 		);
 	}
 
@@ -337,8 +348,6 @@ public class FDSViewFragmentRenderer implements FragmentRenderer {
 					"fieldName", String.valueOf(fdsFieldProperties.get("name"))
 				).put(
 					"label", String.valueOf(fdsFieldProperties.get("label"))
-				).put(
-					"sorting", _sortsProvider.getSortsJSONArray(fdsFieldObjectEntry)
 				).put(
 					"sortable", (boolean)fdsFieldProperties.get("sortable")
 				);
@@ -480,6 +489,22 @@ public class FDSViewFragmentRenderer implements FragmentRenderer {
 		return relatedObjectEntriesPage.getItems();
 	}
 
+	private JSONArray _getSortsJSONArray(Collection<ObjectEntry> fdsSorts) {
+		try {
+			return JSONUtil.toJSONArray(
+				fdsSorts,
+				(ObjectEntry fdsSort) -> _getFDSSortJSONObject(fdsSort));
+		}
+		catch (Exception exception) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(
+					"Unable to generate FDS sorts from FDSView", exception);
+			}
+
+			return _jsonFactory.createJSONArray();
+		}
+	}
+
 	private String _interpolateURL(
 		String apiUrl, HttpServletRequest httpServletRequest) {
 
@@ -525,8 +550,5 @@ public class FDSViewFragmentRenderer implements FragmentRenderer {
 
 	@Reference
 	private ReactRenderer _reactRenderer;
-
-	@Reference
-	private SortsProvider _sortsProvider;
 
 }
