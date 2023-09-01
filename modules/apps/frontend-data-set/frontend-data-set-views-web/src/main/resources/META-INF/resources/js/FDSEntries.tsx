@@ -374,8 +374,7 @@ const AddFDSEntryModalContent = ({
 			openDefaultSuccessToast();
 
 			loadData();
-		}
-		else {
+		} else {
 			setSaveButtonDisabled(false);
 
 			openDefaultFailureToast();
@@ -564,8 +563,7 @@ const AddFDSEntryModalContent = ({
 
 					if (endpoints?.length === 1) {
 						setSelectedRESTEndpoint(endpoints[0]);
-					}
-					else {
+					} else {
 						setSelectedRESTEndpoint(null);
 					}
 
@@ -711,8 +709,7 @@ const AddFDSEntryModalContent = ({
 
 								if (success) {
 									addFDSEntry();
-								}
-								else {
+								} else {
 									setSaveButtonDisabled(false);
 								}
 							}}
@@ -1034,7 +1031,7 @@ const FDSEntries = ({
 						onClick: onDeleteClick,
 					},
 				]}
-				sorts={[{direction: 'desc', key: 'dateCreated'}]}
+				sortings={[{direction: 'desc', key: 'dateCreated'}]}
 				views={views}
 			/>
 		</div>

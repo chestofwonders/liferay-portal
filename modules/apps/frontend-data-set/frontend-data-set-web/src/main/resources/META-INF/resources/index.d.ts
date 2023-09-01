@@ -42,7 +42,7 @@ export function FrontendDataSet({
 	showPagination,
 	showSearch,
 	sidePanelId,
-	sorts,
+	sortings,
 	style,
 	views,
 }: IFrontendDataSetProps): JSX.Element;
@@ -176,7 +176,11 @@ export interface IFrontendDataSetProps {
 	showPagination?: boolean;
 	showSearch?: boolean;
 	sidePanelId?: string;
+<<<<<<< HEAD
 	sorts?: TSorting[];
+=======
+	sortings?: TSorting[];
+>>>>>>> fbb69d25155b (LPS-180202 Change FDS sorting for sortings)
 	style?: 'default' | 'fluid' | 'stacked';
 	views: TViews[];
 	viewsTitle?: string;

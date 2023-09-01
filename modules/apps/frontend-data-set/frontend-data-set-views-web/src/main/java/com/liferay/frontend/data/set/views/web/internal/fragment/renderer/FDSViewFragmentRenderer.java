@@ -256,8 +256,7 @@ public class FDSViewFragmentRenderer implements FragmentRenderer {
 			).put(
 				"pagination", _getPaginationJSONObject(fdsViewObjectEntry)
 			).put(
-				"sorting",
-				getSortsJSONArray(fdsViewObjectEntry, fdsViewObjectDefinition)
+				"sortings", _getSortingsJSONArray(fdsViewObjectDefinition, fdsViewObjectEntry)
 			).put(
 				"style", "fluid"
 			).put(

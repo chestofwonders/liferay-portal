@@ -85,8 +85,7 @@ const AddFDSViewModalContent = ({
 			openDefaultSuccessToast();
 
 			loadData();
-		}
-		else {
+		} else {
 			setSaveButtonDisabled(false);
 
 			openDefaultFailureToast();
@@ -340,7 +339,7 @@ const FDSViews = ({
 					onClick: onDeleteClick,
 				},
 			]}
-			sorts={[{direction: 'desc', key: 'dateModified'}]}
+			sortings={[{direction: 'desc', key: 'dateModified'}]}
 			views={views}
 		/>
 	);
