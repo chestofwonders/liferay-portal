@@ -170,21 +170,13 @@ const FrontendDataSet = ({
 				activeView,
 				filters,
 				paginationDelta,
-<<<<<<< HEAD
-				sorts: sortingProp,
-=======
 				sortings: sortingProp,
->>>>>>> fbb69d25155b (LPS-180202 Change FDS sorting for sortings)
 				visibleFieldNames: initialVisibleFieldNames,
 			},
 			filters,
 			modifiedFields: {},
 			paginationDelta,
-<<<<<<< HEAD
-			sorts: sortingProp,
-=======
 			sortings: sortingProp,
->>>>>>> fbb69d25155b (LPS-180202 Change FDS sorting for sortings)
 			views,
 			visibleFieldNames: initialVisibleFieldNames,
 		};
@@ -194,11 +186,7 @@ const FrontendDataSet = ({
 		useReducer(viewsReducer, getInitialViewsState())
 	);
 
-<<<<<<< HEAD
-	const {activeView, filters, paginationDelta, sorts} = viewsState;
-=======
 	const {activeView, filters, paginationDelta, sortings} = viewsState;
->>>>>>> fbb69d25155b (LPS-180202 Change FDS sorting for sortings)
 
 	const {
 		component: View,
@@ -223,11 +211,7 @@ const FrontendDataSet = ({
 			searchParam,
 			paginationDelta,
 			pageNumber,
-<<<<<<< HEAD
-			sorts
-=======
 			sortings
->>>>>>> fbb69d25155b (LPS-180202 Change FDS sorting for sortings)
 		);
 	}, [
 		apiURL,
@@ -236,11 +220,7 @@ const FrontendDataSet = ({
 		filters,
 		pageNumber,
 		searchParam,
-<<<<<<< HEAD
-		sorts,
-=======
 		sortings,
->>>>>>> fbb69d25155b (LPS-180202 Change FDS sorting for sortings)
 	]);
 
 	const isMounted = useIsMounted();
@@ -271,8 +251,7 @@ const FrontendDataSet = ({
 			setSelectedItemsValue(
 				selectedItemsValue.filter((element) => element !== value)
 			);
-		}
-		else {
+		} else {
 			setSelectedItemsValue(selectedItemsValue.concat(value));
 		}
 	}
@@ -419,8 +398,7 @@ const FrontendDataSet = ({
 			if (isMounted()) {
 				if (!ok) {
 					handleApiError({data, statusCode});
-				}
-				else {
+				} else {
 					updateDataSetItems(data);
 				}
 				setDataLoading(false);
@@ -588,8 +566,7 @@ const FrontendDataSet = ({
 					});
 
 					refreshData();
-				}
-				else {
+				} else {
 					openToast({
 						message:
 							errorMessage ||
@@ -802,11 +779,7 @@ const FrontendDataSet = ({
 				selectedItemsValue,
 				selectionType,
 				sidePanelId: dataSetSupportSidePanelId,
-<<<<<<< HEAD
-				sorts,
-=======
 				sortings,
->>>>>>> fbb69d25155b (LPS-180202 Change FDS sorting for sortings)
 				style,
 				toggleItemInlineEdit,
 				uniformActionsDisplay,
@@ -876,11 +849,7 @@ FrontendDataSet.defaultProps = {
 	showManagementBar: true,
 	showPagination: true,
 	showSearch: true,
-<<<<<<< HEAD
-	sorts: [],
-=======
 	sortings: [],
->>>>>>> fbb69d25155b (LPS-180202 Change FDS sorting for sortings)
 	style: 'default',
 };
 

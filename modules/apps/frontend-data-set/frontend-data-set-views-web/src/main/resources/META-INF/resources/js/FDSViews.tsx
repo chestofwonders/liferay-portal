@@ -85,8 +85,7 @@ const AddFDSViewModalContent = ({
 			openDefaultSuccessToast();
 
 			loadData();
-		}
-		else {
+		} else {
 			setSaveButtonDisabled(false);
 
 			openDefaultFailureToast();
