@@ -82,7 +82,7 @@ const FrontendDataSet = ({
 	showPagination,
 	showSearch,
 	sidePanelId,
-	sorting: sortingProp,
+	sortings: sortingProp,
 	style,
 	uniformActionsDisplay,
 	views,
@@ -170,13 +170,13 @@ const FrontendDataSet = ({
 				activeView,
 				filters,
 				paginationDelta,
-				sorting: sortingProp,
+				sortings: sortingProp,
 				visibleFieldNames: initialVisibleFieldNames,
 			},
 			filters,
 			modifiedFields: {},
 			paginationDelta,
-			sorting: sortingProp,
+			sortings: sortingProp,
 			views,
 			visibleFieldNames: initialVisibleFieldNames,
 		};
@@ -186,7 +186,7 @@ const FrontendDataSet = ({
 		useReducer(viewsReducer, getInitialViewsState())
 	);
 
-	const {activeView, filters, paginationDelta, sorting} = viewsState;
+	const {activeView, filters, paginationDelta, sortings} = viewsState;
 
 	const {
 		component: View,
@@ -211,7 +211,7 @@ const FrontendDataSet = ({
 			searchParam,
 			paginationDelta,
 			pageNumber,
-			sorting
+			sortings
 		);
 	}, [
 		apiURL,
@@ -220,7 +220,7 @@ const FrontendDataSet = ({
 		filters,
 		pageNumber,
 		searchParam,
-		sorting,
+		sortings,
 	]);
 
 	const isMounted = useIsMounted();
@@ -251,8 +251,7 @@ const FrontendDataSet = ({
 			setSelectedItemsValue(
 				selectedItemsValue.filter((element) => element !== value)
 			);
-		}
-		else {
+		} else {
 			setSelectedItemsValue(selectedItemsValue.concat(value));
 		}
 	}
@@ -399,8 +398,7 @@ const FrontendDataSet = ({
 			if (isMounted()) {
 				if (!ok) {
 					handleApiError({data, statusCode});
-				}
-				else {
+				} else {
 					updateDataSetItems(data);
 				}
 				setDataLoading(false);
@@ -568,8 +566,7 @@ const FrontendDataSet = ({
 					});
 
 					refreshData();
-				}
-				else {
+				} else {
 					openToast({
 						message:
 							errorMessage ||
@@ -782,7 +779,7 @@ const FrontendDataSet = ({
 				selectedItemsValue,
 				selectionType,
 				sidePanelId: dataSetSupportSidePanelId,
-				sorting,
+				sortings,
 				style,
 				toggleItemInlineEdit,
 				uniformActionsDisplay,
@@ -852,7 +849,7 @@ FrontendDataSet.defaultProps = {
 	showManagementBar: true,
 	showPagination: true,
 	showSearch: true,
-	sorting: [],
+	sortings: [],
 	style: 'default',
 };
 

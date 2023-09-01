@@ -88,8 +88,7 @@ const AddFDSViewModalContent = ({
 			});
 
 			loadData();
-		}
-		else {
+		} else {
 			setSaveButtonDisabled(false);
 			openToast({
 				message: Liferay.Language.get(
@@ -359,7 +358,7 @@ const FDSViews = ({
 					onClick: onDeleteClick,
 				},
 			]}
-			sorting={[{direction: 'desc', key: 'dateModified'}]}
+			sortings={[{direction: 'desc', key: 'dateModified'}]}
 			views={views}
 		/>
 	);
