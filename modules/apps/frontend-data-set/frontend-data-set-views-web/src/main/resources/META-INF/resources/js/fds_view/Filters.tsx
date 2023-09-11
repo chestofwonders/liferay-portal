@@ -30,7 +30,6 @@ import CheckboxMultiSelect from '../components/CheckboxMultiSelect';
 import OrderableTable from '../components/OrderableTable';
 import ValidationFeedback from '../components/ValidationFeedback';
 
-import '../../css/Filters.scss';
 import '../../css/FDSEntries.scss';
 
 enum filterTypes {
@@ -107,7 +106,8 @@ function getModalHeader(
 
 	if (filterType && filterType == filterTypes.SELECTION) {
 		return Liferay.Language.get('new-selection-filter');
-	} else {
+	}
+	else {
 		return Liferay.Language.get('new-date-range-filter');
 	}
 }
@@ -115,14 +115,16 @@ function getModalHeader(
 function AddFDSFilterModalContent({
 	closeModal,
 	fdsView,
+	fieldNames,
 	fields,
 	filter,
-	fieldNames,
 	filterType,
 	namespace,
 	onSave,
 }: IPropsAddFDSFilterModalContent) {
-	const [fieldInUseValidationError, setFieldInUseValidationError] = useState<boolean>();
+	const [fieldInUseValidationError, setFieldInUseValidationError] = useState<
+		boolean
+	>();
 	const [from, setFrom] = useState<string>(
 		(filter as IDateFilter)?.from ?? format(new Date(), 'yyyy-MM-dd')
 	);
@@ -217,7 +219,8 @@ function AddFDSFilterModalContent({
 			};
 
 			displayType = Liferay.Language.get('date-filter');
-		} else {
+		}
+		else {
 			url = API_URL.FDS_DYNAMIC_FILTERS;
 
 			body = {
@@ -308,31 +311,32 @@ function AddFDSFilterModalContent({
 					className: 'fds-cell-renderers-dropdown-menu',
 				}}
 				trigger={
-					<ClayInput
-						className="form-control form-control-select form-control-select-secondary filter-by-cell-renderers-dropdown-menu"
+					<ClayButton
 						aria-labelledby={`${namespace}cellRenderersLabel`}
-						placeholder={
-							selectedField
-								? selectedField.label
-								: Liferay.Language.get('select')
-						}
-					/>
+						className="form-control form-control-select form-control-select-secondary"
+						displayType="secondary"
+					>
+						{selectedField
+							? selectedField.label
+							: Liferay.Language.get('select')}
+					</ClayButton>
 				}
 			>
 				<ClayDropDown.ItemList items={cellRenderers} role="listbox">
 					{cellRenderers.map((cellRenderer) => (
 						<ClayDropDown.Item
 							className="align-items-center d-flex justify-content-between"
-							key={cellRenderer.name}
-							roleItem="option"
 							disabled={
 								!!filter ||
 								(filterType === filterTypes.SELECTION &&
 									picklists.length == 0)
 							}
+							key={cellRenderer.name}
 							onClick={() => onItemClick(cellRenderer)}
+							roleItem="option"
 						>
 							{cellRenderer.label}
+
 							{inUseFields.includes(cellRenderer.name) && (
 								<ClayLabel displayType="info">
 									{Liferay.Language.get('in-use')}
@@ -385,6 +389,7 @@ function AddFDSFilterModalContent({
 					<label htmlFor={selectedFieldFormElementId}>
 						{Liferay.Language.get('filter-by')}
 					</label>
+
 					<CellRendererDropdown
 						cellRenderers={fields}
 						inUseFields={inUseFields}
@@ -395,17 +400,19 @@ function AddFDSFilterModalContent({
 							});
 
 							if (newVal) {
-								if( inUseFields.includes(newVal.name) ) {
-									setFieldInUseValidationError(true)
-									setSaveButtonDisabled(true)
-								} else {
-									setFieldInUseValidationError(false)
-									setSaveButtonDisabled(false)
+								if (inUseFields.includes(newVal.name)) {
+									setFieldInUseValidationError(true);
+									setSaveButtonDisabled(true);
+								}
+								else {
+									setFieldInUseValidationError(false);
+									setSaveButtonDisabled(false);
 								}
 								setSelectedField(newVal);
 							}
 						}}
 					/>
+
 					{fieldInUseValidationError && (
 						<ValidationFeedback
 							message={Liferay.Language.get(
@@ -421,265 +428,283 @@ function AddFDSFilterModalContent({
 					</ClayAlert>
 				)}
 
-				{selectedField && filterType === filterTypes.DATE_RANGE && !fieldInUseValidationError &&(
-					<ClayForm.Group className="form-group-autofit">
-						<div
-							className={classNames('form-group-item', {
-								'has-error': !isValidDateRange,
-							})}
-						>
-							<label htmlFor={fromFormElementId}>
-								{Liferay.Language.get('from')}
-							</label>
+				{selectedField &&
+					filterType === filterTypes.DATE_RANGE &&
+					!fieldInUseValidationError && (
+						<ClayForm.Group className="form-group-autofit">
+							<div
+								className={classNames('form-group-item', {
+									'has-error': !isValidDateRange,
+								})}
+							>
+								<label htmlFor={fromFormElementId}>
+									{Liferay.Language.get('from')}
+								</label>
 
-							<ClayDatePicker
-								inputName={fromFormElementId}
-								onChange={setFrom}
-								placeholder="YYYY-MM-DD"
-								value={format(
-									from ? new Date(from) : new Date(),
-									'yyyy-MM-dd'
-								)}
-								years={{
-									end: getYear(new Date()) + 25,
-									start: getYear(new Date()) - 50,
-								}}
-							/>
-
-							{!isValidDateRange && (
-								<ClayForm.FeedbackGroup>
-									<ClayForm.FeedbackItem>
-										<ClayForm.FeedbackIndicator symbol="exclamation-full" />
-
-										{Liferay.Language.get(
-											'date-range-is-invalid.-from-must-be-before-to'
-										)}
-									</ClayForm.FeedbackItem>
-								</ClayForm.FeedbackGroup>
-							)}
-						</div>
-
-						<div className="form-group-item">
-							<label htmlFor={toFormElementId}>
-								{Liferay.Language.get('to')}
-							</label>
-
-							<ClayDatePicker
-								inputName={toFormElementId}
-								onChange={setTo}
-								placeholder="YYYY-MM-DD"
-								value={format(
-									to ? new Date(to) : new Date(),
-									'yyyy-MM-dd'
-								)}
-								years={{
-									end: getYear(new Date()) + 25,
-									start: getYear(new Date()) - 50,
-								}}
-							/>
-						</div>
-					</ClayForm.Group>
-				)}
-
-				{selectedField && filterType === filterTypes.SELECTION && !fieldInUseValidationError &&(
-					<>
-						<ClayForm.Group>
-							<label htmlFor={sourceOptionFormElementId}>
-								{Liferay.Language.get('source-options')}
-
-								<span
-									className="label-icon lfr-portal-tooltip ml-2"
-									title={Liferay.Language.get(
-										'choose-a-picklist-to-associate-with-this-filter'
+								<ClayDatePicker
+									inputName={fromFormElementId}
+									onChange={setFrom}
+									placeholder="YYYY-MM-DD"
+									value={format(
+										from ? new Date(from) : new Date(),
+										'yyyy-MM-dd'
 									)}
-								>
-									<ClayIcon symbol="question-circle-full" />
-								</span>
-							</label>
+									years={{
+										end: getYear(new Date()) + 25,
+										start: getYear(new Date()) - 50,
+									}}
+								/>
 
-							<ClaySelectWithOption
-								aria-label={Liferay.Language.get(
-									'source-options'
+								{!isValidDateRange && (
+									<ClayForm.FeedbackGroup>
+										<ClayForm.FeedbackItem>
+											<ClayForm.FeedbackIndicator symbol="exclamation-full" />
+
+											{Liferay.Language.get(
+												'date-range-is-invalid.-from-must-be-before-to'
+											)}
+										</ClayForm.FeedbackItem>
+									</ClayForm.FeedbackGroup>
 								)}
-								name={sourceOptionFormElementId}
-								onChange={(event) => {
-									setSelectedPicklist(
-										picklists.find(
-											(item) =>
-												String(item.id) ===
-												event.target.value
-										)
-									);
+							</div>
 
-									setPreselectedValues([]);
-								}}
-								options={[
-									{
-										disabled: true,
-										label: Liferay.Language.get('select'),
-										selected: true,
-										value: '',
-									},
-									...picklists.map((item) => ({
-										label: item.name,
-										value: item.id,
-									})),
-								]}
-								title={Liferay.Language.get('source-options')}
-								value={selectedPicklist?.id}
-							/>
+							<div className="form-group-item">
+								<label htmlFor={toFormElementId}>
+									{Liferay.Language.get('to')}
+								</label>
+
+								<ClayDatePicker
+									inputName={toFormElementId}
+									onChange={setTo}
+									placeholder="YYYY-MM-DD"
+									value={format(
+										to ? new Date(to) : new Date(),
+										'yyyy-MM-dd'
+									)}
+									years={{
+										end: getYear(new Date()) + 25,
+										start: getYear(new Date()) - 50,
+									}}
+								/>
+							</div>
 						</ClayForm.Group>
+					)}
 
-						{selectedPicklist && (
-							<>
-								<ClayForm.Group>
-									<label htmlFor={multipleFormElementId}>
-										{Liferay.Language.get('selection')}
+				{selectedField &&
+					filterType === filterTypes.SELECTION &&
+					!fieldInUseValidationError && (
+						<>
+							<ClayForm.Group>
+								<label htmlFor={sourceOptionFormElementId}>
+									{Liferay.Language.get('source-options')}
 
-										<span
-											className="label-icon lfr-portal-tooltip ml-2"
-											title={Liferay.Language.get(
-												'determines-how-many-preselected-values-for-the-filter-can-be-added'
-											)}
-										>
-											<ClayIcon symbol="question-circle-full" />
-										</span>
-									</label>
-
-									<ClayRadioGroup
-										name={multipleFormElementId}
-										onChange={(newVal: any) => {
-											setMultiple(newVal === 'true');
-										}}
-										value={multiple ? 'true' : 'false'}
+									<span
+										className="label-icon lfr-portal-tooltip ml-2"
+										title={Liferay.Language.get(
+											'choose-a-picklist-to-associate-with-this-filter'
+										)}
 									>
-										<ClayRadio
-											label={Liferay.Language.get(
-												'multiple'
-											)}
-											value="true"
-										/>
+										<ClayIcon symbol="question-circle-full" />
+									</span>
+								</label>
 
-										<ClayRadio
-											label={Liferay.Language.get(
-												'single'
-											)}
-											value="false"
-										/>
-									</ClayRadioGroup>
-								</ClayForm.Group>
-								<ClayForm.Group
-									className={classNames({
-										'has-error': !isValidSingleMode,
-									})}
-								>
-									<label
-										htmlFor={preselectedValuesFormElementId}
-									>
-										{Liferay.Language.get(
-											'preselected-values'
-										)}
-
-										<span
-											className="label-icon lfr-portal-tooltip ml-2"
-											title={Liferay.Language.get(
-												'choose-values-to-preselect-for-your-filters-source-option'
-											)}
-										>
-											<ClayIcon symbol="question-circle-full" />
-										</span>
-									</label>
-
-									<CheckboxMultiSelect
-										allowsCustomLabel={false}
-										aria-label={Liferay.Language.get(
-											'preselected-values'
-										)}
-										inputName={
-											preselectedValuesFormElementId
-										}
-										items={preselectedValues.map(
-											(item) => ({
-												label: item.name,
-												value: String(item.id),
-											})
-										)}
-										loadingState={4}
-										onChange={setPreselectedValueInput}
-										onItemsChange={(selectedItems: any) =>
-											setPreselectedValues(
-												selectedItems.map(
-													({value}: any) => {
-														return selectedPicklist.listTypeEntries.find(
-															(item) =>
-																String(
-																	item.id
-																) ===
-																String(value)
-														);
-													}
-												)
-											)
-										}
-										placeholder={Liferay.Language.get(
-											'select-a-default-value-for-your-filter'
-										)}
-										sourceItems={filteredSourceItems}
-										value={preselectedValueInput}
-									/>
-
-									{!isValidSingleMode && (
-										<ClayForm.FeedbackGroup>
-											<ClayForm.FeedbackItem>
-												<ClayForm.FeedbackIndicator symbol="exclamation-full" />
-
-												{Liferay.Language.get(
-													'only-one-value-is-allowed-in-single-selection-mode'
-												)}
-											</ClayForm.FeedbackItem>
-										</ClayForm.FeedbackGroup>
+								<ClaySelectWithOption
+									aria-label={Liferay.Language.get(
+										'source-options'
 									)}
-								</ClayForm.Group>
-								<ClayForm.Group>
-									<label htmlFor={includeModeFormElementId}>
-										{Liferay.Language.get('filter-mode')}
+									name={sourceOptionFormElementId}
+									onChange={(event) => {
+										setSelectedPicklist(
+											picklists.find(
+												(item) =>
+													String(item.id) ===
+													event.target.value
+											)
+										);
 
-										<span
-											className="label-icon lfr-portal-tooltip ml-2"
-											title={Liferay.Language.get(
-												'include-returns-only-the-selected-values.-exclude-returns-all-except-the-selected-ones'
-											)}
+										setPreselectedValues([]);
+									}}
+									options={[
+										{
+											disabled: true,
+											label: Liferay.Language.get(
+												'select'
+											),
+											selected: true,
+											value: '',
+										},
+										...picklists.map((item) => ({
+											label: item.name,
+											value: item.id,
+										})),
+									]}
+									title={Liferay.Language.get(
+										'source-options'
+									)}
+									value={selectedPicklist?.id}
+								/>
+							</ClayForm.Group>
+
+							{selectedPicklist && (
+								<>
+									<ClayForm.Group>
+										<label htmlFor={multipleFormElementId}>
+											{Liferay.Language.get('selection')}
+
+											<span
+												className="label-icon lfr-portal-tooltip ml-2"
+												title={Liferay.Language.get(
+													'determines-how-many-preselected-values-for-the-filter-can-be-added'
+												)}
+											>
+												<ClayIcon symbol="question-circle-full" />
+											</span>
+										</label>
+
+										<ClayRadioGroup
+											name={multipleFormElementId}
+											onChange={(newVal: any) => {
+												setMultiple(newVal === 'true');
+											}}
+											value={multiple ? 'true' : 'false'}
 										>
-											<ClayIcon symbol="question-circle-full" />
-										</span>
-									</label>
+											<ClayRadio
+												label={Liferay.Language.get(
+													'multiple'
+												)}
+												value="true"
+											/>
 
-									<ClayRadioGroup
-										name={includeModeFormElementId}
-										onChange={(val: any) =>
-											setIncludeMode(val)
-										}
-										value={includeMode}
+											<ClayRadio
+												label={Liferay.Language.get(
+													'single'
+												)}
+												value="false"
+											/>
+										</ClayRadioGroup>
+									</ClayForm.Group>
+									<ClayForm.Group
+										className={classNames({
+											'has-error': !isValidSingleMode,
+										})}
 									>
-										<ClayRadio
-											label={Liferay.Language.get(
-												'include'
+										<label
+											htmlFor={
+												preselectedValuesFormElementId
+											}
+										>
+											{Liferay.Language.get(
+												'preselected-values'
 											)}
-											value="include"
+
+											<span
+												className="label-icon lfr-portal-tooltip ml-2"
+												title={Liferay.Language.get(
+													'choose-values-to-preselect-for-your-filters-source-option'
+												)}
+											>
+												<ClayIcon symbol="question-circle-full" />
+											</span>
+										</label>
+
+										<CheckboxMultiSelect
+											allowsCustomLabel={false}
+											aria-label={Liferay.Language.get(
+												'preselected-values'
+											)}
+											inputName={
+												preselectedValuesFormElementId
+											}
+											items={preselectedValues.map(
+												(item) => ({
+													label: item.name,
+													value: String(item.id),
+												})
+											)}
+											loadingState={4}
+											onChange={setPreselectedValueInput}
+											onItemsChange={(
+												selectedItems: any
+											) =>
+												setPreselectedValues(
+													selectedItems.map(
+														({value}: any) => {
+															return selectedPicklist.listTypeEntries.find(
+																(item) =>
+																	String(
+																		item.id
+																	) ===
+																	String(
+																		value
+																	)
+															);
+														}
+													)
+												)
+											}
+											placeholder={Liferay.Language.get(
+												'select-a-default-value-for-your-filter'
+											)}
+											sourceItems={filteredSourceItems}
+											value={preselectedValueInput}
 										/>
 
-										<ClayRadio
-											label={Liferay.Language.get(
-												'exclude'
+										{!isValidSingleMode && (
+											<ClayForm.FeedbackGroup>
+												<ClayForm.FeedbackItem>
+													<ClayForm.FeedbackIndicator symbol="exclamation-full" />
+
+													{Liferay.Language.get(
+														'only-one-value-is-allowed-in-single-selection-mode'
+													)}
+												</ClayForm.FeedbackItem>
+											</ClayForm.FeedbackGroup>
+										)}
+									</ClayForm.Group>
+									<ClayForm.Group>
+										<label
+											htmlFor={includeModeFormElementId}
+										>
+											{Liferay.Language.get(
+												'filter-mode'
 											)}
-											value="exclude"
-										/>
-									</ClayRadioGroup>
-								</ClayForm.Group>
-							</>
-						)}
-					</>
-				)}
+
+											<span
+												className="label-icon lfr-portal-tooltip ml-2"
+												title={Liferay.Language.get(
+													'include-returns-only-the-selected-values.-exclude-returns-all-except-the-selected-ones'
+												)}
+											>
+												<ClayIcon symbol="question-circle-full" />
+											</span>
+										</label>
+
+										<ClayRadioGroup
+											name={includeModeFormElementId}
+											onChange={(val: any) =>
+												setIncludeMode(val)
+											}
+											value={includeMode}
+										>
+											<ClayRadio
+												label={Liferay.Language.get(
+													'include'
+												)}
+												value="include"
+											/>
+
+											<ClayRadio
+												label={Liferay.Language.get(
+													'exclude'
+												)}
+												value="exclude"
+											/>
+										</ClayRadioGroup>
+									</ClayForm.Group>
+								</>
+							)}
+						</>
+					)}
 			</ClayModal.Body>
 
 			<ClayModal.Footer
@@ -812,7 +837,8 @@ function Filters({fdsView, fdsViewsURL, namespace}: IProps) {
 			alertSuccess();
 
 			setNewFiltersOrder('');
-		} else {
+		}
+		else {
 			alertFailed();
 		}
 	};
@@ -843,7 +869,8 @@ function Filters({fdsView, fdsViewsURL, namespace}: IProps) {
 				status: 'info',
 				title: Liferay.Language.get('no-fields-available'),
 			});
-		} else {
+		}
+		else {
 			openModal({
 				className: 'overflow-auto',
 				contentComponent: ({closeModal}: {closeModal: Function}) => (
