@@ -241,7 +241,7 @@ public class FDSViewFragmentRenderer implements FragmentRenderer {
 			).put(
 				"pagination", _getPaginationJSONObject(fdsViewObjectEntry)
 			).put(
-				"sortings", _getSortingsJSONArray(fdsViewObjectDefinition, fdsViewObjectEntry)
+				"sorts", _getSortsJSONArray(fdsViewObjectDefinition, fdsViewObjectEntry)
 			).put(
 				"style", "fluid"
 			).put(
@@ -468,7 +468,7 @@ public class FDSViewFragmentRenderer implements FragmentRenderer {
 		return relatedObjectEntriesPage.getItems();
 	}
 
-	private JSONArray _getSortingsJSONArray(
+	private JSONArray _getSortsJSONArray(
 		ObjectDefinition fdsViewObjectDefinition, ObjectEntry fdsViewObjectEntry) {
 
 		try {
@@ -483,7 +483,7 @@ public class FDSViewFragmentRenderer implements FragmentRenderer {
 
 			return JSONUtil.toJSONArray(
 				fdsSortingObjectEntries,
-				(ObjectEntry fdsSortingObjectEntry) -> _getSortingsJSONObject(
+				(ObjectEntry fdsSortingObjectEntry) -> _getSortsJSONObject(
 					fdsSortingObjectEntry));
 		}
 		catch (Exception exception) {
@@ -495,7 +495,7 @@ public class FDSViewFragmentRenderer implements FragmentRenderer {
 		}
 	}
 
-	private JSONObject _getSortingsJSONObject(ObjectEntry fdsSortingObjectEntry) {
+	private JSONObject _getSortsJSONObject(ObjectEntry fdsSortingObjectEntry) {
 		Map<String, Object> fdsSortingProperties =
 			fdsSortingObjectEntry.getProperties();
 

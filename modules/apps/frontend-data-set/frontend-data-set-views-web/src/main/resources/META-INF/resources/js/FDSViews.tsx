@@ -358,7 +358,7 @@ const FDSViews = ({
 					onClick: onDeleteClick,
 				},
 			]}
-			sortings={[{direction: 'desc', key: 'dateModified'}]}
+			sorts={[{direction: 'desc', key: 'dateModified'}]}
 			views={views}
 		/>
 	);

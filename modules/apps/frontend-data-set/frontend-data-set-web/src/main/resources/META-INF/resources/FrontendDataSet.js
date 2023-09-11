@@ -82,7 +82,7 @@ const FrontendDataSet = ({
 	showPagination,
 	showSearch,
 	sidePanelId,
-	sortings: sortingProp,
+	sorts: sortingProp,
 	style,
 	uniformActionsDisplay,
 	views,
@@ -170,13 +170,13 @@ const FrontendDataSet = ({
 				activeView,
 				filters,
 				paginationDelta,
-				sortings: sortingProp,
+				sorts: sortingProp,
 				visibleFieldNames: initialVisibleFieldNames,
 			},
 			filters,
 			modifiedFields: {},
 			paginationDelta,
-			sortings: sortingProp,
+			sorts: sortingProp,
 			views,
 			visibleFieldNames: initialVisibleFieldNames,
 		};
@@ -186,7 +186,7 @@ const FrontendDataSet = ({
 		useReducer(viewsReducer, getInitialViewsState())
 	);
 
-	const {activeView, filters, paginationDelta, sortings} = viewsState;
+	const {activeView, filters, paginationDelta, sorts} = viewsState;
 
 	const {
 		component: View,
@@ -211,7 +211,7 @@ const FrontendDataSet = ({
 			searchParam,
 			paginationDelta,
 			pageNumber,
-			sortings
+			sorts
 		);
 	}, [
 		apiURL,
@@ -220,7 +220,7 @@ const FrontendDataSet = ({
 		filters,
 		pageNumber,
 		searchParam,
-		sortings,
+		sorts,
 	]);
 
 	const isMounted = useIsMounted();
@@ -779,7 +779,7 @@ const FrontendDataSet = ({
 				selectedItemsValue,
 				selectionType,
 				sidePanelId: dataSetSupportSidePanelId,
-				sortings,
+				sorts,
 				style,
 				toggleItemInlineEdit,
 				uniformActionsDisplay,
@@ -849,7 +849,7 @@ FrontendDataSet.defaultProps = {
 	showManagementBar: true,
 	showPagination: true,
 	showSearch: true,
-	sortings: [],
+	sorts: [],
 	style: 'default',
 };
 
