@@ -251,7 +251,8 @@ const FrontendDataSet = ({
 			setSelectedItemsValue(
 				selectedItemsValue.filter((element) => element !== value)
 			);
-		} else {
+		}
+		else {
 			setSelectedItemsValue(selectedItemsValue.concat(value));
 		}
 	}
@@ -398,7 +399,8 @@ const FrontendDataSet = ({
 			if (isMounted()) {
 				if (!ok) {
 					handleApiError({data, statusCode});
-				} else {
+				}
+				else {
 					updateDataSetItems(data);
 				}
 				setDataLoading(false);
@@ -566,7 +568,8 @@ const FrontendDataSet = ({
 					});
 
 					refreshData();
-				} else {
+				}
+				else {
 					openToast({
 						message:
 							errorMessage ||
