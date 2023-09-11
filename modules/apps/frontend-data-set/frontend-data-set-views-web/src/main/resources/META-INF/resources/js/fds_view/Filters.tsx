@@ -122,7 +122,7 @@ function AddFDSFilterModalContent({
 	namespace,
 	onSave,
 }: IPropsAddFDSFilterModalContent) {
-	const [fieldInUseValidationError, setFieldInUseValidationError] = useState<boolean>(false);
+	const [fieldInUseValidationError, setFieldInUseValidationError] = useState<boolean>();
 	const [from, setFrom] = useState<string>(
 		(filter as IDateFilter)?.from ?? format(new Date(), 'yyyy-MM-dd')
 	);
@@ -133,8 +133,8 @@ function AddFDSFilterModalContent({
 				: 'exclude'
 			: 'include'
 	);
-	const [isValidDateRange, setIsValidDateRange] = useState(true);
-	const [saveButtonDisabled, setSaveButtonDisabled] = useState(false);
+	const [isValidDateRange, setIsValidDateRange] = useState<boolean>(true);
+	const [saveButtonDisabled, setSaveButtonDisabled] = useState<boolean>();
 	const [multiple, setMultiple] = useState<boolean>(
 		(filter as ISelectionFilter)?.multiple ?? true
 	);
