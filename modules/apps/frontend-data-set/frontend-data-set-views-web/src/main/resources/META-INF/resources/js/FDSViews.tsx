@@ -88,7 +88,8 @@ const AddFDSViewModalContent = ({
 			});
 
 			loadData();
-		} else {
+		}
+		else {
 			setSaveButtonDisabled(false);
 			openToast({
 				message: Liferay.Language.get(

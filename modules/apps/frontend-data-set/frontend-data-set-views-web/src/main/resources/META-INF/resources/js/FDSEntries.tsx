@@ -371,7 +371,8 @@ const AddFDSEntryModalContent = ({
 			});
 
 			loadData();
-		} else {
+		}
+		else {
 			setSaveButtonDisabled(false);
 			openToast({
 				message: Liferay.Language.get(
@@ -445,7 +446,8 @@ const AddFDSEntryModalContent = ({
 				setSelectedRESTEndpoint(null);
 
 				setNoEnpointsRESTApplicationValidationError(true);
-			} else if (schemaEndpoints.size === 1) {
+			}
+			else if (schemaEndpoints.size === 1) {
 				const schema = schemaEndpoints.keys().next().value;
 
 				setSelectedRESTSchema(schema);
@@ -457,7 +459,8 @@ const AddFDSEntryModalContent = ({
 				}
 
 				setNoEnpointsRESTApplicationValidationError(false);
-			} else {
+			}
+			else {
 				setSelectedRESTSchema(null);
 
 				setSelectedRESTEndpoint(null);
@@ -466,7 +469,8 @@ const AddFDSEntryModalContent = ({
 			}
 
 			setRESTSchemaEndpoints(schemaEndpoints);
-		} else {
+		}
+		else {
 			openToast({
 				message: Liferay.Language.get(
 					'your-request-failed-to-complete'
@@ -569,7 +573,8 @@ const AddFDSEntryModalContent = ({
 
 					if (endpoints?.length === 1) {
 						setSelectedRESTEndpoint(endpoints[0]);
-					} else {
+					}
+					else {
 						setSelectedRESTEndpoint(null);
 					}
 
@@ -715,7 +720,8 @@ const AddFDSEntryModalContent = ({
 
 								if (success) {
 									addFDSEntry();
-								} else {
+								}
+								else {
 									setSaveButtonDisabled(false);
 								}
 							}}
