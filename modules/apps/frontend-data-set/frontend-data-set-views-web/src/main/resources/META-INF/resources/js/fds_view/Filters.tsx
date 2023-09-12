@@ -400,14 +400,11 @@ function AddFDSFilterModalContent({
 							});
 
 							if (newVal) {
-								if (inUseFields.includes(newVal.name)) {
-									setFieldInUseValidationError(true);
-									setSaveButtonDisabled(true);
-								}
-								else {
-									setFieldInUseValidationError(false);
-									setSaveButtonDisabled(false);
-								}
+								const inUse = inUseFields.includes(newVal.name);
+
+								setFieldInUseValidationError(inUse);
+								setSaveButtonDisabled(inUse);
+
 								setSelectedField(newVal);
 							}
 						}}
