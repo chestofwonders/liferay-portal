@@ -76,7 +76,8 @@ const getRendererLabel = ({
 
 	if (internalRenderer?.label) {
 		return internalRenderer.label;
-	} else {
+	}
+	else {
 		clientExtensionRenderer = cetRenderers.find(
 			(renderer: IClientExtensionRenderer) => {
 				return renderer.erc === rendererName;
@@ -689,7 +690,8 @@ const Fields = ({
 			fdsFieldsOrderRef.current = orderedFDSFieldIds.join(',');
 
 			setFDSFields(orderedFDSFields);
-		} else {
+		}
+		else {
 			fdsFieldsOrderRef.current = storedFDSFields
 				.map((storedFDSField: IFDSField) => storedFDSField.id)
 				.join(',');
@@ -794,7 +796,8 @@ const Fields = ({
 				),
 				type: 'success',
 			});
-		} else {
+		}
+		else {
 			openToast({
 				message: Liferay.Language.get(
 					'your-request-failed-to-complete'

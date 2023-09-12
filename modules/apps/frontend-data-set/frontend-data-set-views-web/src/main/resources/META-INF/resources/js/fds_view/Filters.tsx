@@ -88,9 +88,9 @@ function alertSuccess() {
 interface IPropsAddFDSFilterModalContent {
 	closeModal: Function;
 	fdsView: FDSViewType;
+	fieldNames?: string[];
 	fields: IField[];
 	filter?: IDateFilter | ISelectionFilter;
-	fieldNames?: string[];
 	filterType?: filterTypes;
 	namespace: string;
 	onSave: (newFilter: IFilter) => void;
@@ -104,7 +104,7 @@ function getModalHeader(
 		return sub(Liferay.Language.get('edit-x-filter'), [filter.name]);
 	}
 
-	if (filterType && filterType == filterTypes.SELECTION) {
+	if (filterType && filterType === filterTypes.SELECTION) {
 		return Liferay.Language.get('new-selection-filter');
 	}
 	else {
@@ -329,7 +329,7 @@ function AddFDSFilterModalContent({
 							disabled={
 								!!filter ||
 								(filterType === filterTypes.SELECTION &&
-									picklists.length == 0)
+									!picklists.length)
 							}
 							key={cellRenderer.name}
 							onClick={() => onItemClick(cellRenderer)}
@@ -419,7 +419,7 @@ function AddFDSFilterModalContent({
 					)}
 				</ClayForm.Group>
 
-				{filterType === filterTypes.SELECTION && picklists.length == 0 && (
+				{filterType === filterTypes.SELECTION && !picklists.length && (
 					<ClayAlert displayType="info" title="Info">
 						{Liferay.Language.get('no-filter-sources-available')}
 					</ClayAlert>
@@ -849,7 +849,7 @@ function Filters({fdsView, fdsViewsURL, namespace}: IProps) {
 					item.format === fieldFormats.DATE_TIME)
 		);
 
-		if (availableFields.length == 0) {
+		if (!availableFields.length) {
 			openModal({
 				bodyHTML: Liferay.Language.get(
 					'there-are-no-fields-compatible-with-this-type-of-filter'
