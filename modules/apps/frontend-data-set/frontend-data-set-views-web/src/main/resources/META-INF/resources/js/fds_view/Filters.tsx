@@ -30,7 +30,7 @@ import CheckboxMultiSelect from '../components/CheckboxMultiSelect';
 import OrderableTable from '../components/OrderableTable';
 import ValidationFeedback from '../components/ValidationFeedback';
 
-import '../../css/FDSEntries.scss';
+import '../../css/Filters.scss';
 
 enum EFilterType {
 	DATE_RANGE = 'DATE_RANGE',

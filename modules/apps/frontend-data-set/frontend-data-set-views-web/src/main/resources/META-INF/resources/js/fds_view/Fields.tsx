@@ -29,7 +29,7 @@ import {FDSViewType} from '../FDSViews';
 import {getFields} from '../api';
 import OrderableTable from '../components/OrderableTable';
 
-import '../../css/FDSEntries.scss';
+import '../../css/Fields.scss';
 
 interface IFDSField {
 	externalReferenceCode: string;
