@@ -224,7 +224,7 @@ export async function loadData(
 	searchParam,
 	delta,
 	page = 1,
-	sorting = []
+	sorts = []
 ) {
 	const fullUrl = apiURL.startsWith('/')
 		? themeDisplay.getPortalURL() + themeDisplay.getPathContext() + apiURL
@@ -258,10 +258,10 @@ export async function loadData(
 		url.searchParams.append('search', searchParam);
 	}
 
-	if (sorting.length) {
+	if (sorts.length) {
 		url.searchParams.append(
 			'sort',
-			sorting.map((item) => `${item.key}:${item.direction}`).join(',')
+			sorts.map((item) => `${item.key}:${item.direction}`).join(',')
 		);
 	}
 
