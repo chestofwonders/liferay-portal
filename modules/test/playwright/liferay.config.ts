@@ -11,7 +11,7 @@ const liferayConfig = {
 	},
 	user: {
 		login: process.env.LIFERAY_USER_LOGIN || 'test@liferay.com',
-		password: process.env.LIFERAY_USER_PASSWORD || 'test',
+		password: process.env.LIFERAY_USER_PASSWORD || 'test1',
 	},
 };
 
