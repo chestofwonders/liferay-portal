@@ -5,9 +5,9 @@
 
 import type {Page} from '@playwright/test';
 
-import {FDSViewPage} from './FDSView.page';
+import {FDSViewPage} from './FDSViews.page';
 
-export type ModalTypes = 'modal' | 'link' | 'sidePanel';
+export type ActionTypes = 'modal' | 'link' | 'sidePanel';
 
 export class FDSActionsPage {
 	page: Page;
@@ -24,7 +24,7 @@ export class FDSActionsPage {
 		this.page.getByRole('button', { name: /Actions/ }).first().click()
 	}
 
-	async create({name, type, url, icon}: {name: string, type: ModalTypes, url: string, icon: string}) {
+	async create({name, type, url, icon}: {name: string, type: ActionTypes, url: string, icon: string}) {
 		await this.page.getByRole('button', { name: /Add Action/ }).click();
         await this.page.getByPlaceholder(/Action Name/).click();
         await this.page.getByPlaceholder(/Action Name/).fill(name);

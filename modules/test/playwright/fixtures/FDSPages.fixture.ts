@@ -6,7 +6,7 @@
 import {test} from '@playwright/test';
 
 import {FDSPage} from '../pages/FDS/FDS.page';
-import {FDSViewPage} from '../pages/FDS/FDSView.page';
+import {FDSViewPage} from '../pages/FDS/FDSViews.page';
 import {FDSActionsPage} from '../pages/FDS/FDSActions.page';
 
 const FDSPagesTest = test.extend<{
