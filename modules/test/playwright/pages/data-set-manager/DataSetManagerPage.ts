@@ -6,7 +6,7 @@
 import {expect} from '@playwright/test';
 
 import {ApiHelpers} from '../../helpers/ApiHelpers';
-import {ApplicationsMenuPage} from '../product-navigation-applications-menu/applicationsMenu.page';
+import {ApplicationsMenuPage} from '../product-navigation-applications-menu/ApplicationsMenuPage';
 
 import type {Locator, Page} from '@playwright/test';
 
