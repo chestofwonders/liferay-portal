@@ -45,6 +45,10 @@ import com.liferay.object.field.business.type.ObjectFieldBusinessTypeRegistry;
 import com.liferay.object.field.setting.util.ObjectFieldSettingUtil;
 import com.liferay.object.field.util.ObjectFieldUtil;
 import com.liferay.object.internal.entry.util.ObjectEntrySearchUtil;
+import com.liferay.object.internal.filter.parser.CurrentUserObjectFilterParser;
+import com.liferay.object.internal.filter.parser.DateRangeObjectFilterParser;
+import com.liferay.object.internal.filter.parser.EqualityOperatorsObjectFilterParser;
+import com.liferay.object.internal.filter.parser.InclusionOperatorsObjectFilterParser;
 import com.liferay.object.internal.filter.parser.ObjectFilterParser;
 import com.liferay.object.internal.petra.sql.dsl.DynamicObjectDefinitionLocalizationTableFactory;
 import com.liferay.object.model.ObjectDefinition;
@@ -81,8 +85,6 @@ import com.liferay.object.tree.Edge;
 import com.liferay.object.tree.Node;
 import com.liferay.object.tree.Tree;
 import com.liferay.object.tree.TreeFactory;
-import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
-import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.lang.CentralizedThreadLocal;
 import com.liferay.petra.sql.dsl.Column;
@@ -195,7 +197,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.Timestamp;
 import java.sql.Types;
 
@@ -220,7 +221,6 @@ import org.apache.commons.io.IOUtils;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
@@ -261,17 +261,17 @@ public class ObjectEntryLocalServiceImpl
 		long objectEntryId = counterLocalService.increment();
 
 		_validateValues(
-			null, user.isGuestUser(), objectDefinition, objectEntryId,
+			null, user.isGuestUser(), groupId, objectDefinition, objectEntryId,
 			serviceContext, userId, values);
 
 		_insertIntoLocalizationTable(
-			objectDefinition, objectEntryId, user, values, workflowAction);
+			objectDefinition, objectEntryId, values, workflowAction);
 		_insertIntoTable(
 			_getDynamicObjectDefinitionTable(objectDefinitionId), objectEntryId,
-			user, values, workflowAction);
+			values, workflowAction);
 		_insertIntoTable(
 			_getExtensionDynamicObjectDefinitionTable(objectDefinitionId),
-			objectEntryId, user, values, workflowAction);
+			objectEntryId, values, workflowAction);
 
 		ObjectEntry objectEntry = objectEntryPersistence.create(objectEntryId);
 
@@ -365,7 +365,7 @@ public class ObjectEntryLocalServiceImpl
 		User user = _userLocalService.getUser(userId);
 
 		_validateValues(
-			null, user.isGuestUser(), objectDefinition, primaryKey,
+			null, user.isGuestUser(), 0, objectDefinition, primaryKey,
 			serviceContext, userId, values);
 
 		insertIntoOrUpdateExtensionTable(
@@ -1319,16 +1319,14 @@ public class ObjectEntryLocalServiceImpl
 			throw new SystemException(sqlException);
 		}
 
-		User user = _userLocalService.getUser(userId);
-
 		if (count > 0) {
 			_updateTable(
-				dynamicObjectDefinitionTable, primaryKey, user, values,
+				dynamicObjectDefinitionTable, primaryKey, values,
 				WorkflowConstants.ACTION_PUBLISH);
 		}
 		else {
 			_insertIntoTable(
-				dynamicObjectDefinitionTable, primaryKey, user, values,
+				dynamicObjectDefinitionTable, primaryKey, values,
 				WorkflowConstants.ACTION_PUBLISH);
 		}
 	}
@@ -1453,8 +1451,8 @@ public class ObjectEntryLocalServiceImpl
 				objectEntry.getObjectDefinitionId());
 
 		_validateValues(
-			objectEntry, user.isGuestUser(), objectDefinition, objectEntryId,
-			serviceContext, userId, values);
+			objectEntry, user.isGuestUser(), objectEntry.getGroupId(),
+			objectDefinition, objectEntryId, serviceContext, userId, values);
 
 		int workflowAction = serviceContext.getWorkflowAction();
 
@@ -1466,15 +1464,15 @@ public class ObjectEntryLocalServiceImpl
 
 		_deleteFromLocalizationTable(objectDefinition, objectEntryId);
 		_insertIntoLocalizationTable(
-			objectDefinition, objectEntryId, user, values, workflowAction);
+			objectDefinition, objectEntryId, values, workflowAction);
 		_updateTable(
 			_getDynamicObjectDefinitionTable(
 				objectEntry.getObjectDefinitionId()),
-			objectEntryId, user, values, workflowAction);
+			objectEntryId, values, workflowAction);
 		_updateTable(
 			_getExtensionDynamicObjectDefinitionTable(
 				objectEntry.getObjectDefinitionId()),
-			objectEntryId, user, values, workflowAction);
+			objectEntryId, values, workflowAction);
 
 		objectEntryPersistence.clearCache(SetUtil.fromArray(objectEntryId));
 
@@ -1572,13 +1570,20 @@ public class ObjectEntryLocalServiceImpl
 
 		modified(properties);
 
-		_serviceTrackerMap = ServiceTrackerMapFactory.openSingleValueMap(
-			bundleContext, ObjectFilterParser.class, "filter.type");
-	}
-
-	@Deactivate
-	protected void deactivate() {
-		_serviceTrackerMap.close();
+		_putObjectFilterParser(
+			new CurrentUserObjectFilterParser(),
+			ObjectFilterConstants.TYPE_CURRENT_USER);
+		_putObjectFilterParser(
+			new DateRangeObjectFilterParser(),
+			ObjectFilterConstants.TYPE_DATE_RANGE);
+		_putObjectFilterParser(
+			new EqualityOperatorsObjectFilterParser(),
+			ObjectFilterConstants.TYPE_EQUALS,
+			ObjectFilterConstants.TYPE_NOT_EQUALS);
+		_putObjectFilterParser(
+			new InclusionOperatorsObjectFilterParser(),
+			ObjectFilterConstants.TYPE_EXCLUDES,
+			ObjectFilterConstants.TYPE_INCLUDES);
 	}
 
 	@Modified
@@ -2241,8 +2246,8 @@ public class ObjectEntryLocalServiceImpl
 					).toString());
 			}
 
-			ObjectFilterParser objectFilterParser =
-				_serviceTrackerMap.getService(objectFilter.getFilterType());
+			ObjectFilterParser objectFilterParser = _objectFilterParsers.get(
+				objectFilter.getFilterType());
 
 			predicate = predicate.and(
 				_filterFactory.create(
@@ -3211,7 +3216,7 @@ public class ObjectEntryLocalServiceImpl
 	}
 
 	private void _insertIntoLocalizationTable(
-			ObjectDefinition objectDefinition, long objectEntryId, User user,
+			ObjectDefinition objectDefinition, long objectEntryId,
 			Map<String, Serializable> values, int workflowAction)
 		throws PortalException {
 
@@ -3312,17 +3317,6 @@ public class ObjectEntryLocalServiceImpl
 			FinderCacheUtil.clearDSLQueryCache(
 				dynamicObjectDefinitionLocalizationTable.getTableName());
 		}
-		catch (SQLException sqlException) {
-			if (sqlException.getCause() instanceof
-					SQLIntegrityConstraintViolationException) {
-
-				_validateUniqueValueConstraintViolation(
-					objectFields, sqlException,
-					dynamicObjectDefinitionLocalizationTable, user, values);
-			}
-
-			throw new SystemException(sqlException);
-		}
 		catch (Exception exception) {
 			throw new SystemException(exception);
 		}
@@ -3330,7 +3324,7 @@ public class ObjectEntryLocalServiceImpl
 
 	private void _insertIntoTable(
 			DynamicObjectDefinitionTable dynamicObjectDefinitionTable,
-			long objectEntryId, User user, Map<String, Serializable> values,
+			long objectEntryId, Map<String, Serializable> values,
 			int workflowAction)
 		throws PortalException {
 
@@ -3484,15 +3478,6 @@ public class ObjectEntryLocalServiceImpl
 			FinderCacheUtil.clearDSLQueryCache(
 				dynamicObjectDefinitionTable.getTableName());
 		}
-		catch (SQLIntegrityConstraintViolationException
-					sqlIntegrityConstraintViolationException) {
-
-			_validateUniqueValueConstraintViolation(
-				objectFields, sqlIntegrityConstraintViolationException,
-				dynamicObjectDefinitionTable, user, values);
-
-			throw new SystemException(sqlIntegrityConstraintViolationException);
-		}
 		catch (Exception exception) {
 			throw new SystemException(exception);
 		}
@@ -3526,6 +3511,14 @@ public class ObjectEntryLocalServiceImpl
 		}
 
 		return results;
+	}
+
+	private void _putObjectFilterParser(
+		ObjectFilterParser objectFilterParser, String... types) {
+
+		for (String type : types) {
+			_objectFilterParsers.put(type, objectFilterParser);
+		}
 	}
 
 	private void _putValue(
@@ -3929,7 +3922,7 @@ public class ObjectEntryLocalServiceImpl
 
 	private void _updateTable(
 			DynamicObjectDefinitionTable dynamicObjectDefinitionTable,
-			long objectEntryId, User user, Map<String, Serializable> values,
+			long objectEntryId, Map<String, Serializable> values,
 			int workflowAction)
 		throws PortalException {
 
@@ -4043,15 +4036,6 @@ public class ObjectEntryLocalServiceImpl
 
 			FinderCacheUtil.clearDSLQueryCache(
 				dynamicObjectDefinitionTable.getTableName());
-		}
-		catch (SQLIntegrityConstraintViolationException
-					sqlIntegrityConstraintViolationException) {
-
-			_validateUniqueValueConstraintViolation(
-				objectFields, sqlIntegrityConstraintViolationException,
-				dynamicObjectDefinitionTable, user, values);
-
-			throw new SystemException(sqlIntegrityConstraintViolationException);
 		}
 		catch (Exception exception) {
 			throw new SystemException(exception);
@@ -4354,98 +4338,85 @@ public class ObjectEntryLocalServiceImpl
 			280, value, objectField.getObjectFieldId(), objectField.getName());
 	}
 
-	private void _validateUniqueValueConstraintViolation(
-			Column<?, Object> column, ObjectField objectField,
-			Predicate predicate, SQLException sqlException, Table<?> table,
-			User user, Serializable value)
+	private void _validateUniqueValues(
+			long groupId, ObjectEntry existingObjectEntry,
+			ObjectDefinition objectDefinition, ObjectField objectField,
+			long userId, Object value)
 		throws PortalException {
 
-		int count = objectEntryPersistence.dslQueryCount(
-			DSLQueryFactoryUtil.countDistinct(
-				column
-			).from(
-				table
-			).where(
-				predicate
-			));
+		long objectEntriesCount = 0;
+		Table<?> table = null;
 
-		if (count > 0) {
-			throw new ObjectEntryValuesException.UniqueValueConstraintViolation(
-				objectField.getDBColumnName(), value,
-				objectField.getLabel(user.getLocale()), table.getTableName(),
-				sqlException);
-		}
-	}
-
-	private void _validateUniqueValueConstraintViolation(
-			List<ObjectField> objectFields, SQLException sqlException,
-			Table<?> table, User user, Map<String, Serializable> values)
-		throws PortalException {
-
-		for (ObjectField objectField : objectFields) {
-			if (!objectField.hasUniqueValues()) {
-				continue;
-			}
+		try {
+			table = _objectFieldLocalService.getTable(
+				objectDefinition.getObjectDefinitionId(),
+				objectField.getName());
 
 			Column<?, Object> column = (Column<?, Object>)table.getColumn(
 				objectField.getDBColumnName());
 
-			if (column == null) {
-				continue;
+			Predicate predicate = null;
+
+			if (objectField.isLocalized()) {
+				Map.Entry<String, String> entry =
+					(Map.Entry<String, String>)value;
+
+				DynamicObjectDefinitionLocalizationTable
+					dynamicObjectDefinitionLocalizationTable =
+						(DynamicObjectDefinitionLocalizationTable)table;
+
+				predicate = ObjectEntryTable.INSTANCE.objectEntryId.in(
+					DSLQueryFactoryUtil.select(
+						dynamicObjectDefinitionLocalizationTable.
+							getForeignKeyColumn()
+					).from(
+						dynamicObjectDefinitionLocalizationTable
+					).where(
+						dynamicObjectDefinitionLocalizationTable.
+							getLanguageIdColumn(
+							).eq(
+								entry.getKey()
+							).and(
+								column.eq(entry.getValue())
+							)
+					));
+
+				value = entry.getValue();
+			}
+			else {
+				predicate =
+					ObjectEntrySearchUtil.
+						getUniqueCompositeKeyObjectFieldPredicate(
+							column, objectField.getDBType(), value);
 			}
 
-			if (!objectField.isLocalized()) {
-				Serializable value = values.get(objectField.getName());
-
-				if (column.getSQLType() == Types.INTEGER) {
-					value = GetterUtil.getInteger(value);
-				}
-
-				_validateUniqueValueConstraintViolation(
-					column, objectField, column.eq(value), sqlException, table,
-					user, value);
-
-				continue;
+			if (existingObjectEntry != null) {
+				predicate = predicate.and(
+					ObjectEntryTable.INSTANCE.objectEntryId.neq(
+						existingObjectEntry.getObjectEntryId()));
 			}
 
-			Map<String, String> localizedValues =
-				(Map<String, String>)values.get(
-					objectField.getI18nObjectFieldName());
-
-			if (localizedValues == null) {
-				continue;
-			}
-
-			for (String languageId : localizedValues.keySet()) {
-				Serializable value = _getLocalizedValue(
-					languageId, localizedValues);
-
-				_validateUniqueValueConstraintViolation(
-					column, objectField,
-					column.eq(
-						value
-					).and(
-						() -> {
-							DynamicObjectDefinitionLocalizationTable
-								dynamicObjectDefinitionLocalizationTable =
-									(DynamicObjectDefinitionLocalizationTable)
-										table;
-
-							return dynamicObjectDefinitionLocalizationTable.
-								getLanguageIdColumn(
-								).eq(
-									languageId
-								);
-						}
-					),
-					sqlException, table, user, value);
-			}
+			objectEntriesCount = getObjectEntriesCount(
+				groupId, objectDefinition, predicate);
 		}
+		catch (PortalException portalException) {
+			throw new RuntimeException(portalException);
+		}
+
+		if (objectEntriesCount == 0) {
+			return;
+		}
+
+		User user = _userLocalService.getUser(userId);
+
+		throw new ObjectEntryValuesException.UniqueValueConstraintViolation(
+			objectField.getDBColumnName(), (Serializable)value,
+			objectField.getLabel(user.getLocale()), table.getTableName(), null);
 	}
 
 	private void _validateValues(
 			Map.Entry<String, Serializable> entry,
-			ObjectEntry existingObjectEntry, boolean guestUser,
+			ObjectEntry existingObjectEntry, boolean guestUser, long groupId,
 			ObjectDefinition objectDefinition, long objectEntryId,
 			ServiceContext serviceContext, long userId,
 			Map<String, Serializable> values)
@@ -4649,10 +4620,18 @@ public class ObjectEntryLocalServiceImpl
 				}
 			}
 		}
+
+		if (!objectField.hasUniqueValues()) {
+			return;
+		}
+
+		_validateUniqueValues(
+			groupId, existingObjectEntry, objectDefinition, objectField, userId,
+			entry.getValue());
 	}
 
 	private void _validateValues(
-			ObjectEntry existingObjectEntry, boolean guestUser,
+			ObjectEntry existingObjectEntry, boolean guestUser, long groupId,
 			ObjectDefinition objectDefinition, long objectEntryId,
 			ServiceContext serviceContext, long userId,
 			Map<String, Serializable> values)
@@ -4686,13 +4665,22 @@ public class ObjectEntryLocalServiceImpl
 						280, entry.getValue(), objectField.getObjectFieldId(),
 						objectField.getI18nObjectFieldName());
 				}
+
+				if (!objectField.hasUniqueValues()) {
+					continue;
+				}
+
+				_validateUniqueValues(
+					groupId, existingObjectEntry, objectDefinition, objectField,
+					userId, entry);
 			}
 		}
 
 		for (Map.Entry<String, Serializable> entry : values.entrySet()) {
 			_validateValues(
-				entry, existingObjectEntry, guestUser, objectDefinition,
-				objectEntryId, serviceContext, userId, values);
+				entry, existingObjectEntry, guestUser, groupId,
+				objectDefinition, objectEntryId, serviceContext, userId,
+				values);
 		}
 	}
 
@@ -4797,6 +4785,9 @@ public class ObjectEntryLocalServiceImpl
 	@Reference
 	private ObjectFieldSettingPersistence _objectFieldSettingPersistence;
 
+	private final Map<String, ObjectFilterParser> _objectFilterParsers =
+		new HashMap<>();
+
 	@Reference
 	private ObjectRelatedModelsProviderRegistry
 		_objectRelatedModelsProviderRegistry;
@@ -4824,8 +4815,6 @@ public class ObjectEntryLocalServiceImpl
 
 	@Reference
 	private SearchRequestBuilderFactory _searchRequestBuilderFactory;
-
-	private ServiceTrackerMap<String, ObjectFilterParser> _serviceTrackerMap;
 
 	@Reference
 	private Sorts _sorts;

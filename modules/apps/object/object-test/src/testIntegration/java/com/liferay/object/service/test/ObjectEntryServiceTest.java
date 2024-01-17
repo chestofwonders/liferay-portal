@@ -34,8 +34,9 @@ import com.liferay.object.tree.TreeFactory;
 import com.liferay.object.tree.constants.TreeConstants;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.configuration.test.util.ConfigurationTestUtil;
+import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.exception.NoSuchResourceActionException;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
@@ -75,7 +76,6 @@ import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Dictionary;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -653,12 +653,13 @@ public class ObjectEntryServiceTest {
 	}
 
 	@Test
-	public void testValidateMaximumNumberOfGuestUserObjectEntriesPerObjectDefinition()
+	public void testValidateMaximumNumberOfGuestUserObjectEntriesPerObjectDefinitionPerDay()
 		throws Exception {
 
 		_setUser(_guestUser);
 
-		Dictionary<String, Object> objectConfigurationDictionary =
+		_configurationProvider.saveCompanyConfiguration(
+			ObjectConfiguration.class, TestPropsValues.getCompanyId(),
 			HashMapDictionaryBuilder.<String, Object>put(
 				"duration", 1
 			).put(
@@ -667,11 +668,166 @@ public class ObjectEntryServiceTest {
 				"maximumNumberOfGuestUserObjectEntriesPerObjectDefinition", 1
 			).put(
 				"timeScale", "days"
-			).build();
+			).build());
 
-		ConfigurationTestUtil.saveConfiguration(
-			ObjectConfiguration.class.getName(), objectConfigurationDictionary);
+		_configurationProvider.saveSystemConfiguration(
+			ObjectConfiguration.class,
+			HashMapDictionaryBuilder.<String, Object>put(
+				"duration", 1
+			).put(
+				"maximumFileSizeForGuestUsers", 25
+			).put(
+				"maximumNumberOfGuestUserObjectEntriesPerObjectDefinition", 10
+			).put(
+				"timeScale", "days"
+			).build());
 
+		_addResourcePermissionToGuestUser();
+
+		try {
+			ObjectEntry objectEntry = _objectEntryService.addObjectEntry(
+				0, _objectDefinition.getObjectDefinitionId(),
+				Collections.emptyMap(),
+				ServiceContextTestUtil.getServiceContext(
+					TestPropsValues.getGroupId(), _guestUser.getUserId()));
+
+			Assert.assertNotNull(objectEntry);
+
+			AssertUtils.assertFailure(
+				ObjectEntryCountException.class,
+				StringBundler.concat(
+					"The limit of guest entries for ",
+					_objectDefinition.getLabel(
+						_objectDefinition.getDefaultLanguageId()),
+					" has been reached and will no longer be accepted"),
+				() -> _objectEntryService.addObjectEntry(
+					0, _objectDefinition.getObjectDefinitionId(),
+					Collections.emptyMap(),
+					ServiceContextTestUtil.getServiceContext(
+						TestPropsValues.getGroupId(), _guestUser.getUserId())));
+
+			_assertUserNotificationEventsCount();
+
+			objectEntry.setCreateDate(
+				Date.from(
+					LocalDate.now(
+					).minusDays(
+						1
+					).atStartOfDay(
+						ZoneId.systemDefault()
+					).toInstant()));
+
+			_objectEntryLocalService.updateObjectEntry(objectEntry);
+
+			Assert.assertNotNull(
+				_objectEntryService.addObjectEntry(
+					0, _objectDefinition.getObjectDefinitionId(),
+					Collections.emptyMap(),
+					ServiceContextTestUtil.getServiceContext(
+						TestPropsValues.getGroupId(), _guestUser.getUserId())));
+
+			AssertUtils.assertFailure(
+				ObjectEntryCountException.class,
+				StringBundler.concat(
+					"The limit of guest entries for ",
+					_objectDefinition.getLabel(
+						_objectDefinition.getDefaultLanguageId()),
+					" has been reached and will no longer be accepted"),
+				() -> _objectEntryService.addObjectEntry(
+					0, _objectDefinition.getObjectDefinitionId(),
+					Collections.emptyMap(),
+					ServiceContextTestUtil.getServiceContext(
+						TestPropsValues.getGroupId(), _guestUser.getUserId())));
+
+			_assertUserNotificationEventsCount();
+		}
+		finally {
+			_configurationProvider.deleteCompanyConfiguration(
+				ObjectConfiguration.class, TestPropsValues.getCompanyId());
+			_configurationProvider.deleteSystemConfiguration(
+				ObjectConfiguration.class);
+		}
+	}
+
+	@Test
+	public void testValidateMaximumNumberOfGuestUserObjectEntriesPerObjectDefinitionPerWeek()
+		throws Exception {
+
+		_setUser(_guestUser);
+
+		_configurationProvider.saveSystemConfiguration(
+			ObjectConfiguration.class,
+			HashMapDictionaryBuilder.<String, Object>put(
+				"duration", 2
+			).put(
+				"maximumFileSizeForGuestUsers", 25
+			).put(
+				"maximumNumberOfGuestUserObjectEntriesPerObjectDefinition", 1
+			).put(
+				"timeScale", "weeks"
+			).build());
+
+		_addResourcePermissionToGuestUser();
+
+		ObjectEntry objectEntry = _objectEntryService.addObjectEntry(
+			0, _objectDefinition.getObjectDefinitionId(),
+			Collections.emptyMap(),
+			ServiceContextTestUtil.getServiceContext(
+				TestPropsValues.getGroupId(), _guestUser.getUserId()));
+
+		objectEntry.setCreateDate(
+			Date.from(
+				LocalDate.now(
+				).minusDays(
+					14
+				).atStartOfDay(
+					ZoneId.systemDefault()
+				).toInstant()));
+
+		_objectEntryLocalService.updateObjectEntry(objectEntry);
+
+		try {
+			Assert.assertNotNull(
+				_objectEntryService.addObjectEntry(
+					0, _objectDefinition.getObjectDefinitionId(),
+					Collections.emptyMap(),
+					ServiceContextTestUtil.getServiceContext(
+						TestPropsValues.getGroupId(), _guestUser.getUserId())));
+
+			AssertUtils.assertFailure(
+				ObjectEntryCountException.class,
+				StringBundler.concat(
+					"The limit of guest entries for ",
+					_objectDefinition.getLabel(
+						_objectDefinition.getDefaultLanguageId()),
+					" has been reached and will no longer be accepted"),
+				() -> _objectEntryService.addObjectEntry(
+					0, _objectDefinition.getObjectDefinitionId(),
+					Collections.emptyMap(),
+					ServiceContextTestUtil.getServiceContext(
+						TestPropsValues.getGroupId(), _guestUser.getUserId())));
+
+			_assertUserNotificationEventsCount();
+		}
+		finally {
+			_configurationProvider.deleteSystemConfiguration(
+				ObjectConfiguration.class);
+		}
+	}
+
+	private ObjectEntry _addObjectEntry(User user) throws Exception {
+		return _objectEntryLocalService.addObjectEntry(
+			user.getUserId(), 0, _objectDefinition.getObjectDefinitionId(),
+			HashMapBuilder.<String, Serializable>put(
+				"firstName", RandomStringUtils.randomAlphabetic(5)
+			).put(
+				"LastName", RandomStringUtils.randomAlphabetic(5)
+			).build(),
+			ServiceContextTestUtil.getServiceContext(
+				TestPropsValues.getGroupId(), user.getUserId()));
+	}
+
+	private void _addResourcePermissionToGuestUser() throws Exception {
 		Role guestRole = _roleLocalService.getRole(
 			TestPropsValues.getCompanyId(), RoleConstants.GUEST);
 
@@ -680,25 +836,9 @@ public class ObjectEntryServiceTest {
 			ResourceConstants.SCOPE_COMPANY,
 			String.valueOf(TestPropsValues.getCompanyId()),
 			guestRole.getRoleId(), ObjectActionKeys.ADD_OBJECT_ENTRY);
+	}
 
-		Assert.assertNotNull(
-			_objectEntryService.addObjectEntry(
-				0, _objectDefinition.getObjectDefinitionId(),
-				Collections.emptyMap(),
-				ServiceContextTestUtil.getServiceContext(
-					TestPropsValues.getGroupId(), _guestUser.getUserId())));
-
-		AssertUtils.assertFailure(
-			ObjectEntryCountException.class,
-			StringBundler.concat(
-				"The limit of guest entries for ", _objectDefinition.getLabel(),
-				" has been reached and will no longer be accepted"),
-			() -> _objectEntryService.addObjectEntry(
-				0, _objectDefinition.getObjectDefinitionId(),
-				Collections.emptyMap(),
-				ServiceContextTestUtil.getServiceContext(
-					TestPropsValues.getGroupId(), _guestUser.getUserId())));
-
+	private void _assertUserNotificationEventsCount() throws PortalException {
 		String portletId =
 			_objectDefinition.isUnmodifiableSystemObject() ? StringPool.BLANK :
 				_objectDefinition.getPortletId();
@@ -719,151 +859,8 @@ public class ObjectEntryServiceTest {
 					).getEpochSecond(),
 					true);
 
-			Assert.assertTrue(count > 0);
+			Assert.assertTrue(count == 1);
 		}
-
-		ConfigurationTestUtil.deleteConfiguration(
-			ObjectConfiguration.class.getName());
-
-		objectConfigurationDictionary.put(
-			"maximumNumberOfGuestUserObjectEntriesPerObjectDefinition", 2);
-
-		ConfigurationTestUtil.saveConfiguration(
-			ObjectConfiguration.class.getName(), objectConfigurationDictionary);
-
-		ObjectEntry objectEntry = _objectEntryService.addObjectEntry(
-			0, _objectDefinition.getObjectDefinitionId(),
-			Collections.emptyMap(),
-			ServiceContextTestUtil.getServiceContext(
-				TestPropsValues.getGroupId(), _guestUser.getUserId()));
-
-		objectEntry.setCreateDate(
-			Date.from(
-				LocalDate.now(
-				).minusDays(
-					1
-				).atStartOfDay(
-					ZoneId.systemDefault()
-				).toInstant()));
-
-		objectEntry = _objectEntryLocalService.updateObjectEntry(objectEntry);
-
-		Assert.assertNotNull(
-			_objectEntryService.addObjectEntry(
-				0, _objectDefinition.getObjectDefinitionId(),
-				Collections.emptyMap(),
-				ServiceContextTestUtil.getServiceContext(
-					TestPropsValues.getGroupId(), _guestUser.getUserId())));
-
-		_objectEntryLocalService.deleteObjectEntry(
-			objectEntry.getObjectEntryId());
-
-		ConfigurationTestUtil.deleteConfiguration(
-			ObjectConfiguration.class.getName());
-
-		objectConfigurationDictionary.put(
-			"maximumNumberOfGuestUserObjectEntriesPerObjectDefinition", 3);
-		objectConfigurationDictionary.put("timeScale", "weeks");
-
-		ConfigurationTestUtil.saveConfiguration(
-			ObjectConfiguration.class.getName(), objectConfigurationDictionary);
-
-		objectEntry = _objectEntryService.addObjectEntry(
-			0, _objectDefinition.getObjectDefinitionId(),
-			Collections.emptyMap(),
-			ServiceContextTestUtil.getServiceContext(
-				TestPropsValues.getGroupId(), _guestUser.getUserId()));
-
-		objectEntry.setCreateDate(
-			Date.from(
-				LocalDate.now(
-				).minusDays(
-					7
-				).atStartOfDay(
-					ZoneId.systemDefault()
-				).toInstant()));
-
-		objectEntry = _objectEntryLocalService.updateObjectEntry(objectEntry);
-
-		Assert.assertNotNull(
-			_objectEntryService.addObjectEntry(
-				0, _objectDefinition.getObjectDefinitionId(),
-				Collections.emptyMap(),
-				ServiceContextTestUtil.getServiceContext(
-					TestPropsValues.getGroupId(), _guestUser.getUserId())));
-
-		AssertUtils.assertFailure(
-			ObjectEntryCountException.class,
-			StringBundler.concat(
-				"The limit of guest entries for ", _objectDefinition.getLabel(),
-				" has been reached and will no longer be accepted"),
-			() -> _objectEntryService.addObjectEntry(
-				0, _objectDefinition.getObjectDefinitionId(),
-				Collections.emptyMap(),
-				ServiceContextTestUtil.getServiceContext(
-					TestPropsValues.getGroupId(), _guestUser.getUserId())));
-
-		for (long userId : userIds) {
-			Assert.assertEquals(
-				1,
-				_userNotificationLocalService.getUserNotificationEventsCount(
-					userId, portletId,
-					LocalDate.now(
-					).atStartOfDay(
-						ZoneId.systemDefault()
-					).toInstant(
-					).getEpochSecond(),
-					true));
-		}
-
-		_objectEntryLocalService.deleteObjectEntry(
-			objectEntry.getObjectEntryId());
-
-		ConfigurationTestUtil.deleteConfiguration(
-			ObjectConfiguration.class.getName());
-
-		objectConfigurationDictionary.put("duration", "2");
-		objectConfigurationDictionary.put(
-			"maximumNumberOfGuestUserObjectEntriesPerObjectDefinition", 4);
-
-		ConfigurationTestUtil.saveConfiguration(
-			ObjectConfiguration.class.getName(), objectConfigurationDictionary);
-
-		objectEntry = _objectEntryService.addObjectEntry(
-			0, _objectDefinition.getObjectDefinitionId(),
-			Collections.emptyMap(),
-			ServiceContextTestUtil.getServiceContext(
-				TestPropsValues.getGroupId(), _guestUser.getUserId()));
-
-		objectEntry.setCreateDate(
-			Date.from(
-				LocalDate.now(
-				).minusDays(
-					14
-				).atStartOfDay(
-					ZoneId.systemDefault()
-				).toInstant()));
-
-		_objectEntryLocalService.updateObjectEntry(objectEntry);
-
-		Assert.assertNotNull(
-			_objectEntryService.addObjectEntry(
-				0, _objectDefinition.getObjectDefinitionId(),
-				Collections.emptyMap(),
-				ServiceContextTestUtil.getServiceContext(
-					TestPropsValues.getGroupId(), _guestUser.getUserId())));
-	}
-
-	private ObjectEntry _addObjectEntry(User user) throws Exception {
-		return _objectEntryLocalService.addObjectEntry(
-			user.getUserId(), 0, _objectDefinition.getObjectDefinitionId(),
-			HashMapBuilder.<String, Serializable>put(
-				"firstName", RandomStringUtils.randomAlphabetic(5)
-			).put(
-				"LastName", RandomStringUtils.randomAlphabetic(5)
-			).build(),
-			ServiceContextTestUtil.getServiceContext(
-				TestPropsValues.getGroupId(), user.getUserId()));
 	}
 
 	private void _setUser(User user) throws Exception {
@@ -901,6 +898,10 @@ public class ObjectEntryServiceTest {
 	private AccountEntryUserRelLocalService _accountEntryUserRelLocalService;
 
 	private User _adminUser;
+
+	@Inject
+	private ConfigurationProvider _configurationProvider;
+
 	private User _guestUser;
 
 	@DeleteAfterTestRun

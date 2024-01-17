@@ -1,22 +1,26 @@
 <#include "${templatesPath}/SVG">
 
 <script>
-	let href = window.location.href;
+	function removeEndSlash() {
+		let href = window.location.href;
 
-	if (href.endsWith("/")) {
-		href = href.substring(0, href.length - 1);
-		window.location.assign(href);
+		if (href.endsWith("/")) {
+			href = href.substring(0, href.length - 1);
+			window.location.href = href;
+		}
 	}
+
+	removeEndSlash();
 </script>
 
 <style>
 	.adt-nav-title.align-items-center.d-flex {
-		color: #282934;
+		color: var(--color-neutral-10, #282934);
 		font-weight: 700;
 	}
 
 	.adt-submenu-item-link {
-		color: #282934;
+		color: var(--color-neutral-10, #282934);
 		display: contents;
 	}
 
@@ -24,16 +28,21 @@
 		gap: 1rem;
 	}
 
+	.align-items-baseline.d-flex.flex-wrap.mr-2 {
+		color: var(--color-neutral-10, #282934);
+		font-family: Source Sans 3;
+		font-size: 0.875rem;
+		font-style: normal;
+		font-weight: 600;
+		line-height: 1rem;
+	}
+
 	.bg-color-1 {
-		background-color: #F7F7F8;
+		background-color: var(--color-neutral-1, #F7F7F8);
 	}
 
 	.br-5 {
 		border-radius: 0.5rem;
-	}
-
-	.br-5.side-nav {
-		margin: 0.3rem 1rem;
 	}
 
 	.br-13.dropdown-menu {
@@ -48,7 +57,7 @@
 	}
 
 	.callout-title {
-		color: var(--Neutral-Neutral-10, #272833);
+		color: var(--color-neutral-10, #282934);
 		font-family: 'Source Sans Pro', sans-serif;
 		font-size: 1.5rem;
 		font-style: normal;
@@ -57,13 +66,13 @@
 	}
 
 	.current-level {
-		color: #004AD7 !important;
-		background-color: #E6EDFB;
+		color: var(--color-action-primary-active, #004AD7) !important;
+		background-color: var(--color-action-primary-active-20, #E6EDFB);
 	}
 
 	.current-level:hover a {
-		background-color: #EDF3FE !important;
-		color: ##004AD7 !important;
+		background-color: var(--color-action-primary-hover-10, #EDF3FE) !important;
+		color: var(--color-brand-primary-darken-2, #004AD7) !important;
 	}
 
 	.d-flex>.lexicon-icon-angle-left {
@@ -73,9 +82,39 @@
 		width: 0.6rem;
 	}
 
+	.doc-nav {
+		overflow-x: hidden !important;
+	}
+
+	.doc-nav::-webkit-scrollbar {
+		background: transparent;
+		width: 18px;
+	}
+
+	.doc-nav::-webkit-scrollbar-thumb {
+		background: var(--color-neutral-4, #B1B2B9);
+		border: 5px solid var(--color-neutral-1, #F7F7F8);
+		border-radius: 12px;
+		height: 20px;
+	}
+
+	.doc-nav::-webkit-scrollbar-thumb:hover {
+		background: var(--color-neutral-4, #B1B2B9);
+	}
+
+	.doc-nav::-webkit-scrollbar-track-piece:end {
+		background: transparent;
+		margin-bottom: 10px;
+	}
+
+	.doc-nav::-webkit-scrollbar-track-piece:start {
+		background: transparent;
+		margin-top: 10px;
+	}
+
 	.doc-nav>.align-items-center {
 		border-bottom: solid;
-		border-color: #EAECEE;
+		border-color: var(--color-action-neutral-hover-10, #EAECEE);
 	}
 
 	.dropdown-item {
@@ -87,7 +126,7 @@
 	}
 
 	.dropdown-item:hover {
-		background-color: #EDF3FE;
+		background-color: var(--color-action-primary-hover-10, #EDF3FE);
 	}
 
 	.dropdown-menu .row {
@@ -95,24 +134,24 @@
 	}
 
 	.reference:hover {
-		color: #0053F0 !important;
+		color: var(--color-brand-primary-darken-1, #0053F0) !important;
 	}
 
-	.rounded-10{
+	.rounded-10 {
 	  border-radius: 10px;
 	}
 
 	.section-card:hover {
-		background-color: #EDF3FE !important;
-		border-bottom: 1px solid #0053F0 !important;
-		border-color: #0053F0 !important;
+		background-color: var(--color-action-primary-hover-10, #EDF3FE) !important;
+		border-bottom: 1px solid var(--color-brand-primary-darken-1, #0053F0) !important;
+		border-color: var(--color-brand-primary-darken-1, #0053F0) !important;
 		box-shadow: none !important;
 		margin-bottom: 0px !important;
 		transform: none !important;
 	}
 
 	.show #dropdown-products {
-		background-color: #EDF3FE !important;
+		background-color: var(--color-action-primary-hover-10, #EDF3FE) !important;
 	}
 
 	.show #dropdown-products svg {
@@ -121,21 +160,21 @@
 	}
 
 	.side-nav>.other-level{
-		color: #282934 !important;
+		color: var(--color-neutral-10, #282934) !important;
 		font-size: 1rem;
 		font-weight:600;
 		width: 100%;
 	}
 
 	.side-nav:hover {
-		background-color: #EDF3FE !important;
-		color: #0053F0 !important;
+		background-color: var(--color-action-primary-hover-10, #EDF3FE) !important;
+		color: var(--color-brand-primary-darken-1, #0053F0) !important;
 	}
 
 	.tag-container {
 		border-radius: 1.5rem;
-		border: 1px solid #0B5FFF;
-		background: var(--action-primary-inverted, #FFF);
+		border: 1px solid var(--color-brand-primary, #0B5FFF);
+		background: var(--color-neutral-0, #FFFFFF);
 		padding: 0.25rem 0.75rem;
 		gap: 0.25rem;
 	}
@@ -150,8 +189,13 @@
 		background-position: right 0.8rem top $spacing-md;
 		background-repeat: no-repeat;
 		background-size: 0.65rem;
-		color: $color-neutral-6;
 		color: var(--color-action-primary-hover) !important;
+	}
+
+	@media only screen and (max-width:1100px) {
+		.documentations .doc-nav {
+			padding: 0;
+		}
 	}
 
 	@media only screen and (min-width: 768px) and (max-width: 1000px) {
@@ -160,33 +204,45 @@
 		}
 	}
 
+	@media only screen and (min-width:768px) {
+		.doc-nav {
+			max-height: 66vh;
+		}
+	}
+
+	@media only screen and (min-width:1100px) {
+		.br-5 .side-nav {
+			margin: 0.3rem 1rem;
+		}
+	}
+
 	#backLink {
 		border-left-width: 0px;
-		color: #282934;
+		color: var(--color-neutral-10, #282934);
 	}
 
 	#backLink:hover {
-		background-color: #EAECEE;
+		background-color: var(--color-action-neutral-hover-10, #EAECEE);
 		transition: box-shadow 0.1s linear, background-color 0.1s linear;
 	}
 
 	#dropdown-products:hover {
-		background-color: #EDF3FE !important;
+		background-color: var(--color-action-primary-hover-10, #EDF3FE) !important;
 	}
 
 	#dropdown-products:hover svg {
-		color: var(--color-action-primary-hover);
+		color: var(--color-action-primary-hover, #0053F0);
 	}
 
 	#parentTitle {
-		color: #282934;
+		color: var(--color-neutral-10, #282934);
 		font-weight: 700;
 	}
 
 	#productIcon {
-		background-color: #E7EFFF;
+		background-color: var(--color-brand-primary-lighten-5, #E7EFFF);
 		border: 1px solid;
-		border-color: #FFFFFF;
+		border-color: var(--color-neutral-0, #FFFFFF);
 		height: 3.25rem;
 		width: 3.25rem;
 	}
@@ -200,7 +256,7 @@
 
 	#productsIcon {
 		border: 1px solid;
-		border-color: #F7F7F8;
+		border-color: var(--color-neutral-1, #F7F7F8);
 		height: 2.25rem;
 		width: 2.25rem;
 	}
@@ -213,7 +269,7 @@
 	}
 
 	#send-feedback {
-		color: #0B5FFF;
+		color: var(--color-brand-primary, #0B5FFF);
 		font-family: 'Source Sans Pro', sans-serif;
 		font-size: 1rem;
 		font-style: normal;
@@ -224,7 +280,7 @@
 	}
 
 	a.other-level:hover {
-		color: #0053F0 !important;
+		color: var(--color-action-primary-hover, #0053F0) !important;
 	}
 </style>
 
@@ -266,7 +322,8 @@
 </#list>
 
 <#assign
-	groupFriendlyURL = "/web" + themeDisplay.getScopeGroup().getFriendlyURL()
+	groupFriendlyURL = themeDisplay.getScopeGroup().getFriendlyURL()
+	groupPathFriendlyURLPublic = themeDisplay.getPathFriendlyURLPublic() + groupFriendlyURL
 	isLandingPage = false
 	topLevelArticle = true
 />
@@ -285,34 +342,8 @@
 
 <div class="container-fluid documentations main-content" role="main">
 	<div class="row">
-		<div class="col-12 col-md-2 mobile-nav-hide mt-5">
+		<div class="col-12 col-md-2 mobile-nav-hide mt-3">
 			<div class="doc-nav-wrapper-inner">
-				<div
-					class="d-md-none mobile-doc-nav-toggler"
-					id="mobileDocNavToggler"
-				>
-					${languageUtil.get(locale, "documentation-menu", "Documentation Menu")}
-					<button
-						aria-label="Expand Documentation Menu"
-						class="btn expand-btn"
-						onclick="javascript:;"
-						title="Expand Documentation Menu"
-						type="button"
-					>
-						<@clay["icon"] symbol="angle-down-small" />
-					</button>
-
-					<button
-						aria-label="Close Documentation Menu"
-						class="btn collapse-btn"
-						onclick="javascript:;"
-						title="Close Documentation Menu"
-						type="button"
-					>
-						<@clay["icon"] symbol="angle-up-small" />
-					</button>
-				</div>
-
 				<#if !topLevelArticle>
 					<#assign
 						productTitle = breadcrumbLinksJSONArray.getJSONObject(breadcrumbLinksJSONArray.length()-1).title
@@ -328,27 +359,27 @@
 							"analytics-cloud": {
 								"title": "Analytics Cloud",
 								"url": "analytics-cloud",
-								"image": "/documents/d/guest/analytics_c-svg"
+								"image": "/documents/d${groupFriendlyURL}/analytics_c-svg"
 							},
 							"commerce": {
 								"title": "Commerce",
 								"url": "commerce",
-								"image": "/documents/d/guest/commerce_product-svg"
+								"image": "/documents/d${groupFriendlyURL}/commerce_product-svg"
 							},
 							"dxp": {
 								"title": "DXP / Portal",
 								"url": "dxp",
-								"image": "/documents/d/guest/dxp_p-svg"
+								"image": "/documents/d${groupFriendlyURL}/dxp_p-svg"
 							},
 							"liferay-cloud": {
 								"title": "DXP Cloud",
 								"url": "liferay-cloud",
-								"image": "/documents/d/guest/dxp_c-svg"
+								"image": "/documents/d${groupFriendlyURL}/dxp_c-svg"
 							},
 							"reference": {
 								"title": "Reference",
 								"url": "reference",
-								"image": "/documents/d/guest/reference-svg"
+								"image": "/documents/d${groupFriendlyURL}/reference-svg"
 							}
 						}
 
@@ -405,7 +436,7 @@
 								<#list navigationMenuItems as key, value>
 									<a
 										class="adt-submenu-item-link color-black text-decoration-none"
-										href="/w/${navigationMenuItems[key].url}/index"
+										href="${groupPathFriendlyURLPublic}/w/${navigationMenuItems[key].url}/index"
 										tabindex="4"
 									>
 										<div class="align-items-center br-13 br-5 col-sm-12 d-flex dropdown-item justify-content-between ml-0 mr-0">
@@ -517,7 +548,7 @@
 						role="navigation"
 					>
 						<li>
-							<a href="${groupFriendlyURL}"><@clay["icon"] symbol="home-full" /></a>
+							<a href="${groupPathFriendlyURLPublic}"><@clay["icon"] symbol="home-full" /></a>
 						</li>
 
 						<#if !topLevelArticle>
@@ -549,7 +580,7 @@
 				<#list taxonomyVocabularies as vocabulary>
 					<div class="align-items-baseline col-10 d-flex mt-2 pl-0">
 						<div class="align-items-baseline d-flex flex-wrap mr-2">
-							${vocabulary}
+							${vocabulary}:
 						</div>
 
 						<div class="d-flex font-weight-bold mr-2 tags-container">

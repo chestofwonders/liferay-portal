@@ -114,33 +114,33 @@ export function SelectLayoutTree({
 		}
 	};
 
-	const onClick = (event, item, selection, expand) => {
+	const onClick = (event, item, selection, expand, load) => {
 		event.preventDefault();
 
-		if (item.disabled) {
-			expand.toggle(item.id);
-
-			return;
-		}
-
-		if (multiSelection) {
-			handleMultipleSelectionChange(item, selection, event.shiftKey);
-		}
-		else {
-			handleSingleSelection(item, selection);
-		}
-	};
-
-	const onKeyDown = (event, item, selection) => {
-		if (event.key === ' ' || event.key === 'Enter') {
-			event.stopPropagation();
-
+		if (!item.disabled) {
 			if (multiSelection) {
 				handleMultipleSelectionChange(item, selection, event.shiftKey);
 			}
 			else {
 				handleSingleSelection(item, selection);
 			}
+		}
+
+		if (item.hasChildren) {
+			if (!item.children) {
+				load.loadMore(item.id, item).then(() => expand.toggle(item.id));
+			}
+			else {
+				expand.toggle(item.id);
+			}
+		}
+	};
+
+	const onKeyDown = (event, item, selection, expand, load) => {
+		if (event.key === ' ' || event.key === 'Enter') {
+			event.stopPropagation();
+
+			onClick(event, item, selection, expand, load);
 		}
 	};
 
@@ -252,10 +252,22 @@ export function SelectLayoutTree({
 							<ClayTreeView.ItemStack
 								active={false}
 								onClick={(event) =>
-									onClick(event, item, selection, expand)
+									onClick(
+										event,
+										item,
+										selection,
+										expand,
+										load
+									)
 								}
 								onKeyDown={(event) =>
-									onKeyDown(event, item, selection)
+									onKeyDown(
+										event,
+										item,
+										selection,
+										expand,
+										load
+									)
 								}
 							>
 								{multiSelection && !item.disabled && (
@@ -307,14 +319,27 @@ export function SelectLayoutTree({
 							<ClayTreeView.Group items={item.children}>
 								{(item) => (
 									<ClayTreeView.Item
-										disabled={item.disabled}
+										disabled={
+											item.disabled && !item.hasChildren
+										}
 										expandable={item.hasChildren}
-										expanderDisabled={false}
 										onClick={(event) =>
-											onClick(event, item, selection)
+											onClick(
+												event,
+												item,
+												selection,
+												expand,
+												load
+											)
 										}
 										onKeyDown={(event) =>
-											onKeyDown(event, item, selection)
+											onKeyDown(
+												event,
+												item,
+												selection,
+												expand,
+												load
+											)
 										}
 									>
 										{multiSelection && !item.disabled && (

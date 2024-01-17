@@ -822,6 +822,7 @@ public class ObjectDefinitionLocalServiceImpl
 		return false;
 	}
 
+	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public ObjectDefinition publishCustomObjectDefinition(
 			long userId, long objectDefinitionId)
@@ -859,6 +860,7 @@ public class ObjectDefinitionLocalServiceImpl
 		return getObjectDefinition(objectDefinitionId);
 	}
 
+	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public ObjectDefinition publishSystemObjectDefinition(
 			long userId, long objectDefinitionId)
@@ -1545,16 +1547,6 @@ public class ObjectDefinitionLocalServiceImpl
 			null);
 	}
 
-	private void _createIndexMetadata(
-			String dbTableName, boolean unique, String... dbColumnNames)
-		throws PortalException {
-
-		ObjectDBManagerUtil.createIndexMetadata(
-			_currentConnection.getConnection(
-				objectDefinitionPersistence.getDataSource()),
-			dbTableName, unique, dbColumnNames);
-	}
-
 	private void _createLocalizationTable(ObjectDefinition objectDefinition) {
 		DynamicObjectDefinitionLocalizationTable
 			dynamicObjectDefinitionLocalizedTable =
@@ -1583,33 +1575,17 @@ public class ObjectDefinitionLocalServiceImpl
 		runSQL(dynamicObjectDefinitionTable.getCreateTableSQL());
 
 		for (ObjectField objectField : objectFields) {
-			boolean indexable = false;
-			boolean unique = false;
-
-			if (StringUtil.equals(
+			if (!StringUtil.equals(
 					objectField.getBusinessType(),
 					ObjectFieldConstants.BUSINESS_TYPE_RELATIONSHIP)) {
 
-				indexable = true;
-			}
-			else if (objectField.hasUniqueValues()) {
-				indexable = true;
-				unique = true;
-			}
-
-			if (!indexable) {
 				continue;
 			}
 
-			if (objectField.isLocalized()) {
-				_createIndexMetadata(
-					objectDefinition.getLocalizationDBTableName(), unique,
-					objectField.getDBColumnName(), "languageId");
-			}
-			else {
-				_createIndexMetadata(
-					dbTableName, unique, objectField.getDBColumnName());
-			}
+			ObjectDBManagerUtil.createIndexMetadata(
+				_currentConnection.getConnection(
+					objectDefinitionPersistence.getDataSource()),
+				dbTableName, false, objectField.getDBColumnName());
 		}
 	}
 
@@ -1675,8 +1651,7 @@ public class ObjectDefinitionLocalServiceImpl
 
 		if (objectFolderId == 0) {
 			ObjectFolder objectFolder =
-				_objectFolderLocalService.getUncategorizedObjectFolder(
-					companyId);
+				_objectFolderLocalService.getDefaultObjectFolder(companyId);
 
 			return objectFolder.getObjectFolderId();
 		}

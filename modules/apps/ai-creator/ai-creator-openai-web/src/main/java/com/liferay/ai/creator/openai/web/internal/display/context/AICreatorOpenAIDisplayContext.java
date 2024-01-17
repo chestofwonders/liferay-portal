@@ -9,6 +9,7 @@ import com.liferay.ai.creator.openai.web.internal.constants.AICreatorOpenAIPortl
 import com.liferay.learn.LearnMessageUtil;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactory;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil;
+import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.portlet.url.builder.ResourceURLBuilder;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -21,6 +22,8 @@ import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Lourdes Fernández Besada
+ * @author Roberto Díaz
+ * @author Ambrín Chaudhary
  */
 public class AICreatorOpenAIDisplayContext {
 
@@ -54,6 +57,9 @@ public class AICreatorOpenAIDisplayContext {
 
 	public Map<String, Object> getGenerationsProps() {
 		return HashMapBuilder.<String, Object>put(
+			"eventName",
+			ParamUtil.getString(_httpServletRequest, "selectEventName")
+		).put(
 			"getGenerationsURL",
 			() -> {
 				RequestBackedPortletURLFactory requestBackedPortletURLFactory =
@@ -71,6 +77,29 @@ public class AICreatorOpenAIDisplayContext {
 		).put(
 			"learnResources",
 			LearnMessageUtil.getReactDataJSONObject("ai-creator-openai-web")
+		).put(
+			"uploadGenerationsURL",
+			() -> {
+				RequestBackedPortletURLFactory requestBackedPortletURLFactory =
+					RequestBackedPortletURLFactoryUtil.create(
+						_httpServletRequest);
+
+				return PortletURLBuilder.create(
+					requestBackedPortletURLFactory.createActionURL(
+						AICreatorOpenAIPortletKeys.AI_CREATOR_OPENAI)
+				).setActionName(
+					"/ai_creator_openai/upload_generations"
+				).setParameter(
+					"fileEntryTypeId",
+					ParamUtil.getLong(_httpServletRequest, "fileEntryTypeId")
+				).setParameter(
+					"folderId",
+					ParamUtil.getLong(_httpServletRequest, "folderId")
+				).setParameter(
+					"repositoryId",
+					ParamUtil.getLong(_httpServletRequest, "repositoryId")
+				).buildString();
+			}
 		).build();
 	}
 

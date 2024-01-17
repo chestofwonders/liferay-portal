@@ -1369,13 +1369,9 @@ definition {
 
 		Masterclass.goBackUsingBrowserHistory();
 
-		// Workaround LPS-202333
-
-		//AssertTextEquals(
-		//key_publicationName = "Publication Name",
-		//locator1 = "Publications#PUBLISHED_STATUS",
-		//value1 = "Published");
-
+		AssertElementPresent(
+			key_tab = "Ongoing",
+			locator1 = "NavTab#ACTIVE_TAB_LINK");
 	}
 
 	@priority = 4
@@ -2216,11 +2212,9 @@ definition {
 
 		PublicationsNavigator.gotoNavbar(navBarTitle = "Parents");
 
-		// Workaround LPS-202811
-
-		//PublicationsChangeDetails.viewChangeDetailsInParents(
-		//changeParentsCategory = "Dynamic Data Mapping Template",
-		//changeParentsTitle = "Basic Web Content");
+		PublicationsChangeDetails.viewChangeDetailsInParents(
+			changeParentsCategory = "Dynamic Data Mapping Template",
+			changeParentsTitle = "Basic Web Content");
 
 		PublicationsNavigator.gotoNavbar(navBarTitle = "Children");
 

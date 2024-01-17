@@ -8,19 +8,19 @@
 		border: none;
 	}
 
-	.dropdown-full .adt-nav-item:focus {
-		border-bottom: 1px solid white;
-		border-radius: 2px;
-	}
-
-	.dropdown-full .adt-nav-item:focus .adt-nav-text .lexicon-icon {
-		transform: rotate(180deg);
-	}
-
 	.dropdown-full .adt-nav-item .adt-nav-text {
 		align-items: center;
 		display: flex;
 		justify-content: flex-start;
+	}
+
+	.dropdown-full.show .adt-nav-item {
+		border-bottom: 1px solid white;
+		border-radius: 2px;
+	}
+
+	.dropdown-full.show .adt-nav-item .adt-nav-text .lexicon-icon {
+		transform: rotate(180deg);
 	}
 
 	.dropdown-menu {
@@ -45,11 +45,11 @@
 	}
 
 	.dropdown-menu .row .dropdown-item-div .dropdown-item:hover {
-		background: var(--action-primary-hover-7, #EDF3FE);
+		background: var(--color-action-primary-hover-10, #EDF3FE);
 	}
 
 	.dropdown-menu .row .dropdown-item-div .dropdown-item:hover .title {
-		color: var(--action-primary-hover, #0053F0);
+		color: var(--color-brand-primary-darken-1, #0053F0);
 	}
 
 	.dropdown-menu .row .dropdown-item-div .dropdown-item .icon {
@@ -58,7 +58,7 @@
 	}
 
 	.dropdown-menu .row .dropdown-item-div .dropdown-item .subtitle {
-		color: var(--neutral-08, #54555F);
+		color: var(--color-neutral-8, #54555F);
 		font-family: 'Source Sans Pro', sans-serif;
 		font-size: 13px;
 		font-style: normal;
@@ -67,7 +67,7 @@
 	}
 
 	.dropdown-menu .row .dropdown-item-div .dropdown-item .title {
-		color: var(--neutral-10, #282934);
+		color: var(--color-neutral-10, #282934);
 		font-family: 'Source Sans Pro', sans-serif;
 		font-size: 18px;
 		font-style: normal;
@@ -117,6 +117,8 @@
 </#list>
 
 <div class="adt-navigation">
+	<#assign groupFriendlyURL = portalUtil.getGroupFriendlyURL(themeDisplay.getLayoutSet(), themeDisplay, true, false) />
+
 	<#list entries as navPrimaryItem>
 		<#if navPrimaryItem.hasChildren()>
 			<#assign
@@ -164,7 +166,7 @@
 								<#if taxonomyVocabulary?has_content && stringUtil.equals(navItemType, "CAPABILITIES")>
 									<#assign capabilityFields = taxonomyVocabulary[navSecondaryItem.getName()] />
 
-									<a class="d-flex dropdown-item p-3 text-decoration-none" href="/search?category=${capabilityFields['id']}" tabindex="4">
+									<a class="d-flex dropdown-item p-3 text-decoration-none" href="${groupFriendlyURL}/search?category=${capabilityFields['id']}" tabindex="4">
 										<img
 											alt="${navSecondaryItem.getName()} icon"
 											class="icon mr-3"
@@ -190,7 +192,7 @@
 										navItemIcon = customFields["Icon URL"]!""
 									/>
 
-									<a class="d-flex dropdown-item maxh-90 p-3 text-decoration-none" href="${navSecondaryItem.getRegularURL()}" tabindex="4">
+									<a class="d-flex dropdown-item maxh-90 p-3 text-decoration-none" href="${groupFriendlyURL}${navSecondaryItem.getRegularURL()}" tabindex="4">
 										<img
 											alt="${navSecondaryItem.getName()} icon"
 											class="icon mr-3"
@@ -214,7 +216,7 @@
 				</div>
 			</div>
 		<#else>
-			<a class="adt-nav-item w-100" href="${navPrimaryItem.getRegularURL()}">
+			<a class="adt-nav-item w-100" href="${groupFriendlyURL}${navPrimaryItem.getRegularURL()}">
 				<div class="adt-nav-text d-flex pr-3">
 					<span class="adt-nav-title text-truncate">
 			  			${navPrimaryItem.getName()}

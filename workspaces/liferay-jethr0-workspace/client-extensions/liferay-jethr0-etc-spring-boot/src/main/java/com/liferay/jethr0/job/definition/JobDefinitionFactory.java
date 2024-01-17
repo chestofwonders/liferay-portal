@@ -101,6 +101,9 @@ public class JobDefinitionFactory {
 		else if (type == JobEntity.Type.PORTAL_BUILD_OPTIMIZATION) {
 			return new PortalBuildOptimizationJobDefinition(type);
 		}
+		else if (type == JobEntity.Type.PORTAL_EVALUATE_PULL_REQUEST) {
+			return new PortalEvaluatePullRequestJobDefinition(type);
+		}
 		else if (type == JobEntity.Type.PORTAL_FIXPACK_RELEASE) {
 			return new PortalFixpackReleaseJobDefinition(type);
 		}

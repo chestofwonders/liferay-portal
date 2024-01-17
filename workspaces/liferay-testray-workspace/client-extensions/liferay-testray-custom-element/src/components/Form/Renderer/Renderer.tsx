@@ -27,6 +27,7 @@ export type RendererFields = {
 	label: string;
 	name: string;
 	operator?: Operators;
+	optionalOperator?: Operators;
 	options?: RenderedFieldOptions;
 	placeholder?: string;
 	removeQuoteMark?: boolean;
@@ -139,6 +140,45 @@ const Renderer: React.FC<RendererProps> = ({
 
 				const currentValue = form[name];
 
+				const isFieldDisabled = () => {
+					const isValueIncluded = currentValue.includes(
+						i18n.sub('no-x', field.label)
+					);
+
+					return disabled ?? isValueIncluded;
+				};
+
+				const getFieldValue = () => {
+					return currentValue === i18n.sub('no-x', field.label)
+						? ''
+						: currentValue;
+				};
+
+				const handleFieldChange = (
+					event: React.ChangeEvent<HTMLInputElement>
+				) => {
+					const isChecked = event.target.checked;
+
+					const value = isChecked
+						? i18n.sub('no-x', field.label)
+						: currentValue
+								.replace(i18n.sub('no-x', field.label), '')
+								.trim();
+
+					onChange({
+						target: {name, value},
+					});
+
+					setFieldDisabled(
+						isChecked
+							? {
+									...fieldDisabled,
+									[name]: !(fieldDisabled as any)[name],
+							  }
+							: false
+					);
+				};
+
 				const getOptions = () => {
 					const _options =
 						fieldOptions[name] ||
@@ -158,28 +198,20 @@ const Renderer: React.FC<RendererProps> = ({
 					return (
 						<div key={index}>
 							<Form.Input
-								disabled={
-									(disabled ?? (fieldDisabled as any))[name]
-								}
+								disabled={isFieldDisabled()}
 								onChange={onChange}
-								value={currentValue}
+								value={getFieldValue()}
 								{...(field as any)}
 							/>
 
 							{type === 'textarea' && (
 								<Form.Checkbox
+									checked={currentValue.includes(
+										i18n.sub('no-x', field.label)
+									)}
 									disabled={disabled}
 									label={i18n.sub('no-x', field.label)}
-									onClick={() => {
-										onChange({target: {name, value: null}});
-
-										setFieldDisabled({
-											...fieldDisabled,
-											[name]: !(fieldDisabled as any)[
-												name
-											],
-										});
-									}}
+									onChange={handleFieldChange}
 								/>
 							)}
 						</div>
@@ -195,7 +227,7 @@ const Renderer: React.FC<RendererProps> = ({
 							name={name}
 							onChange={onChange}
 							options={getOptions()}
-							value={currentValue}
+							value={currentValue[0]?.value || currentValue}
 						/>
 					);
 				}

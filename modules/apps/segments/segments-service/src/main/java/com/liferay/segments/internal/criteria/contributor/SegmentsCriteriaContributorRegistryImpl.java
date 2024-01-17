@@ -8,8 +8,6 @@ package com.liferay.segments.internal.criteria.contributor;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerList;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerListFactory;
 import com.liferay.osgi.service.tracker.collections.map.PropertyServiceReferenceComparator;
-import com.liferay.portal.kernel.util.ListUtil;
-import com.liferay.segments.criteria.Criteria;
 import com.liferay.segments.criteria.contributor.SegmentsCriteriaContributor;
 import com.liferay.segments.criteria.contributor.SegmentsCriteriaContributorRegistry;
 
@@ -29,20 +27,8 @@ public class SegmentsCriteriaContributorRegistryImpl
 	implements SegmentsCriteriaContributorRegistry {
 
 	@Override
-	public List<SegmentsCriteriaContributor> getSegmentsCriteriaContributors(
-		String className) {
-
+	public List<SegmentsCriteriaContributor> getSegmentsCriteriaContributors() {
 		return _serviceTrackerList.toList();
-	}
-
-	@Override
-	public List<SegmentsCriteriaContributor> getSegmentsCriteriaContributors(
-		String className, Criteria.Type type) {
-
-		return ListUtil.filter(
-			getSegmentsCriteriaContributors(className),
-			segmentsCriteriaContributor -> type.equals(
-				segmentsCriteriaContributor.getType()));
 	}
 
 	@Activate

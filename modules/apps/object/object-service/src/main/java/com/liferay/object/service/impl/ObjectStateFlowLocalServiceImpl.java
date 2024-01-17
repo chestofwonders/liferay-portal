@@ -21,8 +21,11 @@ import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.util.MapUtil;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -191,6 +194,8 @@ public class ObjectStateFlowLocalServiceImpl
 			long userId, long objectStateFlowId, List<ObjectState> objectStates)
 		throws PortalException {
 
+		Map<Long, Long> listTypeEntryIds = new HashMap<>();
+
 		List<ObjectState> sourceObjectStates = TransformUtil.transform(
 			objectStates,
 			objectState -> {
@@ -202,6 +207,12 @@ public class ObjectStateFlowLocalServiceImpl
 				sourceObjectState.setObjectStateTransitions(
 					objectState.getObjectStateTransitions());
 
+				if (objectState.getObjectStateId() != 0) {
+					listTypeEntryIds.put(
+						objectState.getObjectStateId(),
+						objectState.getListTypeEntryId());
+				}
+
 				return sourceObjectState;
 			});
 
@@ -211,8 +222,11 @@ public class ObjectStateFlowLocalServiceImpl
 
 				ObjectState targetObjectState =
 					_objectStateLocalService.getObjectStateFlowObjectState(
-						objectStateTransition.
-							getTargetObjectStateListTypeEntryId(),
+						MapUtil.getLong(
+							listTypeEntryIds,
+							objectStateTransition.getTargetObjectStateId(),
+							objectStateTransition.
+								getTargetObjectStateListTypeEntryId()),
 						objectStateFlowId);
 
 				_objectStateTransitionLocalService.addObjectStateTransition(

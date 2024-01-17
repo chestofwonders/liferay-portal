@@ -719,13 +719,18 @@ public class ObjectEntryServiceImpl extends ObjectEntryServiceBaseImpl {
 				_sendUserNotificationEvents(objectDefinition);
 
 				throw new ObjectEntryCountException(
-					Collections.singletonList(objectDefinition.getLabel()),
+					Collections.singletonList(
+						objectDefinition.getLabel(
+							objectDefinition.getDefaultLanguageId())),
 					StringBundler.concat(
 						"The limit of guest entries for ",
-						objectDefinition.getLabel(),
+						objectDefinition.getLabel(
+							objectDefinition.getDefaultLanguageId()),
 						" has been reached and will no longer be accepted"),
 					"the-limit-of-guest-entries-for-object-definition-has-" +
-						"been-reached-and-will-no-longer-be-accepted");
+						"been-reached-and-will-no-longer-be-accepted",
+					objectDefinition.getLabel(
+						objectDefinition.getDefaultLanguageId()));
 			}
 		}
 		else {

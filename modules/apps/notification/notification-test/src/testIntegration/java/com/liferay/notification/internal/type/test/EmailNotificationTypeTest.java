@@ -29,11 +29,13 @@ import com.liferay.object.rest.dto.v1_0.ObjectEntry;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Repository;
 import com.liferay.portal.kernel.portletfilerepository.PortletFileRepository;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.Folder;
+import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -89,7 +91,7 @@ public class EmailNotificationTypeTest extends BaseNotificationTypeTest {
 	public static void setUpClass() throws Exception {
 		BaseNotificationTypeTest.setUpClass();
 
-		_freeMarkTermValues = LinkedHashMapBuilder.<String, Object>put(
+		_freeMarkerTermValues = LinkedHashMapBuilder.<String, Object>put(
 			"${ObjectField_booleanObjectField.getData()}",
 			childObjectEntryValues.get("booleanObjectField")
 		).put(
@@ -124,16 +126,16 @@ public class EmailNotificationTypeTest extends BaseNotificationTypeTest {
 			"${ObjectField_integerObjectField.getData()}",
 			childObjectEntryValues.get("integerObjectField")
 		).put(
-			"${ObjectField_picklistObjectField.getData()}",
-			() -> {
-				ListEntry listEntry = (ListEntry)childObjectEntryValues.get(
-					"picklistObjectField");
-
-				return listEntry.getName();
-			}
-		).put(
 			"${ObjectField_textObjectField.getData()}",
 			childObjectEntryValues.get("textObjectField")
+		).put(
+			"${portalURL}",
+			() -> {
+				Company company = _companyLocalService.getCompany(
+					TestPropsValues.getCompanyId());
+
+				return company.getPortalURL(TestPropsValues.getGroupId());
+			}
 		).build();
 	}
 
@@ -144,7 +146,7 @@ public class EmailNotificationTypeTest extends BaseNotificationTypeTest {
 				HashMapBuilder.put(
 					LanguageUtil.getLanguageId(LocaleUtil.US),
 					StringUtil.merge(
-						_freeMarkTermValues.keySet(), StringPool.COMMA)
+						_freeMarkerTermValues.keySet(), StringPool.COMMA)
 				).build()),
 			null, "Body", LanguageUtil.getLanguageId(LocaleUtil.US));
 
@@ -154,10 +156,7 @@ public class EmailNotificationTypeTest extends BaseNotificationTypeTest {
 				body, NotificationTemplateConstants.EDITOR_TYPE_FREEMARKER,
 				false,
 				Collections.singletonMap(
-					LocaleUtil.US,
-					StringBundler.concat(
-						user1.getEmailAddress(), StringPool.COMMA,
-						user2.getEmailAddress()))));
+					LocaleUtil.US, user1.getEmailAddress())));
 
 		List<NotificationQueueEntry> notificationQueueEntries =
 			notificationQueueEntryLocalService.getNotificationEntries(
@@ -168,11 +167,51 @@ public class EmailNotificationTypeTest extends BaseNotificationTypeTest {
 			notificationQueueEntries.toString(), 1,
 			notificationQueueEntries.size());
 
-		NotificationQueueEntry notificationQueueEntry =
-			notificationQueueEntries.get(0);
+		notificationQueueEntry = notificationQueueEntries.get(0);
 
 		assertTermValues(
-			new ArrayList<>(_freeMarkTermValues.values()),
+			new ArrayList<>(_freeMarkerTermValues.values()),
+			Arrays.asList(
+				StringUtil.split(
+					notificationQueueEntry.getBody(), StringPool.COMMA)));
+	}
+
+	@Test
+	public void testFreeMarkerNotificationPickListObjectFieldTerm()
+		throws Exception {
+
+		String body = LocalizationUtil.updateLocalization(
+			LocalizedMapUtil.getLocalizedMap(
+				HashMapBuilder.put(
+					LanguageUtil.getLanguageId(LocaleUtil.US),
+					"${ObjectField_picklistObjectField.getData()}"
+				).build()),
+			null, "Body", LanguageUtil.getLanguageId(LocaleUtil.US));
+
+		_executeNotificationObjectAction(
+			0,
+			_addNotificationTemplate(
+				body, NotificationTemplateConstants.EDITOR_TYPE_FREEMARKER,
+				false,
+				Collections.singletonMap(
+					LocaleUtil.US, user1.getEmailAddress())));
+
+		List<NotificationQueueEntry> notificationQueueEntries =
+			notificationQueueEntryLocalService.getNotificationEntries(
+				NotificationConstants.TYPE_EMAIL,
+				NotificationQueueEntryConstants.STATUS_SENT);
+
+		Assert.assertEquals(
+			notificationQueueEntries.toString(), 1,
+			notificationQueueEntries.size());
+
+		notificationQueueEntry = notificationQueueEntries.get(0);
+
+		ListEntry listEntry = (ListEntry)childObjectEntryValues.get(
+			"picklistObjectField");
+
+		assertTermValues(
+			Arrays.asList(listEntry.getName()),
 			Arrays.asList(
 				StringUtil.split(
 					notificationQueueEntry.getBody(), StringPool.COMMA)));
@@ -522,7 +561,10 @@ public class EmailNotificationTypeTest extends BaseNotificationTypeTest {
 		}
 	}
 
-	private static Map<String, Object> _freeMarkTermValues;
+	@Inject
+	private static CompanyLocalService _companyLocalService;
+
+	private static Map<String, Object> _freeMarkerTermValues;
 
 	@Inject
 	private GroupLocalService _groupLocalService;

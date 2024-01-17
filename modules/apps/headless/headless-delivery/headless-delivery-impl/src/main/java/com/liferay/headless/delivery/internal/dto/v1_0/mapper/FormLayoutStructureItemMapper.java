@@ -18,6 +18,7 @@ import com.liferay.headless.delivery.dto.v1_0.URLFormSubmissionResult;
 import com.liferay.headless.delivery.internal.dto.v1_0.mapper.util.FragmentMappedValueUtil;
 import com.liferay.headless.delivery.internal.dto.v1_0.mapper.util.LocalizedValueUtil;
 import com.liferay.headless.delivery.internal.dto.v1_0.mapper.util.StyledLayoutStructureItemUtil;
+import com.liferay.info.item.InfoItemServiceRegistry;
 import com.liferay.layout.converter.AlignConverter;
 import com.liferay.layout.converter.ContentDisplayConverter;
 import com.liferay.layout.converter.FlexWrapConverter;
@@ -32,18 +33,17 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Objects;
 
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-
 /**
  * @author Eudaldo Alonso
  */
-@Component(
-	property = "class.name=com.liferay.layout.util.structure.FormStyledLayoutStructureItem",
-	service = LayoutStructureItemMapper.class
-)
 public class FormLayoutStructureItemMapper
 	extends BaseStyledLayoutStructureItemMapper {
+
+	public FormLayoutStructureItemMapper(
+		InfoItemServiceRegistry infoItemServiceRegistry, Portal portal) {
+
+		super(infoItemServiceRegistry, portal);
+	}
 
 	@Override
 	public PageElement getPageElement(
@@ -111,7 +111,7 @@ public class FormLayoutStructureItemMapper
 
 			return new ClassTypeReference() {
 				{
-					className = _portal.getClassName(
+					className = portal.getClassName(
 						formStyledLayoutStructureItem.getClassNameId());
 					classType = formStyledLayoutStructureItem.getClassTypeId();
 				}
@@ -289,8 +289,5 @@ public class FormLayoutStructureItemMapper
 			}
 		};
 	}
-
-	@Reference
-	private Portal _portal;
 
 }

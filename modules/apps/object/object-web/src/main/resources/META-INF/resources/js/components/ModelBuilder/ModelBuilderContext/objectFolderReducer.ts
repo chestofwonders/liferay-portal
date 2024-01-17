@@ -82,6 +82,10 @@ export function ObjectFolderReducer(state: TState, action: TAction): TState {
 						});
 
 						newLeftSidebarObjectDefinitionItem = {
+							dbTableName: newObjectDefinition.dbTableName,
+							externalReferenceCode:
+								newObjectDefinition.externalReferenceCode,
+							hiddenObjectDefinitionNode: false,
 							id: newObjectDefinition.id,
 							kebabOptions,
 							label: getLocalizableLabel(
@@ -196,6 +200,7 @@ export function ObjectFolderReducer(state: TState, action: TAction): TState {
 				>[],
 				leftSidebarItems: newLeftSidebarItems,
 				objectFolders: updatedObjectFolders,
+				rightSidebarType: 'objectDefinitionDetails',
 				selectedObjectDefinitionNode: newObjectDefinitionNode,
 				selectedObjectFolder,
 				showChangesSaved: true,
@@ -633,6 +638,7 @@ export function ObjectFolderReducer(state: TState, action: TAction): TState {
 					...newObjectRelationshipEdges,
 				],
 				leftSidebarItems: newLeftSidebarItems,
+				objectFolders,
 				selectedObjectFolder: selectedObjectFolder as ObjectFolder,
 				selectedObjectRelationship: null,
 			};
@@ -708,6 +714,15 @@ export function ObjectFolderReducer(state: TState, action: TAction): TState {
 			return {
 				...state,
 				elements: newElements,
+			};
+		}
+
+		case TYPES.SET_NODE_HANDLE_CONNECTION: {
+			const {nodeHandleConnectable} = action.payload;
+
+			return {
+				...state,
+				nodeHandleConnectable,
 			};
 		}
 

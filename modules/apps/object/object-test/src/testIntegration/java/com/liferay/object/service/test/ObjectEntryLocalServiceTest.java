@@ -84,6 +84,7 @@ import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
@@ -98,6 +99,7 @@ import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.rule.SynchronousDestinationTestRule;
+import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -189,6 +191,7 @@ public class ObjectEntryLocalServiceTest {
 	@Before
 	public void setUp() throws Exception {
 		_irrelevantObjectDefinition = _publishCustomObjectDefinition(
+			false,
 			Arrays.asList(
 				ObjectFieldUtil.createObjectField(
 					ObjectFieldConstants.BUSINESS_TYPE_TEXT,
@@ -209,6 +212,7 @@ public class ObjectEntryLocalServiceTest {
 						"Multiple List Type Entry Key ", 6)));
 
 		_objectDefinition = _publishCustomObjectDefinition(
+			false,
 			Arrays.asList(
 				ObjectFieldUtil.createObjectField(
 					ObjectFieldConstants.BUSINESS_TYPE_LONG_INTEGER,
@@ -647,6 +651,127 @@ public class ObjectEntryLocalServiceTest {
 					"emailAddressRequired", "james@liferay.com"
 				).put(
 					"listTypeEntryKeyRequired", "listTypeEntryKey1"
+				).build()));
+
+		ObjectDefinition objectDefinition = _publishCustomObjectDefinition(
+			true,
+			Arrays.asList(
+				ObjectFieldUtil.createObjectField(
+					ObjectFieldConstants.BUSINESS_TYPE_TEXT,
+					ObjectFieldConstants.DB_TYPE_STRING, true, true, null,
+					RandomTestUtil.randomString(), "name",
+					Arrays.asList(
+						new ObjectFieldSettingBuilder(
+						).name(
+							ObjectFieldSettingConstants.NAME_UNIQUE_VALUES
+						).value(
+							Boolean.TRUE.toString()
+						).build()),
+					false)));
+
+		objectDefinition.setScope(ObjectDefinitionConstants.SCOPE_SITE);
+
+		objectDefinition = _objectDefinitionLocalService.updateObjectDefinition(
+			objectDefinition);
+
+		_addObjectEntry(
+			TestPropsValues.getGroupId(),
+			objectDefinition.getObjectDefinitionId(),
+			HashMapBuilder.<String, Serializable>put(
+				"name", "Peter"
+			).build());
+
+		long finalObjectDefinitionId = objectDefinition.getObjectDefinitionId();
+
+		AssertUtils.assertFailure(
+			ObjectEntryValuesException.UniqueValueConstraintViolation.class,
+			"Unique value constraint violation for " +
+				objectDefinition.getDBTableName() + ".name_ with value Peter",
+			() -> _addObjectEntry(
+				TestPropsValues.getGroupId(), finalObjectDefinitionId,
+				HashMapBuilder.<String, Serializable>put(
+					"name", "Peter"
+				).build()));
+
+		Group group = GroupTestUtil.addGroup();
+
+		_addObjectEntry(
+			group.getGroupId(), objectDefinition.getObjectDefinitionId(),
+			HashMapBuilder.<String, Serializable>put(
+				"name", "Peter"
+			).build());
+
+		AssertUtils.assertFailure(
+			ObjectEntryValuesException.UniqueValueConstraintViolation.class,
+			"Unique value constraint violation for " +
+				objectDefinition.getDBTableName() + ".name_ with value Peter",
+			() -> _addObjectEntry(
+				group.getGroupId(), finalObjectDefinitionId,
+				HashMapBuilder.<String, Serializable>put(
+					"name", "Peter"
+				).build()));
+
+		_addCustomObjectField(
+			new TextObjectFieldBuilder(
+			).labelMap(
+				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString())
+			).name(
+				"nameLocalized"
+			).objectDefinitionId(
+				objectDefinition.getObjectDefinitionId()
+			).localized(
+				true
+			).objectFieldSettings(
+				Arrays.asList(
+					new ObjectFieldSettingBuilder(
+					).name(
+						ObjectFieldSettingConstants.NAME_UNIQUE_VALUES
+					).value(
+						Boolean.TRUE.toString()
+					).build())
+			).build());
+
+		String value1 = "en_US " + RandomTestUtil.randomString();
+		String value2 = "pt_BR " + RandomTestUtil.randomString();
+
+		Map<String, Serializable> localizedValue =
+			HashMapBuilder.<String, Serializable>put(
+				"nameLocalized_i18n",
+				HashMapBuilder.put(
+					"en_US", value1
+				).put(
+					"pt_BR", value2
+				).build()
+			).build();
+
+		_addObjectEntry(
+			group.getGroupId(), objectDefinition.getObjectDefinitionId(),
+			localizedValue);
+
+		AssertUtils.assertFailure(
+			ObjectEntryValuesException.UniqueValueConstraintViolation.class,
+			StringBundler.concat(
+				"Unique value constraint violation for ",
+				objectDefinition.getLocalizationDBTableName(),
+				".nameLocalized_ with value ", value1),
+			() -> _addObjectEntry(
+				group.getGroupId(), finalObjectDefinitionId, localizedValue));
+
+		AssertUtils.assertFailure(
+			ObjectEntryValuesException.UniqueValueConstraintViolation.class,
+			StringBundler.concat(
+				"Unique value constraint violation for ",
+				objectDefinition.getLocalizationDBTableName(),
+				".nameLocalized_ with value ", value2),
+			() -> _addObjectEntry(
+				group.getGroupId(), finalObjectDefinitionId,
+				HashMapBuilder.<String, Serializable>put(
+					"nameLocalized_i18n",
+					HashMapBuilder.put(
+						"en_US", "en_US " + RandomTestUtil.randomString()
+					).put(
+						"pt_BR", value2
+					).build()
 				).build()));
 	}
 
@@ -2939,13 +3064,21 @@ public class ObjectEntryLocalServiceTest {
 			objectField.getObjectFieldSettings());
 	}
 
-	private ObjectEntry _addObjectEntry(Map<String, Serializable> values)
+	private ObjectEntry _addObjectEntry(
+			long groupId, long objectDefinitionId,
+			Map<String, Serializable> values)
 		throws Exception {
 
 		return _objectEntryLocalService.addObjectEntry(
-			TestPropsValues.getUserId(), 0,
-			_objectDefinition.getObjectDefinitionId(), values,
+			TestPropsValues.getUserId(), groupId, objectDefinitionId, values,
 			ServiceContextTestUtil.getServiceContext());
+	}
+
+	private ObjectEntry _addObjectEntry(Map<String, Serializable> values)
+		throws Exception {
+
+		return _addObjectEntry(
+			0, _objectDefinition.getObjectDefinitionId(), values);
 	}
 
 	private ObjectValidationRule _addObjectValidationRule(
@@ -3151,12 +3284,13 @@ public class ObjectEntryLocalServiceTest {
 	}
 
 	private ObjectDefinition _publishCustomObjectDefinition(
-			List<ObjectField> objectFields)
+			boolean enableLocalization, List<ObjectField> objectFields)
 		throws Exception {
 
 		ObjectDefinition objectDefinition =
 			ObjectDefinitionTestUtil.addCustomObjectDefinition(
-				false, _objectDefinitionLocalService, objectFields);
+				enableLocalization, _objectDefinitionLocalService,
+				objectFields);
 
 		return _objectDefinitionLocalService.publishCustomObjectDefinition(
 			TestPropsValues.getUserId(),
@@ -3263,6 +3397,7 @@ public class ObjectEntryLocalServiceTest {
 		throws Exception {
 
 		ObjectDefinition objectDefinition = _publishCustomObjectDefinition(
+			false,
 			Arrays.asList(
 				ObjectFieldUtil.createObjectField(
 					ObjectFieldConstants.BUSINESS_TYPE_TEXT,

@@ -365,6 +365,7 @@ module.exports = {
 		imports: {
 			'@liferay/accessibility-menu-web': [],
 			'@liferay/accessibility-settings-state-web': [],
+			'@liferay/address-web': [],
 			'@liferay/cookies-banner-web': [],
 			'@liferay/frontend-data-set-web': [],
 			'@liferay/frontend-js-dependencies-web': [
@@ -412,6 +413,20 @@ module.exports = {
 				'graphiql',
 				'graphiql/graphiql.css',
 			],
+			'@liferay/frontend-js-node-shims': [
+				'assert',
+				'buffer',
+				'domain',
+				'domain-browser',
+				'events',
+				'os',
+				'path',
+				'process',
+				'string_decoder',
+				'timers',
+				'url',
+				'util',
+			],
 			'@liferay/frontend-js-react-web': [
 				'classnames',
 				'formik',
@@ -422,6 +437,9 @@ module.exports = {
 				'react-dom',
 			],
 			'@liferay/frontend-js-state-web': [],
+			'@liferay/frontend-js-walkthrough-web': [],
+			'@liferay/layout-js-components-web': [],
+			'asset-taglib': [],
 			'frontend-js-components-web': [],
 			'frontend-js-web': [],
 			'frontend-taglib-clay': [
@@ -468,6 +486,8 @@ module.exports = {
 				'@clayui/tooltip',
 				'@clayui/upper-toolbar',
 			],
+			'item-selector-taglib': [],
+			'item-selector-web': [],
 		},
 	},
 	check: CHECK_AND_FIX_GLOBS,

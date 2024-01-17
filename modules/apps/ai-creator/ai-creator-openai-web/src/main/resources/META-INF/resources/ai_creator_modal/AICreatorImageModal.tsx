@@ -17,9 +17,11 @@ import {ImagesResult} from './ImagesResult';
 import {LoadingMessage} from './LoadingMessage';
 
 interface Props {
+	eventName?: string;
 	getGenerationsURL: string;
 	learnResources: AICreatorModalLearnResources;
 	portletNamespace: string;
+	uploadGenerationsURL: string;
 }
 
 type AICreatorModalLearnResources = {
@@ -39,9 +41,11 @@ type RequestStatus =
 	| {errorMessage: string; type: 'error'};
 
 export default function AICreatorImageModal({
+	eventName,
 	getGenerationsURL,
 	learnResources,
 	portletNamespace,
+	uploadGenerationsURL,
 }: Props) {
 	const closeModal = () => {
 		const opener = Liferay.Util.getOpener();
@@ -52,12 +56,39 @@ export default function AICreatorImageModal({
 	const [status, setStatus] = useState<RequestStatus>({type: 'idle'});
 	const [imagesURL, setImagesURL] = useState<string[] | null>(null);
 
-	const onAdd = () => {
-		if (imagesURL) {
-			const opener = Liferay.Util.getOpener();
+	const [selectedImages, setSelectedImages] = useState<string[]>([]);
 
-			opener.Liferay.fire('closeModal', {imagesURL});
+	const onAdd = () => {
+		if (selectedImages.length) {
+			Promise.all(
+				selectedImages.map((imageURL) => {
+					const formData = new FormData();
+					formData.append(`${portletNamespace}urlPath`, imageURL);
+
+					return fetch(uploadGenerationsURL, {
+						body: formData,
+						method: 'POST',
+					});
+				})
+			).then(() => {
+				const opener = Liferay.Util.getOpener();
+
+				opener.Liferay.fire(eventName, {selectedItems: selectedImages});
+			});
 		}
+	};
+
+	const onSelectedChange = (imageURL: string) => {
+		const newSelectedImages = [...selectedImages];
+
+		if (newSelectedImages.includes(imageURL)) {
+			newSelectedImages.splice(newSelectedImages.indexOf(imageURL), 1);
+		}
+		else {
+			newSelectedImages.push(imageURL);
+		}
+
+		setSelectedImages(newSelectedImages);
 	};
 
 	const onSubmit = (event: FormEvent) => {
@@ -131,7 +162,13 @@ export default function AICreatorImageModal({
 					>
 						<FormImage portletNamespace={portletNamespace} />
 
-						{imagesURL && <ImagesResult imagesURL={imagesURL} />}
+						{imagesURL && (
+							<ImagesResult
+								imagesURL={imagesURL}
+								onSelectedChange={onSelectedChange}
+								selectedImages={selectedImages}
+							/>
+						)}
 
 						<ClayForm.Group className="c-mb-0">
 							<LearnResourcesContext.Provider
@@ -147,6 +184,7 @@ export default function AICreatorImageModal({
 
 					<div className="d-flex flex-column flex-shrink-0">
 						<FormFooter
+							disabledAddButton={Boolean(!selectedImages?.length)}
 							onAdd={onAdd}
 							onClose={closeModal}
 							showAddButton={Boolean(imagesURL?.length)}

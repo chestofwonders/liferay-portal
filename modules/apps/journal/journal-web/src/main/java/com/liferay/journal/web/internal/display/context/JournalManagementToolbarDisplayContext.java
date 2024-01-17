@@ -225,8 +225,8 @@ public class JournalManagementToolbarDisplayContext
 			"addArticleURL",
 			PortletURLBuilder.createRenderURL(
 				liferayPortletResponse
-			).setMVCPath(
-				"/edit_article.jsp"
+			).setMVCRenderCommandName(
+				"/journal/edit_article"
 			).setRedirect(
 				_themeDisplay.getURLCurrent()
 			).setParameter(
@@ -607,7 +607,8 @@ public class JournalManagementToolbarDisplayContext
 
 	@Override
 	public Boolean isDisabled() {
-		if ((getItemsTotal() > 0) || _journalDisplayContext.isSearch() ||
+		if ((getItemsTotal() > 0) || _journalDisplayContext.hasAssetFilter() ||
+			_journalDisplayContext.isSearch() ||
 			!_journalDisplayContext.isNavigationHome() ||
 			(_journalDisplayContext.getStatus() !=
 				WorkflowConstants.STATUS_ANY)) {
@@ -668,6 +669,7 @@ public class JournalManagementToolbarDisplayContext
 		if (FeatureFlagManagerUtil.isEnabled("LPS-196768")) {
 			filterNavigationDropdownItems.add(
 				DropdownItemBuilder.setActive(
+					!_journalDisplayContext.hasAssetFilter() &&
 					_journalDisplayContext.isNavigationHome()
 				).setHref(
 					PortletURLBuilder.create(
@@ -724,6 +726,7 @@ public class JournalManagementToolbarDisplayContext
 		else {
 			filterNavigationDropdownItems.add(
 				DropdownItemBuilder.setActive(
+					!_journalDisplayContext.hasAssetFilter() &&
 					_journalDisplayContext.isNavigationHome()
 				).setHref(
 					PortletURLBuilder.create(
@@ -1059,8 +1062,8 @@ public class JournalManagementToolbarDisplayContext
 						PortletURL portletURL =
 							PortletURLBuilder.createRenderURL(
 								liferayPortletResponse
-							).setMVCPath(
-								"/edit_article.jsp"
+							).setMVCRenderCommandName(
+								"/journal/edit_article"
 							).setRedirect(
 								() -> {
 									if (FeatureFlagManagerUtil.isEnabled(

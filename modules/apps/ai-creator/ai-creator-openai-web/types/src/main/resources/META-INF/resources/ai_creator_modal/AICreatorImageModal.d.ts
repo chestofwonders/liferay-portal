@@ -6,9 +6,11 @@
 /// <reference types="react" />
 
 interface Props {
+	eventName?: string;
 	getGenerationsURL: string;
 	learnResources: AICreatorModalLearnResources;
 	portletNamespace: string;
+	uploadGenerationsURL: string;
 }
 declare type AICreatorModalLearnResources = {
 	'ai-creator-openai-web': {
@@ -21,8 +23,10 @@ declare type AICreatorModalLearnResources = {
 	};
 };
 export default function AICreatorImageModal({
+	eventName,
 	getGenerationsURL,
 	learnResources,
 	portletNamespace,
+	uploadGenerationsURL,
 }: Props): JSX.Element;
 export {};

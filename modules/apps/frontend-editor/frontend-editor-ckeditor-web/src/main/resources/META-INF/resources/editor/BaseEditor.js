@@ -3,10 +3,18 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import ClayLoadingIndicator from '@clayui/loading-indicator';
 import {flipThirdPartyCookiesOff} from '@liferay/cookies-banner-web';
 import CKEditor from 'ckeditor4-react';
+import {loadClientExtensions} from 'frontend-js-web';
 import PropTypes from 'prop-types';
-import React, {forwardRef, useCallback, useEffect, useRef} from 'react';
+import React, {
+	forwardRef,
+	useCallback,
+	useEffect,
+	useRef,
+	useState,
+} from 'react';
 
 import '../css/main.scss';
 
@@ -26,7 +34,20 @@ function createElementFromHTML(htmlString) {
  * DXP implementations of CKEditor. Please don't import it directly.
  */
 const BaseEditor = forwardRef(
-	({contents, name, onChange, onChangeMethodName, ...props}, ref) => {
+	(
+		{
+			config: initialConfig,
+			contents,
+			name,
+			onChange,
+			onChangeMethodName,
+			...props
+		},
+		ref
+	) => {
+		const [config, setConfig] = useState(initialConfig);
+		const [loading, setLoading] = useState(false);
+
 		const editorRef = useRef();
 
 		useEffect(() => {
@@ -39,6 +60,54 @@ const BaseEditor = forwardRef(
 				}
 			});
 		}, []);
+
+		useEffect(() => {
+			if (
+				!Liferay.FeatureFlags['LPS-186870'] ||
+				!initialConfig.editorTransformerURLs
+			) {
+				return;
+			}
+
+			setLoading(true);
+
+			loadClientExtensions([
+				{
+					clientExtensionDefinitions: initialConfig.editorTransformerURLs.map(
+						(url) => ({
+							importDeclaration: `default from ${url}`,
+						})
+					),
+					onLoad: (bindingContexts) => {
+						let transformedConfig = initialConfig;
+
+						bindingContexts.forEach(
+							({binding: editorTransformer, error}) => {
+								if (
+									process.env.NODE_ENV === 'development' &&
+									error
+								) {
+									console.error(error);
+								}
+
+								const editorConfigTransformer =
+									editorTransformer?.editorConfigTransformer;
+
+								if (editorConfigTransformer) {
+									transformedConfig = editorConfigTransformer(
+										transformedConfig
+									);
+								}
+							}
+						);
+
+						setConfig(transformedConfig);
+
+						setLoading(false);
+					},
+				},
+			]);
+		}, [initialConfig]);
 
 		const getHTML = useCallback(() => {
 			let data = contents;
@@ -93,8 +162,11 @@ const BaseEditor = forwardRef(
 			};
 		}, [contents, getHTML, name]);
 
-		return (
+		return loading ? (
+			<ClayLoadingIndicator />
+		) : (
 			<CKEditor
+				config={config}
 				name={name}
 				onChange={onChangeCallback}
 				onChangeMethodName={onChangeMethodName}

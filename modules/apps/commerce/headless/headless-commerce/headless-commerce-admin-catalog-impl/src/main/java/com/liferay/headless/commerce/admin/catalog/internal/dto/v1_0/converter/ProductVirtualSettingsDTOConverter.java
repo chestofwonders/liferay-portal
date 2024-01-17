@@ -11,17 +11,22 @@ import com.liferay.commerce.media.CommerceMediaResolver;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.service.CPDefinitionService;
 import com.liferay.commerce.product.type.virtual.constants.VirtualCPTypeConstants;
+import com.liferay.commerce.product.type.virtual.model.CPDVirtualSettingFileEntry;
 import com.liferay.commerce.product.type.virtual.model.CPDefinitionVirtualSetting;
 import com.liferay.commerce.product.type.virtual.service.CPDefinitionVirtualSettingService;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductVirtualSettings;
+import com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductVirtualSettingsFileEntry;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.Status;
 import com.liferay.headless.commerce.core.util.LanguageUtils;
 import com.liferay.journal.model.JournalArticle;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.osgi.service.component.annotations.Component;
@@ -63,6 +68,9 @@ public class ProductVirtualSettingsDTOConverter
 			return null;
 		}
 
+		List<CPDVirtualSettingFileEntry> cpdVirtualSettingFileEntries =
+			cpDefinitionVirtualSetting.getCPDVirtualSettingFileEntries();
+
 		return new ProductVirtualSettings() {
 			{
 				activationStatus =
@@ -70,12 +78,15 @@ public class ProductVirtualSettingsDTOConverter
 				duration = TimeUnit.MILLISECONDS.toDays(
 					cpDefinitionVirtualSetting.getDuration());
 				maxUsages = cpDefinitionVirtualSetting.getMaxUsages();
+				productVirtualSettingsFileEntries =
+					_toProductVirtualSettingsFileEntries(
+						cpdVirtualSettingFileEntries, cpDefinition);
 				sampleURL = cpDefinitionVirtualSetting.getSampleURL();
 				termsOfUseContent = LanguageUtils.getLanguageIdMap(
 					cpDefinitionVirtualSetting.getTermsOfUseContentMap());
 				termsOfUseRequired =
 					cpDefinitionVirtualSetting.isTermsOfUseRequired();
-				url = cpDefinitionVirtualSetting.getUrl();
+
 				useSample = cpDefinitionVirtualSetting.isUseSample();
 
 				setActivationStatusInfo(
@@ -115,10 +126,17 @@ public class ProductVirtualSettingsDTOConverter
 					});
 				setSrc(
 					() -> {
-						FileEntry fileEntry =
-							cpDefinitionVirtualSetting.getFileEntry();
+						if (cpdVirtualSettingFileEntries.isEmpty()) {
+							return null;
+						}
 
-						if (fileEntry == null) {
+						CPDVirtualSettingFileEntry cpdVirtualSettingFileEntry =
+							cpdVirtualSettingFileEntries.get(0);
+
+						long fileEntryId =
+							cpdVirtualSettingFileEntry.getFileEntryId();
+
+						if (fileEntryId == 0) {
 							return null;
 						}
 
@@ -127,7 +145,7 @@ public class ProductVirtualSettingsDTOConverter
 								CPDefinition.class.getName(),
 								cpDefinition.getCPDefinitionId(),
 								AccountConstants.ACCOUNT_ENTRY_ID_ADMIN,
-								fileEntry.getFileEntryId());
+								fileEntryId);
 					});
 				setTermsOfUseJournalArticleId(
 					() -> {
@@ -141,8 +159,77 @@ public class ProductVirtualSettingsDTOConverter
 
 						return journalArticle.getResourcePrimKey();
 					});
+				setUrl(
+					() -> {
+						if (cpdVirtualSettingFileEntries.isEmpty()) {
+							return null;
+						}
+
+						CPDVirtualSettingFileEntry cpdVirtualSettingFileEntry =
+							cpdVirtualSettingFileEntries.get(0);
+
+						if (Validator.isNull(
+								cpdVirtualSettingFileEntry.getUrl())) {
+
+							return null;
+						}
+
+						return cpdVirtualSettingFileEntry.getUrl();
+					});
 			}
 		};
+	}
+
+	private ProductVirtualSettingsFileEntry[]
+		_toProductVirtualSettingsFileEntries(
+			List<CPDVirtualSettingFileEntry> cpdVirtualSettingFileEntries,
+			CPDefinition cpDefinition) {
+
+		return TransformUtil.transformToArray(
+			cpdVirtualSettingFileEntries,
+			cpdVirtualSettingFileEntry ->
+				new ProductVirtualSettingsFileEntry() {
+					{
+						setSrc(
+							() -> {
+								long fileEntryId =
+									cpdVirtualSettingFileEntry.getFileEntryId();
+
+								if (fileEntryId == 0) {
+									return null;
+								}
+
+								return _commerceMediaResolver.
+									getDownloadVirtualProductURL(
+										CPDefinition.class.getName(),
+										cpDefinition.getCPDefinitionId(),
+										AccountConstants.ACCOUNT_ENTRY_ID_ADMIN,
+										fileEntryId);
+							});
+						setUrl(
+							() -> {
+								if (Validator.isNull(
+										cpdVirtualSettingFileEntry.getUrl())) {
+
+									return null;
+								}
+
+								return cpdVirtualSettingFileEntry.getUrl();
+							});
+						setVersion(
+							() -> {
+								if (Validator.isNull(
+										cpdVirtualSettingFileEntry.
+											getVersion())) {
+
+									return null;
+								}
+
+								return cpdVirtualSettingFileEntry.getVersion();
+							});
+					}
+				},
+			ProductVirtualSettingsFileEntry.class);
 	}
 
 	@Reference

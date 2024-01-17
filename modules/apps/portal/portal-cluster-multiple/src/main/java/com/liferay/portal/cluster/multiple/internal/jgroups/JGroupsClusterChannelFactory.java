@@ -16,14 +16,13 @@ import com.liferay.portal.cluster.multiple.configuration.ClusterExecutorConfigur
 import com.liferay.portal.cluster.multiple.internal.ClusterChannel;
 import com.liferay.portal.cluster.multiple.internal.ClusterChannelFactory;
 import com.liferay.portal.cluster.multiple.internal.ClusterReceiver;
-import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PortalClassLoaderUtil;
-import com.liferay.portal.kernel.util.Props;
 import com.liferay.portal.kernel.util.PropsKeys;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.SocketUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -35,28 +34,30 @@ import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 
-import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutorService;
 
 import org.jgroups.conf.ConfiguratorFactory;
 import org.jgroups.conf.ProtocolStackConfigurator;
 
-import org.osgi.framework.BundleContext;
-import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Deactivate;
-import org.osgi.service.component.annotations.Modified;
-import org.osgi.service.component.annotations.Reference;
-
 /**
  * @author Tina Tian
  */
-@Component(
-	configurationPid = "com.liferay.portal.cluster.multiple.configuration.ClusterExecutorConfiguration",
-	enabled = false, service = ClusterChannelFactory.class
-)
 public class JGroupsClusterChannelFactory implements ClusterChannelFactory {
+
+	public JGroupsClusterChannelFactory(
+		ClusterExecutorConfiguration clusterExecutorConfiguration) {
+
+		_clusterExecutorConfiguration = clusterExecutorConfiguration;
+
+		_initSystemProperties(
+			PropsUtil.getArray(
+				PropsKeys.CLUSTER_LINK_CHANNEL_SYSTEM_PROPERTIES));
+
+		_initBindAddress(
+			GetterUtil.getString(
+				PropsUtil.get(PropsKeys.CLUSTER_LINK_AUTODETECT_ADDRESS)));
+	}
 
 	@Override
 	public ClusterChannel createClusterChannel(
@@ -85,27 +86,6 @@ public class JGroupsClusterChannelFactory implements ClusterChannelFactory {
 	@Override
 	public NetworkInterface getBindNetworkInterface() {
 		return _bindNetworkInterface;
-	}
-
-	@Activate
-	@Modified
-	protected synchronized void activate(
-		BundleContext bundleContext, Map<String, Object> properties) {
-
-		_clusterExecutorConfiguration = ConfigurableUtil.createConfigurable(
-			ClusterExecutorConfiguration.class, properties);
-
-		_initSystemProperties(
-			_props.getArray(PropsKeys.CLUSTER_LINK_CHANNEL_SYSTEM_PROPERTIES));
-
-		_initBindAddress(
-			GetterUtil.getString(
-				_props.get(PropsKeys.CLUSTER_LINK_AUTODETECT_ADDRESS)));
-	}
-
-	@Deactivate
-	protected synchronized void deactivate() {
-		_classLoaders.clear();
 	}
 
 	private InputStream _getInputStream(String channelPropertiesLocation)
@@ -259,7 +239,7 @@ public class JGroupsClusterChannelFactory implements ClusterChannelFactory {
 				String propertyKey = configXML.substring(
 					startIndex + 2, endIndex);
 
-				Object value = _props.get(
+				Object value = PropsUtil.get(
 					StringUtil.replace(
 						propertyKey, _ENCODED_CHARACTERS,
 						_ORIGINAL_CHARACTERS));
@@ -329,8 +309,5 @@ public class JGroupsClusterChannelFactory implements ClusterChannelFactory {
 		new ConcurrentReferenceKeyHashMap<>(
 			FinalizeManager.WEAK_REFERENCE_FACTORY);
 	private volatile ClusterExecutorConfiguration _clusterExecutorConfiguration;
-
-	@Reference
-	private Props _props;
 
 }

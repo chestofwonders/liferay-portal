@@ -362,6 +362,9 @@ public class AssetPublisherPortlet extends MVCPortlet {
 		assetPublisherWebConfiguration = ConfigurableUtil.createConfigurable(
 			AssetPublisherWebConfiguration.class, properties);
 
+		assetPublisherCustomizerRegistry = new AssetPublisherCustomizerRegistry(
+			assetPublisherHelper, assetPublisherWebConfiguration);
+
 		portletRegistry.registerAlias(
 			_ALIAS, AssetPublisherPortletKeys.ASSET_PUBLISHER);
 	}
@@ -453,8 +456,8 @@ public class AssetPublisherPortlet extends MVCPortlet {
 	protected AssetListEntrySegmentsEntryRelLocalService
 		assetListEntrySegmentsEntryRelLocalService;
 
-	@Reference
-	protected AssetPublisherCustomizerRegistry assetPublisherCustomizerRegistry;
+	protected volatile AssetPublisherCustomizerRegistry
+		assetPublisherCustomizerRegistry;
 
 	@Reference
 	protected AssetPublisherHelper assetPublisherHelper;
