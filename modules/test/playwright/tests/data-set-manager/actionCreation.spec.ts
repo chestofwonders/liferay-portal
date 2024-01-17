@@ -1,14 +1,19 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
 import {expect, mergeTests} from '@playwright/test';
 
-import {dataSetManagerPagesTest} from '../../fixtures/dataSetManagerPageTest';
 import {apiHelpersTest} from '../../fixtures/apiHelpers.fixture';
+import {dataSetManagerPagesTest} from '../../fixtures/dataSetManagerPageTest';
 
 export const test = mergeTests(
     apiHelpersTest,
 	dataSetManagerPagesTest
 );
 
-test('Data Set Test is created', async ({page, dataSetManagerPage}) => {
+test('Data Set Test is created', async ({dataSetManagerPage, page}) => {
     await dataSetManagerPage.goto();
 
     await expect(
@@ -16,7 +21,7 @@ test('Data Set Test is created', async ({page, dataSetManagerPage}) => {
     ).toBeVisible();
 });
 
-test('View Test is created', async ({page, dataSetManagerViewsPage}) => {
+test('View Test is created', async ({dataSetManagerViewsPage, page}) => {
     await dataSetManagerViewsPage.goto();
 
     await dataSetManagerViewsPage.createTestDataSetView();
@@ -27,7 +32,7 @@ test('View Test is created', async ({page, dataSetManagerViewsPage}) => {
 });
 
 
-test('There are no item actions created in the Action tab', async ({page, dataSetManagerActionsPage}) => {
+test('There are no item actions created in the Action tab', async ({dataSetManagerActionsPage, page}) => {
     await dataSetManagerActionsPage.goto();
 
     await expect(
@@ -35,7 +40,7 @@ test('There are no item actions created in the Action tab', async ({page, dataSe
     ).toBeVisible();
 });
 
-test('The "New Creation Action" button is present', async ({page, dataSetManagerActionsPage}) => {
+test('The "New Creation Action" button is present', async ({dataSetManagerActionsPage, page}) => {
     await dataSetManagerActionsPage.goto();
 
     await expect(
@@ -43,7 +48,7 @@ test('The "New Creation Action" button is present', async ({page, dataSetManager
     ).toBeVisible();
 });
 
-test('A new Link action is created', async ({page, dataSetManagerActionsPage}) => {
+test('A new Link action is created', async ({dataSetManagerActionsPage, page}) => {
     await dataSetManagerActionsPage.goto();
 
     await dataSetManagerActionsPage.createTestDataSetAction({
@@ -58,7 +63,7 @@ test('A new Link action is created', async ({page, dataSetManagerActionsPage}) =
     ).toBeVisible();
 });
 
-test('A new Modal action is created', async ({page, dataSetManagerActionsPage}) => {
+test('A new Modal action is created', async ({dataSetManagerActionsPage, page}) => {
     await dataSetManagerActionsPage.goto();
 
     await dataSetManagerActionsPage.createTestDataSetAction({
@@ -73,7 +78,7 @@ test('A new Modal action is created', async ({page, dataSetManagerActionsPage}) 
     ).toBeVisible();
 });
 
-test('A new Side Panel action is created', async ({page, dataSetManagerActionsPage}) => {
+test('A new Side Panel action is created', async ({dataSetManagerActionsPage, page}) => {
     await dataSetManagerActionsPage.goto();
 
     await dataSetManagerActionsPage.createTestDataSetAction({

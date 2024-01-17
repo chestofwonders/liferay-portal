@@ -5,9 +5,9 @@
 
 import {test} from '@playwright/test';
 
+import {DataSetManagerActionsPage} from '../pages/data-set-manager/DataSetManagerActionsPage';
 import {DataSetManagerPage} from '../pages/data-set-manager/DataSetManagerPage';
 import {DataSetManagerViewsPage} from '../pages/data-set-manager/DataSetManagerViewsPage';
-import {DataSetManagerActionsPage} from '../pages/data-set-manager/DataSetManagerActionsPage';
 
 const dataSetManagerPagesTest = test.extend<{
 	dataSetManagerPage: DataSetManagerPage;

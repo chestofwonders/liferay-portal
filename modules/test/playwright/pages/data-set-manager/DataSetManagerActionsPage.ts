@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import type {Locator, Page} from '@playwright/test';
-
 import {DataSetManagerViewsPage} from './DataSetManagerViewsPage';
+
+import type {Locator, Page} from '@playwright/test';
 
 export type ActionTypes = 'modal' | 'link' | 'sidePanel';
 
@@ -49,7 +49,7 @@ export class DataSetManagerActionsPage {
 		this.page.getByRole('button', { name: /Actions/ }).first().click()
 	}
 
-	async createTestDataSetAction({name, type, url, icon}: {name: string, type: ActionTypes, url: string, icon: string}) {
+	async createTestDataSetAction({icon, name, type, url}: {name: string, type: ActionTypes, url: string, icon: string}) {
 		await this.newActionButton.click();
 
         await this.newItemActionForm.name.fill(name);
