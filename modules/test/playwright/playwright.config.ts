@@ -5,14 +5,14 @@
 
 import {defineConfig} from '@playwright/test';
 
-import {config as FDS} from './tests/FDS/config';
+import {config as dataSetManager} from './tests/data-set-manager/config';
 import {config as setup} from './tests/global.setup.config';
 import {config as object} from './tests/object/config';
 import {config as portalWeb} from './tests/portal-web/config';
 
 export default defineConfig({
 	forbidOnly: !!process.env.CI,
-	projects: [FDS, object, portalWeb, setup],
+	projects: [dataSetManager, object, portalWeb, setup],
 	reporter: [
 		[
 			'html',

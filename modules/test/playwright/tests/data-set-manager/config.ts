@@ -7,8 +7,8 @@ import {devices} from '@playwright/test';
 
 export const config = {
 	dependencies: ['setup'],
-	name: 'FDS',
-	testDir: 'tests/FDS',
+	name: 'dataSetManager',
+	testDir: 'tests/data-set-manager',
 	use: {
 		...devices['Desktop Chrome'],
 		storageState: 'tmp/.auth/user.json',

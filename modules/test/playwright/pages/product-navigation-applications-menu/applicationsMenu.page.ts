@@ -8,7 +8,7 @@ import {Locator, Page} from '@playwright/test';
 export class ApplicationsMenuPage {
 	readonly applicationMenuButton: Locator;
 	readonly controlPanelButton: Locator;
-	readonly FDSMenuItem: Locator;
+	readonly dataSetManagerMenuItem: Locator;
 	readonly instanceSettingsLink: Locator;
 	readonly objectsLink: Locator;
 	readonly objectsMenuItem: Locator;
@@ -29,7 +29,7 @@ export class ApplicationsMenuPage {
 			exact: true,
 			name: 'Objects',
 		});
-		this.FDSMenuItem = page.getByRole('menuitem', {
+		this.dataSetManagerMenuItem = page.getByRole('menuitem', {
 			exact: true,
 			name: 'Data Sets',
 		});
@@ -41,9 +41,9 @@ export class ApplicationsMenuPage {
 		await this.page.goto('/');
 	}
 
-	async goToFDS() {
+	async goToDataSetManager() {
 		await this.goToControlPanel();
-		await this.FDSMenuItem.click();
+		await this.dataSetManagerMenuItem.click();
 	}
 
 	async goToObjects() {
