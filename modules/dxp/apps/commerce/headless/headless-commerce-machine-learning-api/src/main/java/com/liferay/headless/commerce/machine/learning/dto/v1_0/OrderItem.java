@@ -82,11 +82,11 @@ public class OrderItem implements Serializable {
 			try {
 				return cpDefinitionIdUnsafeSupplier.get();
 			}
-			catch (RuntimeException re) {
-				throw re;
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
 			}
-			catch (Exception e) {
-				throw new RuntimeException(e);
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
 			}
 		};
 	}
@@ -123,11 +123,11 @@ public class OrderItem implements Serializable {
 			try {
 				return createDateUnsafeSupplier.get();
 			}
-			catch (RuntimeException re) {
-				throw re;
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
 			}
-			catch (Exception e) {
-				throw new RuntimeException(e);
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
 			}
 		};
 	}
@@ -165,11 +165,11 @@ public class OrderItem implements Serializable {
 			try {
 				return customFieldsUnsafeSupplier.get();
 			}
-			catch (RuntimeException re) {
-				throw re;
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
 			}
-			catch (Exception e) {
-				throw new RuntimeException(e);
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
 			}
 		};
 	}
@@ -206,11 +206,11 @@ public class OrderItem implements Serializable {
 			try {
 				return externalReferenceCodeUnsafeSupplier.get();
 			}
-			catch (RuntimeException re) {
-				throw re;
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
 			}
-			catch (Exception e) {
-				throw new RuntimeException(e);
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
 			}
 		};
 	}
@@ -249,11 +249,11 @@ public class OrderItem implements Serializable {
 			try {
 				return finalPriceUnsafeSupplier.get();
 			}
-			catch (RuntimeException re) {
-				throw re;
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
 			}
-			catch (Exception e) {
-				throw new RuntimeException(e);
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
 			}
 		};
 	}
@@ -289,11 +289,11 @@ public class OrderItem implements Serializable {
 			try {
 				return idUnsafeSupplier.get();
 			}
-			catch (RuntimeException re) {
-				throw re;
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
 			}
-			catch (Exception e) {
-				throw new RuntimeException(e);
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
 			}
 		};
 	}
@@ -330,11 +330,11 @@ public class OrderItem implements Serializable {
 			try {
 				return modifiedDateUnsafeSupplier.get();
 			}
-			catch (RuntimeException re) {
-				throw re;
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
 			}
-			catch (Exception e) {
-				throw new RuntimeException(e);
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
 			}
 		};
 	}
@@ -374,11 +374,11 @@ public class OrderItem implements Serializable {
 			try {
 				return nameUnsafeSupplier.get();
 			}
-			catch (RuntimeException re) {
-				throw re;
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
 			}
-			catch (Exception e) {
-				throw new RuntimeException(e);
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
 			}
 		};
 	}
@@ -415,11 +415,11 @@ public class OrderItem implements Serializable {
 			try {
 				return optionsUnsafeSupplier.get();
 			}
-			catch (RuntimeException re) {
-				throw re;
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
 			}
-			catch (Exception e) {
-				throw new RuntimeException(e);
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
 			}
 		};
 	}
@@ -457,11 +457,11 @@ public class OrderItem implements Serializable {
 			try {
 				return orderIdUnsafeSupplier.get();
 			}
-			catch (RuntimeException re) {
-				throw re;
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
 			}
-			catch (Exception e) {
-				throw new RuntimeException(e);
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
 			}
 		};
 	}
@@ -499,11 +499,11 @@ public class OrderItem implements Serializable {
 			try {
 				return parentOrderItemIdUnsafeSupplier.get();
 			}
-			catch (RuntimeException re) {
-				throw re;
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
 			}
-			catch (Exception e) {
-				throw new RuntimeException(e);
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
 			}
 		};
 	}
@@ -541,11 +541,11 @@ public class OrderItem implements Serializable {
 			try {
 				return quantityUnsafeSupplier.get();
 			}
-			catch (RuntimeException re) {
-				throw re;
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
 			}
-			catch (Exception e) {
-				throw new RuntimeException(e);
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
 			}
 		};
 	}
@@ -580,11 +580,11 @@ public class OrderItem implements Serializable {
 			try {
 				return skuUnsafeSupplier.get();
 			}
-			catch (RuntimeException re) {
-				throw re;
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
 			}
-			catch (Exception e) {
-				throw new RuntimeException(e);
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
 			}
 		};
 	}
@@ -621,11 +621,11 @@ public class OrderItem implements Serializable {
 			try {
 				return subscriptionUnsafeSupplier.get();
 			}
-			catch (RuntimeException re) {
-				throw re;
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
 			}
-			catch (Exception e) {
-				throw new RuntimeException(e);
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
 			}
 		};
 	}
@@ -662,11 +662,11 @@ public class OrderItem implements Serializable {
 			try {
 				return unitOfMeasureUnsafeSupplier.get();
 			}
-			catch (RuntimeException re) {
-				throw re;
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
 			}
-			catch (Exception e) {
-				throw new RuntimeException(e);
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
 			}
 		};
 	}
@@ -705,11 +705,11 @@ public class OrderItem implements Serializable {
 			try {
 				return unitPriceUnsafeSupplier.get();
 			}
-			catch (RuntimeException re) {
-				throw re;
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
 			}
-			catch (Exception e) {
-				throw new RuntimeException(e);
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
 			}
 		};
 	}
@@ -746,11 +746,11 @@ public class OrderItem implements Serializable {
 			try {
 				return userIdUnsafeSupplier.get();
 			}
-			catch (RuntimeException re) {
-				throw re;
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
 			}
-			catch (Exception e) {
-				throw new RuntimeException(e);
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
 			}
 		};
 	}

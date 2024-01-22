@@ -77,11 +77,11 @@ public class Rescore implements Serializable {
 			try {
 				return queryUnsafeSupplier.get();
 			}
-			catch (RuntimeException re) {
-				throw re;
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
 			}
-			catch (Exception e) {
-				throw new RuntimeException(e);
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
 			}
 		};
 	}
@@ -119,11 +119,11 @@ public class Rescore implements Serializable {
 			try {
 				return queryWeightUnsafeSupplier.get();
 			}
-			catch (RuntimeException re) {
-				throw re;
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
 			}
-			catch (Exception e) {
-				throw new RuntimeException(e);
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
 			}
 		};
 	}
@@ -161,11 +161,11 @@ public class Rescore implements Serializable {
 			try {
 				return rescoreQueryWeightUnsafeSupplier.get();
 			}
-			catch (RuntimeException re) {
-				throw re;
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
 			}
-			catch (Exception e) {
-				throw new RuntimeException(e);
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
 			}
 		};
 	}
@@ -202,11 +202,11 @@ public class Rescore implements Serializable {
 			try {
 				return scoreModeUnsafeSupplier.get();
 			}
-			catch (RuntimeException re) {
-				throw re;
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
 			}
-			catch (Exception e) {
-				throw new RuntimeException(e);
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
 			}
 		};
 	}
@@ -244,11 +244,11 @@ public class Rescore implements Serializable {
 			try {
 				return windowSizeUnsafeSupplier.get();
 			}
-			catch (RuntimeException re) {
-				throw re;
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
 			}
-			catch (Exception e) {
-				throw new RuntimeException(e);
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
 			}
 		};
 	}

@@ -73,11 +73,11 @@ public class RolePermission implements Serializable {
 			try {
 				return actionIdsUnsafeSupplier.get();
 			}
-			catch (RuntimeException re) {
-				throw re;
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
 			}
-			catch (Exception e) {
-				throw new RuntimeException(e);
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
 			}
 		};
 	}
@@ -112,11 +112,11 @@ public class RolePermission implements Serializable {
 			try {
 				return idUnsafeSupplier.get();
 			}
-			catch (RuntimeException re) {
-				throw re;
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
 			}
-			catch (Exception e) {
-				throw new RuntimeException(e);
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
 			}
 		};
 	}
@@ -153,11 +153,11 @@ public class RolePermission implements Serializable {
 			try {
 				return labelUnsafeSupplier.get();
 			}
-			catch (RuntimeException re) {
-				throw re;
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
 			}
-			catch (Exception e) {
-				throw new RuntimeException(e);
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
 			}
 		};
 	}
@@ -194,11 +194,11 @@ public class RolePermission implements Serializable {
 			try {
 				return primaryKeyUnsafeSupplier.get();
 			}
-			catch (RuntimeException re) {
-				throw re;
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
 			}
-			catch (Exception e) {
-				throw new RuntimeException(e);
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
 			}
 		};
 	}
@@ -235,11 +235,11 @@ public class RolePermission implements Serializable {
 			try {
 				return resourceNameUnsafeSupplier.get();
 			}
-			catch (RuntimeException re) {
-				throw re;
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
 			}
-			catch (Exception e) {
-				throw new RuntimeException(e);
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
 			}
 		};
 	}
@@ -276,11 +276,11 @@ public class RolePermission implements Serializable {
 			try {
 				return roleIdUnsafeSupplier.get();
 			}
-			catch (RuntimeException re) {
-				throw re;
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
 			}
-			catch (Exception e) {
-				throw new RuntimeException(e);
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
 			}
 		};
 	}
@@ -315,11 +315,11 @@ public class RolePermission implements Serializable {
 			try {
 				return scopeUnsafeSupplier.get();
 			}
-			catch (RuntimeException re) {
-				throw re;
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
 			}
-			catch (Exception e) {
-				throw new RuntimeException(e);
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
 			}
 		};
 	}

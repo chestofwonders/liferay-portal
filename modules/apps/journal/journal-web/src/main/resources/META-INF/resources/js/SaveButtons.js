@@ -4,9 +4,11 @@
  */
 
 import ClayButton from '@clayui/button';
+import ClayDropDown from '@clayui/drop-down';
+import ClayIcon from '@clayui/icon';
 import React, {useState} from 'react';
 
-import PermissionsModal from './modals/PermissionsModal';
+import PublishModal from './modals/PublishModal';
 
 export default function SaveButtons({
 	articleId,
@@ -17,20 +19,28 @@ export default function SaveButtons({
 	publishButtonLabel,
 	saveButtonLabel,
 	selectedLanguageId,
+	timeZone,
 }) {
+	const formId = `${portletNamespace}fm1`;
+
 	const [
-		{permissionsModalAction, permissionsModalVisible},
-		setPermissionsModalState,
-	] = useState({permissionsModalAction: '', permissionsModalVisible: false});
+		{publishModalAction, publishModalVisible},
+		setPublishModalState,
+	] = useState({publishModalAction: '', publishModalVisible: false});
 
 	const onClick = (action) => {
-		setPermissionsModalState({
-			permissionsModalAction: action,
-			permissionsModalVisible: true,
-		});
+		if (articleId) {
+			handleButtonClick(action);
+		}
+		else {
+			setPublishModalState({
+				publishModalAction: action,
+				publishModalVisible: true,
+			});
+		}
 	};
 
-	const handleButtonClick = () => {
+	const handleButtonClick = (action) => {
 		document
 			.querySelectorAll('.journal-alert-container')
 			.forEach((alertElement) => {
@@ -41,7 +51,11 @@ export default function SaveButtons({
 			`${portletNamespace}workflowAction`
 		);
 
-		if (permissionsModalAction === 'publish') {
+		if (
+			action === 'publish' ||
+			publishModalAction === 'publish' ||
+			publishModalAction === 'schedule'
+		) {
 			workflowActionInput.value = Liferay.Workflow.ACTION_PUBLISH;
 		}
 
@@ -88,7 +102,7 @@ export default function SaveButtons({
 				) {
 					inputComponent.updateInput('');
 
-					Liferay.Form.get(`${portletNamespace}fm1`).removeRule(
+					Liferay.Form.get(formId).removeRule(
 						`${portletNamespace}${inputComponent.get('id')}`,
 						'required'
 					);
@@ -98,34 +112,70 @@ export default function SaveButtons({
 	};
 
 	return (
-		<>
+		<div className="d-flex">
 			{!Liferay.FeatureFlags['LPS-141392'] && !editingDefaultValues ? (
 				<ClayButton
 					className="mr-1"
 					displayType="secondary"
+					form={formId}
 					onClick={() => onClick('draft')}
+					type={articleId ? 'submit' : 'button'}
 				>
 					{saveButtonLabel}
 				</ClayButton>
 			) : null}
-			<ClayButton onClick={() => onClick('publish')}>
-				{publishButtonLabel}
-			</ClayButton>
 
-			{permissionsModalVisible ? (
-				<PermissionsModal
-					actionButton={permissionsModalAction}
+			<ClayDropDown
+				hasLeftSymbols
+				trigger={
+					<ClayButton>
+						{publishButtonLabel}
+
+						<span className="inline-item inline-item-after">
+							<ClayIcon symbol="caret-bottom" />
+						</span>
+					</ClayButton>
+				}
+			>
+				<ClayDropDown.ItemList>
+					<ClayDropDown.Item
+						form={formId}
+						onClick={() => onClick('publish')}
+						symbolLeft="arrow-right-full"
+						type={articleId ? 'submit' : 'button'}
+					>
+						{Liferay.Language.get('publish')}
+					</ClayDropDown.Item>
+
+					<ClayDropDown.Item
+						onClick={() => {
+							setPublishModalState({
+								publishModalAction: 'schedule',
+								publishModalVisible: true,
+							});
+						}}
+						symbolLeft="date-time"
+					>
+						{Liferay.Language.get('schedule-publication')}
+					</ClayDropDown.Item>
+				</ClayDropDown.ItemList>
+			</ClayDropDown>
+
+			{publishModalVisible ? (
+				<PublishModal
+					actionButton={publishModalAction}
 					onCloseModal={() =>
-						setPermissionsModalState({
-							permissionsModalAction: '',
-							permissionsModalVisible: false,
+						setPublishModalState({
+							publishModalAction: '',
+							publishModalVisible: false,
 						})
 					}
 					onPublishButtonClick={handleButtonClick}
 					permissionsURL={permissionsURL}
 					portletNamespace={portletNamespace}
+					timeZone={timeZone}
 				/>
 			) : null}
-		</>
+		</div>
 	);
 }

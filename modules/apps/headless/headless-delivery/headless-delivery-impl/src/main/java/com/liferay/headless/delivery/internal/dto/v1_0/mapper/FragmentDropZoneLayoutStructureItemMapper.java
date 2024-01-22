@@ -21,22 +21,25 @@ public class FragmentDropZoneLayoutStructureItemMapper
 		long groupId, LayoutStructureItem layoutStructureItem,
 		boolean saveInlineContent, boolean saveMappingConfiguration) {
 
-		FragmentDropZoneLayoutStructureItem
-			fragmentDropZoneLayoutStructureItem =
-				(FragmentDropZoneLayoutStructureItem)layoutStructureItem;
-
 		return new PageElement() {
 			{
-				definition = new PageFragmentDropZoneDefinition() {
-					{
-						fragmentDropZoneId =
-							fragmentDropZoneLayoutStructureItem.
-								getFragmentDropZoneId();
-					}
-				};
-				id = layoutStructureItem.getItemId();
+				setDefinition(
+					() -> new PageFragmentDropZoneDefinition() {
+						{
+							setFragmentDropZoneId(
+								() -> {
+									FragmentDropZoneLayoutStructureItem
+										fragmentDropZoneLayoutStructureItem =
+											(FragmentDropZoneLayoutStructureItem)
+												layoutStructureItem;
 
-				type = Type.FRAGMENT_DROP_ZONE;
+									return fragmentDropZoneLayoutStructureItem.
+										getFragmentDropZoneId();
+								});
+						}
+					});
+				setId(layoutStructureItem::getItemId);
+				setType(() -> Type.FRAGMENT_DROP_ZONE);
 			}
 		};
 	}

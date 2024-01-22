@@ -364,10 +364,6 @@
 			<category name="Performance" />
 			<description name="Checks if performance can be improved by using different methods that can be used by collections." />
 		</check>
-		<check name="CopyrightCheck">
-			<category name="Styling" />
-			<description name="Validates `copyright` header." />
-		</check>
 		<check name="EmptyCollectionCheck">
 			<category name="Styling" />
 			<description name="Checks that there are no calls to `Collections.EMPTY_LIST`, `Collections.EMPTY_MAP` or `Collections.EMPTY_SET`." />
@@ -634,6 +630,10 @@
 
 		<!-- Liferay Source Checks -->
 
+		<check name="CopyrightCheck">
+			<category name="Styling" />
+			<description name="Validates `copyright` header." />
+		</check>
 		<check name="IllegalImportsCheck">
 			<category name="Bug Prevention" />
 			<description name="Finds cases of incorrect use of certain classes." />
@@ -943,6 +943,10 @@
 			<description name="Checks package name for `*TestUtil.java`." />
 			<property name="enabled" value="false" />
 		</check>
+		<check name="JavaModuleUniqueUpgradeStepRegistratorCheck">
+			<category name="Bug Prevention" />
+			<description name="Checks that a module can not have more than 1 upgrade step registrator class (class implements UpgradeStepRegistrator)." />
+		</check>
 		<check name="JavaModuleUniqueVerifyProcessCheck">
 			<category name="Bug Prevention" />
 			<description name="Checks that a module can not have more than 1 verify process class (class extends VerifyProcess)." />
@@ -1007,10 +1011,6 @@
 		<check name="ArrayCheck">
 			<category name="Performance" />
 			<description name="Checks if performance can be improved by using different methods that can be used by collections." />
-		</check>
-		<check name="CopyrightCheck">
-			<category name="Styling" />
-			<description name="Validates `copyright` header." />
 		</check>
 		<check name="EmptyCollectionCheck">
 			<category name="Styling" />
@@ -1175,6 +1175,10 @@
 
 		<!-- Liferay Source Checks -->
 
+		<check name="CopyrightCheck">
+			<category name="Styling" />
+			<description name="Validates `copyright` header." />
+		</check>
 		<check name="JSPCoreTaglibCheck">
 			<category name="Styling" />
 			<description name="Finds cases where a `c:choose` or `c:if` tag can be used instead of an if-statement." />

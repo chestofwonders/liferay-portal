@@ -679,9 +679,11 @@ public class DDMIndexerImpl implements DDMIndexer {
 			}
 
 			if (indexType.equals("keyword")) {
+				document.addKeyword(_getSortableFieldName(name), valuesString);
 				document.addKeywordSortable(name, valuesString);
 			}
 			else {
+				document.addText(_getSortableFieldName(name), valuesString);
 				document.addTextSortable(name, valuesString);
 			}
 		}

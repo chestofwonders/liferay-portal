@@ -100,6 +100,10 @@ const searchSuggestionItem = searchSuggestionItemTemplate.content.querySelector(
 	'a'
 );
 
+function changeFocus() {
+	document.getElementById('searchInput').focus();
+}
+
 function updateSearch() {
 	searchSuggestions.innerHTML = '';
 
@@ -108,7 +112,8 @@ function updateSearch() {
 	if (searchSuggestionsInputValue) {
 		seeAllResultsLink.href =
 			searchSubmitURL + '?q=' + searchSuggestionsInputValue;
-		searchSubmitLink.href = searchSubmitURL + '?q=' + searchSuggestionsInputValue;
+		searchSubmitLink.href =
+			searchSubmitURL + '?q=' + searchSuggestionsInputValue;
 		suggestions.classList.add('performing-search');
 		performSearch(searchSuggestionsInputValue);
 	}
@@ -283,5 +288,7 @@ function getBreadcrumbFromURL(url) {
 		})
 		.join(' ');
 }
+
+document.getElementById('searchIcon').addEventListener('click', changeFocus);
 
 fragmentElement.querySelector('.public-sites-navigation').style.zIndex = '4';

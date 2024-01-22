@@ -111,24 +111,28 @@ public class FragmentLayoutStructureItemMapper
 
 		String portletId = editableValuesJSONObject.getString("portletId");
 
-		JSONObject itemConfigJSONObject =
-			fragmentStyledLayoutStructureItem.getItemConfigJSONObject();
-
 		if (Validator.isNull(portletId)) {
 			return new PageElement() {
 				{
-					definition =
-						_pageFragmentInstanceDefinitionMapper.
-							getPageFragmentInstanceDefinition(
-								fragmentStyledLayoutStructureItem,
-								toFragmentStyle(
-									itemConfigJSONObject.getJSONObject(
-										"styles"),
-									saveMappingConfiguration),
-								getFragmentViewPorts(itemConfigJSONObject),
-								saveInlineContent, saveMappingConfiguration);
-					id = layoutStructureItem.getItemId();
-					type = Type.FRAGMENT;
+					setDefinition(
+						() -> {
+							JSONObject itemConfigJSONObject =
+								fragmentStyledLayoutStructureItem.
+									getItemConfigJSONObject();
+
+							return _pageFragmentInstanceDefinitionMapper.
+								getPageFragmentInstanceDefinition(
+									fragmentStyledLayoutStructureItem,
+									toFragmentStyle(
+										itemConfigJSONObject.getJSONObject(
+											"styles"),
+										saveMappingConfiguration),
+									getFragmentViewPorts(itemConfigJSONObject),
+									saveInlineContent,
+									saveMappingConfiguration);
+						});
+					setId(layoutStructureItem::getItemId);
+					setType(() -> Type.FRAGMENT);
 				}
 			};
 		}
@@ -137,17 +141,25 @@ public class FragmentLayoutStructureItemMapper
 
 		return new PageElement() {
 			{
-				definition = _toPageWidgetInstanceDefinition(
-					fragmentEntryLink, fragmentStyledLayoutStructureItem,
-					itemConfigJSONObject.getString("name", null),
-					toFragmentStyle(
-						itemConfigJSONObject.getJSONObject("styles"),
-						saveMappingConfiguration),
-					getFragmentViewPorts(
-						itemConfigJSONObject.getJSONObject("style")),
-					PortletIdCodec.encode(portletId, instanceId));
-				id = layoutStructureItem.getItemId();
-				type = Type.WIDGET;
+				setDefinition(
+					() -> {
+						JSONObject itemConfigJSONObject =
+							fragmentStyledLayoutStructureItem.
+								getItemConfigJSONObject();
+
+						return _toPageWidgetInstanceDefinition(
+							fragmentEntryLink,
+							fragmentStyledLayoutStructureItem,
+							itemConfigJSONObject.getString("name", null),
+							toFragmentStyle(
+								itemConfigJSONObject.getJSONObject("styles"),
+								saveMappingConfiguration),
+							getFragmentViewPorts(
+								itemConfigJSONObject.getJSONObject("style")),
+							PortletIdCodec.encode(portletId, instanceId));
+					});
+				setId(layoutStructureItem::getItemId);
+				setType(() -> Type.WIDGET);
 			}
 		};
 	}
@@ -166,19 +178,23 @@ public class FragmentLayoutStructureItemMapper
 
 		return new PageWidgetInstanceDefinition() {
 			{
-				cssClasses = StyledLayoutStructureItemUtil.getCssClasses(
-					fragmentStyledLayoutStructureItem);
-				customCSS = StyledLayoutStructureItemUtil.getCustomCSS(
-					fragmentStyledLayoutStructureItem);
-				customCSSViewports =
-					StyledLayoutStructureItemUtil.getCustomCSSViewports(
-						fragmentStyledLayoutStructureItem);
-				fragmentStyle = pageWidgetInstanceDefinitionFragmentStyle;
-				fragmentViewports =
-					pageWidgetInstanceDefinitionFragmentViewports;
-				name = nameValue;
-				widgetInstance = _widgetInstanceMapper.getWidgetInstance(
-					fragmentEntryLink, portletId);
+				setCssClasses(
+					() -> StyledLayoutStructureItemUtil.getCssClasses(
+						fragmentStyledLayoutStructureItem));
+				setCustomCSS(
+					() -> StyledLayoutStructureItemUtil.getCustomCSS(
+						fragmentStyledLayoutStructureItem));
+				setCustomCSSViewports(
+					() -> StyledLayoutStructureItemUtil.getCustomCSSViewports(
+						fragmentStyledLayoutStructureItem));
+				setFragmentStyle(
+					() -> pageWidgetInstanceDefinitionFragmentStyle);
+				setFragmentViewports(
+					() -> pageWidgetInstanceDefinitionFragmentViewports);
+				setName(() -> nameValue);
+				setWidgetInstance(
+					() -> _widgetInstanceMapper.getWidgetInstance(
+						fragmentEntryLink, portletId));
 			}
 		};
 	}

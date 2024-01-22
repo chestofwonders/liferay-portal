@@ -289,6 +289,15 @@ public class APIEndpointRelevantObjectEntryModelListener
 					(String)values.get("retrieveType")),
 				APIApplication.Endpoint.RetrieveType.SINGLE_ELEMENT)) {
 
+			if (!Validator.isBlank(pathParameter) &&
+				(responseAPISchemaId == 0)) {
+
+				throw new ObjectEntryValuesException.InvalidObjectField(
+					null,
+					"Path parameter cannot be set without a response schema",
+					"path-parameter-cannot-be-set-without-a-response-schema");
+			}
+
 			_validateSingleElementPath(
 				objectEntry, pathParameter, pathString, responseAPISchemaId);
 		}

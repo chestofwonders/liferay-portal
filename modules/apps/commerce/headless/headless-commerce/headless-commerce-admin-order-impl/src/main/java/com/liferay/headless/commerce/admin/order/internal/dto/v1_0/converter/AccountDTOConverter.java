@@ -63,21 +63,27 @@ public class AccountDTOConverter
 				(Long)dtoConverterContext.getId());
 		}
 
-		ExpandoBridge expandoBridge = accountEntry.getExpandoBridge();
-
 		return new Account() {
 			{
-				customFields = expandoBridge.getAttributes();
-				emailAddress = accountEntry.getEmailAddress();
-				externalReferenceCode = accountEntry.getExternalReferenceCode();
-				id = accountEntry.getAccountEntryId();
-				logoId = accountEntry.getLogoId();
-				name = accountEntry.getName();
-				root =
-					accountEntry.getParentAccountEntryId() ==
-						AccountConstants.ACCOUNT_ENTRY_ID_DEFAULT;
-				taxId = accountEntry.getTaxIdNumber();
-				type = _getCommerceAccountType(accountEntry.getType());
+				setCustomFields(
+					() -> {
+						ExpandoBridge expandoBridge =
+							accountEntry.getExpandoBridge();
+
+						return expandoBridge.getAttributes();
+					});
+				setEmailAddress(accountEntry::getEmailAddress);
+				setExternalReferenceCode(
+					accountEntry::getExternalReferenceCode);
+				setId(accountEntry::getAccountEntryId);
+				setLogoId(accountEntry::getLogoId);
+				setName(accountEntry::getName);
+				setRoot(
+					() ->
+						accountEntry.getParentAccountEntryId() ==
+							AccountConstants.ACCOUNT_ENTRY_ID_DEFAULT);
+				setTaxId(accountEntry::getTaxIdNumber);
+				setType(() -> _getCommerceAccountType(accountEntry.getType()));
 			}
 		};
 	}

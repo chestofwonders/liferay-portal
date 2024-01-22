@@ -299,7 +299,9 @@ class TestraySubtaskImpl extends Rest<SubtaskForm, TestraySubTask> {
 
 		const newSubtaskScore = selectedSubTaskCaseResults
 			.map(({caseResult}) => caseResult?.case?.priority ?? 0)
-			.reduce((prev, next) => prev + next);
+			.reduce(
+				(previousValue, currentValue) => previousValue + currentValue
+			);
 
 		const newSubtaskIndex = subtaskIndex + 1;
 

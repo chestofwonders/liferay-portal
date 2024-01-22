@@ -82,11 +82,11 @@ public class TestJSONMapAttribute implements Serializable {
 			try {
 				return descriptionUnsafeSupplier.get();
 			}
-			catch (RuntimeException re) {
-				throw re;
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
 			}
-			catch (Exception e) {
-				throw new RuntimeException(e);
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
 			}
 		};
 	}
@@ -121,11 +121,11 @@ public class TestJSONMapAttribute implements Serializable {
 			try {
 				return nameUnsafeSupplier.get();
 			}
-			catch (RuntimeException re) {
-				throw re;
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
 			}
-			catch (Exception e) {
-				throw new RuntimeException(e);
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
 			}
 		};
 	}
@@ -161,17 +161,15 @@ public class TestJSONMapAttribute implements Serializable {
 		UnsafeSupplier<Map<String, Object>, Exception>
 			properties1UnsafeSupplier) {
 
-		_properties1Supplier = () -> {
-			try {
-				return properties1UnsafeSupplier.get();
-			}
-			catch (RuntimeException re) {
-				throw re;
-			}
-			catch (Exception e) {
-				throw new RuntimeException(e);
-			}
-		};
+		try {
+			properties1 = properties1UnsafeSupplier.get();
+		}
+		catch (RuntimeException runtimeException) {
+			throw runtimeException;
+		}
+		catch (Exception exception) {
+			throw new RuntimeException(exception);
+		}
 	}
 
 	@GraphQLField
@@ -206,17 +204,15 @@ public class TestJSONMapAttribute implements Serializable {
 		UnsafeSupplier<Map<String, Object>, Exception>
 			properties2UnsafeSupplier) {
 
-		_properties2Supplier = () -> {
-			try {
-				return properties2UnsafeSupplier.get();
-			}
-			catch (RuntimeException re) {
-				throw re;
-			}
-			catch (Exception e) {
-				throw new RuntimeException(e);
-			}
-		};
+		try {
+			properties2 = properties2UnsafeSupplier.get();
+		}
+		catch (RuntimeException runtimeException) {
+			throw runtimeException;
+		}
+		catch (Exception exception) {
+			throw new RuntimeException(exception);
+		}
 	}
 
 	@GraphQLField

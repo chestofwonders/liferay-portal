@@ -1,14 +1,107 @@
 [
 	{
 		"description": "This is a description.",
-		"name": "customElement",
+		"name": "commerceCheckoutStep",
 		"properties": [
+			{
+				"default": "",
+				"name": "active",
+				"type": "CETProperty.Type.Boolean"
+			},
+			{
+				"default": "",
+				"name": "checkoutStepLabel",
+				"type": "CETProperty.Type.String"
+			},
+			{
+				"default": "",
+				"name": "checkoutStepName",
+				"type": "CETProperty.Type.String"
+			},
+			{
+				"default": "",
+				"name": "checkoutStepOrder",
+				"type": "CETProperty.Type.String"
+			},
 			{
 				"name": "description",
 				"type": "CETProperty.Type.String"
 			},
 			{
 				"name": "name",
+				"type": "CETProperty.Type.String"
+			},
+			{
+				"default": "",
+				"name": "oAuth2ApplicationExternalReferenceCode",
+				"type": "CETProperty.Type.String"
+			},
+			{
+				"default": "",
+				"name": "order",
+				"type": "CETProperty.Type.Boolean"
+			},
+			{
+				"default": "",
+				"name": "sennaDisabled",
+				"type": "CETProperty.Type.Boolean"
+			},
+			{
+				"default": "",
+				"name": "showControls",
+				"type": "CETProperty.Type.Boolean"
+			},
+			{
+				"default": "https://www.liferay.com",
+				"name": "sourceCodeURL",
+				"type": "CETProperty.Type.String"
+			},
+			{
+				"name": "type",
+				"type": "CETProperty.Type.String"
+			},
+			{
+				"default": "",
+				"name": "visible",
+				"type": "CETProperty.Type.Boolean"
+			}
+		]
+	},
+	{
+		"description": "This is a description.",
+		"name": "customElement",
+		"properties": [
+			{
+				"default": "",
+				"name": "cssURLs",
+				"type": "CETProperty.Type.URLList"
+			},
+			{
+				"name": "description",
+				"type": "CETProperty.Type.String"
+			},
+			{
+				"default": "",
+				"name": "friendlyURLMapping",
+				"type": "CETProperty.Type.String"
+			},
+			{
+				"default": "",
+				"name": "htmlElementName",
+				"type": "CETProperty.Type.String"
+			},
+			{
+				"default": "false",
+				"name": "instanceable",
+				"type": "CETProperty.Type.Boolean"
+			},
+			{
+				"name": "name",
+				"type": "CETProperty.Type.String"
+			},
+			{
+				"default": "",
+				"name": "portletCategoryName",
 				"type": "CETProperty.Type.String"
 			},
 			{
@@ -22,33 +115,8 @@
 			},
 			{
 				"default": "",
-				"name": "cssURLs",
-				"type": "CETProperty.Type.URLList"
-			},
-			{
-				"default": "",
-				"name": "friendlyURLMapping",
-				"type": "CETProperty.Type.String"
-			},
-			{
-				"default": "",
-				"name": "htmlElementName",
-				"type": "CETProperty.Type.String"
-			},
-			{
-				"default": "",
-				"name": "portletCategoryName",
-				"type": "CETProperty.Type.String"
-			},
-			{
-				"default": "",
 				"name": "urls",
 				"type": "CETProperty.Type.URLList"
-			},
-			{
-				"default": "false",
-				"name": "instanceable",
-				"type": "CETProperty.Type.Boolean"
 			},
 			{
 				"default": "false",
@@ -66,19 +134,6 @@
 				"type": "CETProperty.Type.String"
 			},
 			{
-				"name": "name",
-				"type": "CETProperty.Type.String"
-			},
-			{
-				"default": "https://www.liferay.com",
-				"name": "sourceCodeURL",
-				"type": "CETProperty.Type.String"
-			},
-			{
-				"name": "type",
-				"type": "CETProperty.Type.String"
-			},
-			{
 				"default": "",
 				"name": "editorConfigKeys",
 				"type": "CETProperty.Type.StringList"
@@ -89,9 +144,22 @@
 				"type": "CETProperty.Type.StringList"
 			},
 			{
+				"name": "name",
+				"type": "CETProperty.Type.String"
+			},
+			{
 				"default": "",
 				"name": "portletNames",
 				"type": "CETProperty.Type.StringList"
+			},
+			{
+				"default": "https://www.liferay.com",
+				"name": "sourceCodeURL",
+				"type": "CETProperty.Type.String"
+			},
+			{
+				"name": "type",
+				"type": "CETProperty.Type.String"
 			},
 			{
 				"default": "",
@@ -221,7 +289,22 @@
 				"type": "CETProperty.Type.String"
 			},
 			{
+				"default": "",
+				"name": "friendlyURLMapping",
+				"type": "CETProperty.Type.String"
+			},
+			{
+				"default": "false",
+				"name": "instanceable",
+				"type": "CETProperty.Type.Boolean"
+			},
+			{
 				"name": "name",
+				"type": "CETProperty.Type.String"
+			},
+			{
+				"default": "",
+				"name": "portletCategoryName",
 				"type": "CETProperty.Type.String"
 			},
 			{
@@ -235,23 +318,8 @@
 			},
 			{
 				"default": "",
-				"name": "friendlyURLMapping",
-				"type": "CETProperty.Type.String"
-			},
-			{
-				"default": "",
-				"name": "portletCategoryName",
-				"type": "CETProperty.Type.String"
-			},
-			{
-				"default": "",
 				"name": "url",
 				"type": "CETProperty.Type.URL"
-			},
-			{
-				"default": "false",
-				"name": "instanceable",
-				"type": "CETProperty.Type.Boolean"
 			}
 		]
 	},
@@ -259,6 +327,11 @@
 		"description": "This is a description.",
 		"name": "jsImportMapsEntry",
 		"properties": [
+			{
+				"default": "",
+				"name": "bareSpecifier",
+				"type": "CETProperty.Type.String"
+			},
 			{
 				"name": "description",
 				"type": "CETProperty.Type.String"
@@ -274,11 +347,6 @@
 			},
 			{
 				"name": "type",
-				"type": "CETProperty.Type.String"
-			},
-			{
-				"default": "",
-				"name": "bareSpecifier",
 				"type": "CETProperty.Type.String"
 			},
 			{
@@ -321,8 +389,18 @@
 		"name": "themeCSS",
 		"properties": [
 			{
+				"default": "",
+				"name": "clayURL",
+				"type": "CETProperty.Type.URL"
+			},
+			{
 				"name": "description",
 				"type": "CETProperty.Type.String"
+			},
+			{
+				"default": "",
+				"name": "mainURL",
+				"type": "CETProperty.Type.URL"
 			},
 			{
 				"name": "name",
@@ -336,16 +414,6 @@
 			{
 				"name": "type",
 				"type": "CETProperty.Type.String"
-			},
-			{
-				"default": "",
-				"name": "clayURL",
-				"type": "CETProperty.Type.URL"
-			},
-			{
-				"default": "",
-				"name": "mainURL",
-				"type": "CETProperty.Type.URL"
 			}
 		]
 	},
@@ -414,6 +482,11 @@
 				"type": "CETProperty.Type.String"
 			},
 			{
+				"default": "false",
+				"name": "enableSVG4Everybody",
+				"type": "CETProperty.Type.Boolean"
+			},
+			{
 				"name": "name",
 				"type": "CETProperty.Type.String"
 			},
@@ -430,11 +503,6 @@
 				"default": "",
 				"name": "url",
 				"type": "CETProperty.Type.URL"
-			},
-			{
-				"default": "false",
-				"name": "enableSVG4Everybody",
-				"type": "CETProperty.Type.Boolean"
 			}
 		]
 	}

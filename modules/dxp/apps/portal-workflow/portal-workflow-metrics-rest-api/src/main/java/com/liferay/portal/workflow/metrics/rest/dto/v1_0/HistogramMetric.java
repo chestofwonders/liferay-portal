@@ -7,6 +7,7 @@ package com.liferay.portal.workflow.metrics.rest.dto.v1_0;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFilter;
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
@@ -81,11 +82,11 @@ public class HistogramMetric implements Serializable {
 			try {
 				return histogramsUnsafeSupplier.get();
 			}
-			catch (RuntimeException re) {
-				throw re;
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
 			}
-			catch (Exception e) {
-				throw new RuntimeException(e);
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
 			}
 		};
 	}
@@ -97,6 +98,7 @@ public class HistogramMetric implements Serializable {
 	@JsonIgnore
 	private Supplier<Histogram[]> _histogramsSupplier;
 
+	@JsonGetter("unit")
 	@Schema
 	@Valid
 	public Unit getUnit() {
@@ -132,11 +134,11 @@ public class HistogramMetric implements Serializable {
 			try {
 				return unitUnsafeSupplier.get();
 			}
-			catch (RuntimeException re) {
-				throw re;
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
 			}
-			catch (Exception e) {
-				throw new RuntimeException(e);
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
 			}
 		};
 	}
@@ -173,11 +175,11 @@ public class HistogramMetric implements Serializable {
 			try {
 				return valueUnsafeSupplier.get();
 			}
-			catch (RuntimeException re) {
-				throw re;
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
 			}
-			catch (Exception e) {
-				throw new RuntimeException(e);
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
 			}
 		};
 	}

@@ -7,6 +7,7 @@ package com.liferay.headless.delivery.dto.v1_0;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFilter;
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
@@ -57,6 +58,7 @@ public class SiteMapSettings implements Serializable {
 		return ObjectMapperUtil.unsafeReadValue(SiteMapSettings.class, json);
 	}
 
+	@JsonGetter("changeFrequency")
 	@Schema(description = "Indicates how often a page is updated.")
 	@Valid
 	public ChangeFrequency getChangeFrequency() {
@@ -95,11 +97,11 @@ public class SiteMapSettings implements Serializable {
 			try {
 				return changeFrequencyUnsafeSupplier.get();
 			}
-			catch (RuntimeException re) {
-				throw re;
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
 			}
-			catch (Exception e) {
-				throw new RuntimeException(e);
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
 			}
 		};
 	}
@@ -138,11 +140,11 @@ public class SiteMapSettings implements Serializable {
 			try {
 				return includeUnsafeSupplier.get();
 			}
-			catch (RuntimeException re) {
-				throw re;
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
 			}
-			catch (Exception e) {
-				throw new RuntimeException(e);
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
 			}
 		};
 	}
@@ -185,11 +187,11 @@ public class SiteMapSettings implements Serializable {
 			try {
 				return pagePriorityUnsafeSupplier.get();
 			}
-			catch (RuntimeException re) {
-				throw re;
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
 			}
-			catch (Exception e) {
-				throw new RuntimeException(e);
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
 			}
 		};
 	}

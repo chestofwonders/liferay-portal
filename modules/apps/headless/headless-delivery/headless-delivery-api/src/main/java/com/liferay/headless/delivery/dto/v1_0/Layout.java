@@ -7,6 +7,7 @@ package com.liferay.headless.delivery.dto.v1_0;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFilter;
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
@@ -52,6 +53,7 @@ public class Layout implements Serializable {
 		return ObjectMapperUtil.unsafeReadValue(Layout.class, json);
 	}
 
+	@JsonGetter("align")
 	@Schema(deprecated = true)
 	@Valid
 	public Align getAlign() {
@@ -87,11 +89,11 @@ public class Layout implements Serializable {
 			try {
 				return alignUnsafeSupplier.get();
 			}
-			catch (RuntimeException re) {
-				throw re;
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
 			}
-			catch (Exception e) {
-				throw new RuntimeException(e);
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
 			}
 		};
 	}
@@ -129,11 +131,11 @@ public class Layout implements Serializable {
 			try {
 				return borderColorUnsafeSupplier.get();
 			}
-			catch (RuntimeException re) {
-				throw re;
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
 			}
-			catch (Exception e) {
-				throw new RuntimeException(e);
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
 			}
 		};
 	}
@@ -146,6 +148,7 @@ public class Layout implements Serializable {
 	@JsonIgnore
 	private Supplier<String> _borderColorSupplier;
 
+	@JsonGetter("borderRadius")
 	@Schema(deprecated = true)
 	@Valid
 	public BorderRadius getBorderRadius() {
@@ -183,11 +186,11 @@ public class Layout implements Serializable {
 			try {
 				return borderRadiusUnsafeSupplier.get();
 			}
-			catch (RuntimeException re) {
-				throw re;
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
 			}
-			catch (Exception e) {
-				throw new RuntimeException(e);
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
 			}
 		};
 	}
@@ -225,11 +228,11 @@ public class Layout implements Serializable {
 			try {
 				return borderWidthUnsafeSupplier.get();
 			}
-			catch (RuntimeException re) {
-				throw re;
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
 			}
-			catch (Exception e) {
-				throw new RuntimeException(e);
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
 			}
 		};
 	}
@@ -242,6 +245,7 @@ public class Layout implements Serializable {
 	@JsonIgnore
 	private Supplier<Integer> _borderWidthSupplier;
 
+	@JsonGetter("containerType")
 	@Schema(description = "The container's type (fixed or fluid).")
 	@Valid
 	public ContainerType getContainerType() {
@@ -279,11 +283,11 @@ public class Layout implements Serializable {
 			try {
 				return containerTypeUnsafeSupplier.get();
 			}
-			catch (RuntimeException re) {
-				throw re;
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
 			}
-			catch (Exception e) {
-				throw new RuntimeException(e);
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
 			}
 		};
 	}
@@ -295,6 +299,7 @@ public class Layout implements Serializable {
 	@JsonIgnore
 	private Supplier<ContainerType> _containerTypeSupplier;
 
+	@JsonGetter("contentDisplay")
 	@Schema(deprecated = true)
 	@Valid
 	public ContentDisplay getContentDisplay() {
@@ -333,11 +338,11 @@ public class Layout implements Serializable {
 			try {
 				return contentDisplayUnsafeSupplier.get();
 			}
-			catch (RuntimeException re) {
-				throw re;
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
 			}
-			catch (Exception e) {
-				throw new RuntimeException(e);
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
 			}
 		};
 	}
@@ -350,6 +355,7 @@ public class Layout implements Serializable {
 	@JsonIgnore
 	private Supplier<ContentDisplay> _contentDisplaySupplier;
 
+	@JsonGetter("flexWrap")
 	@Schema
 	@Valid
 	public FlexWrap getFlexWrap() {
@@ -387,11 +393,11 @@ public class Layout implements Serializable {
 			try {
 				return flexWrapUnsafeSupplier.get();
 			}
-			catch (RuntimeException re) {
-				throw re;
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
 			}
-			catch (Exception e) {
-				throw new RuntimeException(e);
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
 			}
 		};
 	}
@@ -403,6 +409,7 @@ public class Layout implements Serializable {
 	@JsonIgnore
 	private Supplier<FlexWrap> _flexWrapSupplier;
 
+	@JsonGetter("justify")
 	@Schema(deprecated = true)
 	@Valid
 	public Justify getJustify() {
@@ -440,11 +447,11 @@ public class Layout implements Serializable {
 			try {
 				return justifyUnsafeSupplier.get();
 			}
-			catch (RuntimeException re) {
-				throw re;
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
 			}
-			catch (Exception e) {
-				throw new RuntimeException(e);
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
 			}
 		};
 	}
@@ -482,11 +489,11 @@ public class Layout implements Serializable {
 			try {
 				return marginBottomUnsafeSupplier.get();
 			}
-			catch (RuntimeException re) {
-				throw re;
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
 			}
-			catch (Exception e) {
-				throw new RuntimeException(e);
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
 			}
 		};
 	}
@@ -524,11 +531,11 @@ public class Layout implements Serializable {
 			try {
 				return marginLeftUnsafeSupplier.get();
 			}
-			catch (RuntimeException re) {
-				throw re;
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
 			}
-			catch (Exception e) {
-				throw new RuntimeException(e);
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
 			}
 		};
 	}
@@ -566,11 +573,11 @@ public class Layout implements Serializable {
 			try {
 				return marginRightUnsafeSupplier.get();
 			}
-			catch (RuntimeException re) {
-				throw re;
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
 			}
-			catch (Exception e) {
-				throw new RuntimeException(e);
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
 			}
 		};
 	}
@@ -608,11 +615,11 @@ public class Layout implements Serializable {
 			try {
 				return marginTopUnsafeSupplier.get();
 			}
-			catch (RuntimeException re) {
-				throw re;
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
 			}
-			catch (Exception e) {
-				throw new RuntimeException(e);
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
 			}
 		};
 	}
@@ -650,11 +657,11 @@ public class Layout implements Serializable {
 			try {
 				return opacityUnsafeSupplier.get();
 			}
-			catch (RuntimeException re) {
-				throw re;
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
 			}
-			catch (Exception e) {
-				throw new RuntimeException(e);
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
 			}
 		};
 	}
@@ -692,11 +699,11 @@ public class Layout implements Serializable {
 			try {
 				return paddingBottomUnsafeSupplier.get();
 			}
-			catch (RuntimeException re) {
-				throw re;
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
 			}
-			catch (Exception e) {
-				throw new RuntimeException(e);
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
 			}
 		};
 	}
@@ -734,11 +741,11 @@ public class Layout implements Serializable {
 			try {
 				return paddingHorizontalUnsafeSupplier.get();
 			}
-			catch (RuntimeException re) {
-				throw re;
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
 			}
-			catch (Exception e) {
-				throw new RuntimeException(e);
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
 			}
 		};
 	}
@@ -776,11 +783,11 @@ public class Layout implements Serializable {
 			try {
 				return paddingLeftUnsafeSupplier.get();
 			}
-			catch (RuntimeException re) {
-				throw re;
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
 			}
-			catch (Exception e) {
-				throw new RuntimeException(e);
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
 			}
 		};
 	}
@@ -818,11 +825,11 @@ public class Layout implements Serializable {
 			try {
 				return paddingRightUnsafeSupplier.get();
 			}
-			catch (RuntimeException re) {
-				throw re;
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
 			}
-			catch (Exception e) {
-				throw new RuntimeException(e);
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
 			}
 		};
 	}
@@ -860,11 +867,11 @@ public class Layout implements Serializable {
 			try {
 				return paddingTopUnsafeSupplier.get();
 			}
-			catch (RuntimeException re) {
-				throw re;
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
 			}
-			catch (Exception e) {
-				throw new RuntimeException(e);
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
 			}
 		};
 	}
@@ -877,6 +884,7 @@ public class Layout implements Serializable {
 	@JsonIgnore
 	private Supplier<Integer> _paddingTopSupplier;
 
+	@JsonGetter("shadow")
 	@Schema(deprecated = true)
 	@Valid
 	public Shadow getShadow() {
@@ -914,11 +922,11 @@ public class Layout implements Serializable {
 			try {
 				return shadowUnsafeSupplier.get();
 			}
-			catch (RuntimeException re) {
-				throw re;
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
 			}
-			catch (Exception e) {
-				throw new RuntimeException(e);
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
 			}
 		};
 	}
@@ -931,6 +939,7 @@ public class Layout implements Serializable {
 	@JsonIgnore
 	private Supplier<Shadow> _shadowSupplier;
 
+	@JsonGetter("widthType")
 	@Schema(description = "The width's type (fixed or fluid).")
 	@Valid
 	public WidthType getWidthType() {
@@ -968,11 +977,11 @@ public class Layout implements Serializable {
 			try {
 				return widthTypeUnsafeSupplier.get();
 			}
-			catch (RuntimeException re) {
-				throw re;
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
 			}
-			catch (Exception e) {
-				throw new RuntimeException(e);
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
 			}
 		};
 	}

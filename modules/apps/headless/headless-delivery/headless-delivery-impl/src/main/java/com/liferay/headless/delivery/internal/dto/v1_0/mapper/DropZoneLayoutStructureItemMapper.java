@@ -27,19 +27,19 @@ public class DropZoneLayoutStructureItemMapper
 		long groupId, LayoutStructureItem layoutStructureItem,
 		boolean saveInlineContent, boolean saveMappingConfiguration) {
 
-		DropZoneLayoutStructureItem dropZoneLayoutStructureItem =
-			(DropZoneLayoutStructureItem)layoutStructureItem;
-
 		return new PageElement() {
 			{
-				definition = new PageDropZoneDefinition() {
-					{
-						fragmentSettings = _toFragmentSettingsMap(
-							dropZoneLayoutStructureItem);
-					}
-				};
-				id = layoutStructureItem.getItemId();
-				type = Type.DROP_ZONE;
+				setDefinition(
+					() -> new PageDropZoneDefinition() {
+						{
+							setFragmentSettings(
+								() -> _toFragmentSettingsMap(
+									(DropZoneLayoutStructureItem)
+										layoutStructureItem));
+						}
+					});
+				setId(layoutStructureItem::getItemId);
+				setType(() -> Type.DROP_ZONE);
 			}
 		};
 	}
@@ -51,7 +51,7 @@ public class DropZoneLayoutStructureItemMapper
 			fragments.add(
 				new Fragment() {
 					{
-						key = fragmentEntryKey;
+						setKey(() -> fragmentEntryKey);
 					}
 				});
 		}

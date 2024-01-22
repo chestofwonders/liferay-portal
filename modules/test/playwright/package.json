@@ -1,9 +1,12 @@
 {
 	"author": "",
+	"dependencies": {
+		"uuid": "9.0.0"
+	},
 	"description": "",
 	"devDependencies": {
 		"@liferay/eslint-plugin": "1.5.0",
-		"@liferay/npm-scripts": "49.1.0",
+		"@liferay/npm-scripts": "49.2.0",
 		"@playwright/test": "1.39.0",
 		"@types/node": "^20.9.0",
 		"zip-a-folder": "^3.1.6"
@@ -18,8 +21,8 @@
 		"prettier": "2.1.2"
 	},
 	"scripts": {
-		"checkFormat": "liferay-npm-scripts prettier \"**/*.ts\" --list-different",
-		"format": "liferay-npm-scripts prettier \"**/*.ts\" --write",
+		"checkFormat": "tsc && liferay-npm-scripts lint && liferay-npm-scripts format:check",
+		"format": "tsc && liferay-npm-scripts lint:fix && liferay-npm-scripts format",
 		"playwright": "playwright",
 		"test": "playwright test"
 	},

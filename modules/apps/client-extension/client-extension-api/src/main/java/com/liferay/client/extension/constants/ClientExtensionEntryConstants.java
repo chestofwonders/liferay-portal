@@ -10,6 +10,9 @@ package com.liferay.client.extension.constants;
  */
 public class ClientExtensionEntryConstants {
 
+	public static final String TYPE_COMMERCE_CHECKOUT_STEP =
+		"commerceCheckoutStep";
+
 	public static final String TYPE_CUSTOM_ELEMENT = "customElement";
 
 	public static final String TYPE_EDITOR_CONFIG_CONTRIBUTOR =

@@ -14,6 +14,7 @@ import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFilter;
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
@@ -196,6 +197,8 @@ public class ${schemaName} <#if dtoParentClassName?has_content>extends ${dtoPare
 
 		<#if enumSchemas?keys?seq_contains(propertyType)>
 			<#assign capitalizedPropertyName = propertyType />
+
+			@JsonGetter("${propertyName}")
 		</#if>
 
 		public ${propertyType} get${capitalizedPropertyName}() {
@@ -229,17 +232,29 @@ public class ${schemaName} <#if dtoParentClassName?has_content>extends ${dtoPare
 
 		@JsonIgnore
 		public void set${capitalizedPropertyName}(UnsafeSupplier<${propertyType}, Exception> ${propertyName}UnsafeSupplier) {
-			_${propertyName}Supplier = () -> {
+			<#if propertySchema.jsonMap>
 				try {
-					return ${propertyName}UnsafeSupplier.get();
+					${propertyName} = ${propertyName}UnsafeSupplier.get();
 				}
-				catch (RuntimeException re) {
-					throw re;
+				catch (RuntimeException runtimeException) {
+					throw runtimeException;
 				}
-				catch (Exception e) {
-					throw new RuntimeException(e);
+				catch (Exception exception) {
+					throw new RuntimeException(exception);
 				}
-			};
+			<#else>
+				_${propertyName}Supplier = () -> {
+					try {
+						return ${propertyName}UnsafeSupplier.get();
+					}
+					catch (RuntimeException runtimeException) {
+						throw runtimeException;
+					}
+					catch (Exception exception) {
+						throw new RuntimeException(exception);
+					}
+				};
+			</#if>
 		}
 
 		<#if propertySchema.deprecated>

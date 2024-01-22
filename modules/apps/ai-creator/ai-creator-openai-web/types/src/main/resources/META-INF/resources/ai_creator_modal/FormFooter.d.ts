@@ -6,7 +6,9 @@
 /// <reference types="react" />
 
 interface Props {
-	disabledAddButton?: boolean;
+	addButtonLabel?: string;
+	disableAddButton?: boolean;
+	disableRetryButton?: boolean;
 	onAdd: () => void;
 	onClose: () => void;
 	showAddButton: boolean;
@@ -14,7 +16,9 @@ interface Props {
 	showRetryButton: boolean;
 }
 export declare function FormFooter({
-	disabledAddButton,
+	addButtonLabel,
+	disableAddButton,
+	disableRetryButton,
 	onAdd,
 	onClose,
 	showAddButton,

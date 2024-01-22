@@ -57,41 +57,50 @@ public class AttachmentDTOConverter
 			_cpAttachmentFileEntryLocalService.getCPAttachmentFileEntry(
 				(Long)attachmentDTOConverterContext.getId());
 
-		Company company = _companyLocalService.getCompany(
-			cpAttachmentFileEntry.getCompanyId());
-
-		String portalURL = _portal.getPortalURL(
-			company.getVirtualHostname(), _portal.getPortalServerPort(false),
-			true);
-
-		String downloadURL = _commerceMediaResolver.getDownloadURL(
-			attachmentDTOConverterContext.getCommerceAccountId(),
-			cpAttachmentFileEntry.getCPAttachmentFileEntryId());
-
 		return new Attachment() {
 			{
-				customFields = CustomFieldsUtil.toCustomFields(
-					dtoConverterContext.isAcceptAllLanguages(),
-					CPAttachmentFileEntry.class.getName(),
-					cpAttachmentFileEntry.getCPAttachmentFileEntryId(),
-					cpAttachmentFileEntry.getCompanyId(),
-					dtoConverterContext.getLocale());
-				displayDate = cpAttachmentFileEntry.getDisplayDate();
-				expirationDate = cpAttachmentFileEntry.getExpirationDate();
-				galleryEnabled = cpAttachmentFileEntry.isGalleryEnabled();
-				id = cpAttachmentFileEntry.getCPAttachmentFileEntryId();
-				options = _getAttachmentOptions(cpAttachmentFileEntry);
-				priority = cpAttachmentFileEntry.getPriority();
-				src = portalURL + downloadURL;
-				tags = TransformUtil.transformToArray(
-					_assetTagService.getTags(
-						cpAttachmentFileEntry.getModelClassName(),
-						cpAttachmentFileEntry.getCPAttachmentFileEntryId()),
-					AssetTag::getName, String.class);
-				title = cpAttachmentFileEntry.getTitle(
-					_language.getLanguageId(
-						attachmentDTOConverterContext.getLocale()));
-				type = cpAttachmentFileEntry.getType();
+				setCustomFields(
+					() -> CustomFieldsUtil.toCustomFields(
+						dtoConverterContext.isAcceptAllLanguages(),
+						CPAttachmentFileEntry.class.getName(),
+						cpAttachmentFileEntry.getCPAttachmentFileEntryId(),
+						cpAttachmentFileEntry.getCompanyId(),
+						dtoConverterContext.getLocale()));
+				setDisplayDate(cpAttachmentFileEntry::getDisplayDate);
+				setExpirationDate(cpAttachmentFileEntry::getExpirationDate);
+				setGalleryEnabled(cpAttachmentFileEntry::isGalleryEnabled);
+				setId(cpAttachmentFileEntry::getCPAttachmentFileEntryId);
+				setOptions(() -> _getAttachmentOptions(cpAttachmentFileEntry));
+				setPriority(cpAttachmentFileEntry::getPriority);
+				setSrc(
+					() -> {
+						Company company = _companyLocalService.getCompany(
+							cpAttachmentFileEntry.getCompanyId());
+
+						String portalURL = _portal.getPortalURL(
+							company.getVirtualHostname(),
+							_portal.getPortalServerPort(false), true);
+
+						String downloadURL =
+							_commerceMediaResolver.getDownloadURL(
+								attachmentDTOConverterContext.
+									getCommerceAccountId(),
+								cpAttachmentFileEntry.
+									getCPAttachmentFileEntryId());
+
+						return portalURL + downloadURL;
+					});
+				setTags(
+					() -> TransformUtil.transformToArray(
+						_assetTagService.getTags(
+							cpAttachmentFileEntry.getModelClassName(),
+							cpAttachmentFileEntry.getCPAttachmentFileEntryId()),
+						AssetTag::getName, String.class));
+				setTitle(
+					() -> cpAttachmentFileEntry.getTitle(
+						_language.getLanguageId(
+							attachmentDTOConverterContext.getLocale())));
+				setType(cpAttachmentFileEntry::getType);
 			}
 		};
 	}

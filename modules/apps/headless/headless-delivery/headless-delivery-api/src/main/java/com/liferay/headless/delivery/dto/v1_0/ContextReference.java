@@ -7,6 +7,7 @@ package com.liferay.headless.delivery.dto.v1_0;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFilter;
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
@@ -54,6 +55,7 @@ public class ContextReference implements Serializable {
 		return ObjectMapperUtil.unsafeReadValue(ContextReference.class, json);
 	}
 
+	@JsonGetter("contextSource")
 	@Schema
 	@Valid
 	public ContextSource getContextSource() {
@@ -91,11 +93,11 @@ public class ContextReference implements Serializable {
 			try {
 				return contextSourceUnsafeSupplier.get();
 			}
-			catch (RuntimeException re) {
-				throw re;
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
 			}
-			catch (Exception e) {
-				throw new RuntimeException(e);
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
 			}
 		};
 	}

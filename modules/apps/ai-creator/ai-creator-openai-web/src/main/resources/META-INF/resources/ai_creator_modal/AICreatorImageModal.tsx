@@ -36,6 +36,7 @@ type AICreatorModalLearnResources = {
 };
 
 type RequestStatus =
+	| {type: 'adding'}
 	| {type: 'idle'}
 	| {type: 'loading'}
 	| {errorMessage: string; type: 'error'};
@@ -58,8 +59,21 @@ export default function AICreatorImageModal({
 
 	const [selectedImages, setSelectedImages] = useState<string[]>([]);
 
+	const setErrorStatus = (
+		errorMessage = Liferay.Language.get('an-unexpected-error-occurred')
+	) => {
+		setStatus({
+			errorMessage,
+			type: 'error',
+		});
+	};
+
 	const onAdd = () => {
 		if (selectedImages.length) {
+			setStatus({type: 'adding'});
+
+			const addedImages: string[] = [];
+
 			Promise.all(
 				selectedImages.map((imageURL) => {
 					const formData = new FormData();
@@ -68,12 +82,30 @@ export default function AICreatorImageModal({
 					return fetch(uploadGenerationsURL, {
 						body: formData,
 						method: 'POST',
-					});
+					})
+						.then((response) => response.json())
+						.then((json) => {
+							if (json.success) {
+								addedImages.push(imageURL);
+							}
+							else {
+								setErrorStatus(json.error?.message);
+							}
+						})
+						.catch((error) => {
+							if (process.env.NODE_ENV === 'development') {
+								console.error(error);
+							}
+
+							setErrorStatus();
+						});
 				})
 			).then(() => {
+				setStatus({type: 'idle'});
+
 				const opener = Liferay.Util.getOpener();
 
-				opener.Liferay.fire(eventName, {selectedItems: selectedImages});
+				opener.Liferay.fire(eventName, {selectedItems: addedImages});
 			});
 		}
 	};
@@ -94,15 +126,6 @@ export default function AICreatorImageModal({
 	const onSubmit = (event: FormEvent) => {
 		event.preventDefault();
 		setStatus({type: 'loading'});
-
-		const setErrorStatus = (
-			errorMessage = Liferay.Language.get('an-unexpected-error-occurred')
-		) => {
-			setStatus({
-				errorMessage,
-				type: 'error',
-			});
-		};
 
 		const formData = new FormData(event.target as HTMLFormElement);
 		const url = new URL(window.location.href);
@@ -184,7 +207,16 @@ export default function AICreatorImageModal({
 
 					<div className="d-flex flex-column flex-shrink-0">
 						<FormFooter
-							disabledAddButton={Boolean(!selectedImages?.length)}
+							addButtonLabel={Liferay.Language.get(
+								'add-selected'
+							)}
+							disableAddButton={Boolean(
+								!selectedImages?.length ||
+									status.type === 'adding'
+							)}
+							disableRetryButton={Boolean(
+								status.type === 'adding'
+							)}
 							onAdd={onAdd}
 							onClose={closeModal}
 							showAddButton={Boolean(imagesURL?.length)}
