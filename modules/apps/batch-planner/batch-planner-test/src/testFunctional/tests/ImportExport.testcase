@@ -140,7 +140,6 @@ definition {
 	@ignore = "true"
 	@priority = 3
 	test CanExcludeCSVFieldsFromExport {
-		property custom.properties = "feature.flag.LPS-173135=true";
 		property portal.acceptance = "true";
 
 		task ("Given several channels") {
@@ -298,7 +297,6 @@ definition {
 	@ignore = "true"
 	@priority = 3
 	test CanExportCSVFiles {
-		property custom.properties = "feature.flag.LPS-173135=true";
 		property portal.acceptance = "true";
 
 		task ("Given several accounts") {
@@ -339,7 +337,6 @@ definition {
 	@ignore = "true"
 	@priority = 3
 	test CanExportCSVFileWithoutHeaders {
-		property custom.properties = "feature.flag.LPS-173135=true";
 		property portal.acceptance = "true";
 
 		task ("Given several accounts") {
@@ -1330,6 +1327,11 @@ definition {
 
 		task ("When new export file") {
 			ImportExport.gotoExport();
+
+			Select(
+				key_selectFieldLabel = "Export File Format",
+				locator1 = "ImportExport#SELECT",
+				value1 = "JSON");
 		}
 
 		task ("Then I can see all available entity types to export") {

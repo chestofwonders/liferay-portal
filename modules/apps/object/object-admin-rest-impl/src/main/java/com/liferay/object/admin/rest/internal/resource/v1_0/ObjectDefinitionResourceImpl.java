@@ -85,14 +85,10 @@ import com.liferay.portal.vulcan.pagination.Pagination;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 import com.liferay.portal.vulcan.util.SearchUtil;
 
-import java.io.Serializable;
-
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
@@ -111,39 +107,6 @@ import org.osgi.service.component.annotations.ServiceScope;
 )
 public class ObjectDefinitionResourceImpl
 	extends BaseObjectDefinitionResourceImpl {
-
-	@Override
-	public void create(
-			Collection<ObjectDefinition> objectDefinitions,
-			Map<String, Serializable> parameters)
-		throws Exception {
-
-		super.create(objectDefinitions, parameters);
-
-		for (ObjectDefinition objectDefinition : objectDefinitions) {
-			Status status = objectDefinition.getStatus();
-
-			if ((status == null) ||
-				(status.getCode() != WorkflowConstants.STATUS_APPROVED)) {
-
-				continue;
-			}
-
-			com.liferay.object.model.ObjectDefinition
-				serviceBuilderObjectDefinition =
-					_objectDefinitionService.
-						getObjectDefinitionByExternalReferenceCode(
-							objectDefinition.getExternalReferenceCode(),
-							contextCompany.getCompanyId());
-
-			if (serviceBuilderObjectDefinition.isApproved()) {
-				continue;
-			}
-
-			_objectDefinitionService.publishCustomObjectDefinition(
-				serviceBuilderObjectDefinition.getObjectDefinitionId());
-		}
-	}
 
 	@Override
 	public void deleteObjectDefinition(Long objectDefinitionId)
@@ -470,6 +433,14 @@ public class ObjectDefinitionResourceImpl
 				titleServiceBuilderObjectField.getObjectFieldId();
 		}
 
+		int statusInt = serviceBuilderObjectDefinition.getStatus();
+
+		if (objectDefinition.getStatus() != null) {
+			Status status = objectDefinition.getStatus();
+
+			statusInt = status.getCode();
+		}
+
 		if (serviceBuilderObjectDefinition.isUnmodifiableSystemObject()) {
 			serviceBuilderObjectDefinition =
 				_objectDefinitionService.updateSystemObjectDefinition(
@@ -512,7 +483,7 @@ public class ObjectDefinitionResourceImpl
 					GetterUtil.getBoolean(objectDefinition.getPortlet()),
 					LocalizedMapUtil.getLocalizedMap(
 						objectDefinition.getPluralLabel()),
-					objectDefinition.getScope());
+					objectDefinition.getScope(), statusInt);
 		}
 
 		List<ObjectAction> objectActions = ListUtil.fromArray(
@@ -709,7 +680,15 @@ public class ObjectDefinitionResourceImpl
 			objectValidationRules.toArray(new ObjectValidationRule[0]),
 			objectViews);
 
-		return _toObjectDefinition(serviceBuilderObjectDefinition);
+		if ((statusInt != WorkflowConstants.STATUS_APPROVED) ||
+			serviceBuilderObjectDefinition.isApproved()) {
+
+			return _toObjectDefinition(serviceBuilderObjectDefinition);
+		}
+
+		return _toObjectDefinition(
+			_objectDefinitionService.publishCustomObjectDefinition(
+				serviceBuilderObjectDefinition.getObjectDefinitionId()));
 	}
 
 	@Override

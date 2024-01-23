@@ -1836,6 +1836,7 @@ public class ObjectDefinitionLocalServiceTest {
 
 		long objectDefinitionId = objectDefinition.getObjectDefinitionId();
 		String scope = objectDefinition.getScope();
+		int status = objectDefinition.getStatus();
 
 		AssertUtils.assertFailure(
 			ObjectDefinitionEnableObjectEntryHistoryException.class,
@@ -1844,7 +1845,7 @@ public class ObjectDefinitionLocalServiceTest {
 			() -> _updateObjectDefinition(
 				null, objectDefinitionId, 0, 0, true,
 				LocalizedMapUtil.getLocalizedMap("Able"), "Able",
-				LocalizedMapUtil.getLocalizedMap("Ables"), scope));
+				LocalizedMapUtil.getLocalizedMap("Ables"), scope, status));
 		AssertUtils.assertFailure(
 			ObjectDefinitionExternalReferenceCodeException.
 				MustNotStartWithPrefix.class,
@@ -1852,7 +1853,7 @@ public class ObjectDefinitionLocalServiceTest {
 			() -> _updateObjectDefinition(
 				"L_INVALID_ERC_TEST", objectDefinitionId, 0, 0, false,
 				LocalizedMapUtil.getLocalizedMap("Able"), "Able",
-				LocalizedMapUtil.getLocalizedMap("Ables"), scope));
+				LocalizedMapUtil.getLocalizedMap("Ables"), scope, status));
 
 		objectDefinition.setStorageType(
 			ObjectDefinitionConstants.STORAGE_TYPE_DEFAULT);
@@ -1870,7 +1871,7 @@ public class ObjectDefinitionLocalServiceTest {
 				null, objectDefinitionId, RandomTestUtil.randomLong(),
 				RandomTestUtil.randomLong(), false,
 				LocalizedMapUtil.getLocalizedMap("Able"), "Able",
-				LocalizedMapUtil.getLocalizedMap("Ables"), scope));
+				LocalizedMapUtil.getLocalizedMap("Ables"), scope, status));
 
 		ObjectField objectField = ObjectFieldUtil.addCustomObjectField(
 			new TextObjectFieldBuilder(
@@ -1894,7 +1895,7 @@ public class ObjectDefinitionLocalServiceTest {
 				objectDefinition.isActive(), true, false, false, false, false,
 				LocalizedMapUtil.getLocalizedMap("Able"), "Able", null, null,
 				false, LocalizedMapUtil.getLocalizedMap("Ables"),
-				objectDefinition.getScope());
+				objectDefinition.getScope(), objectDefinition.getStatus());
 
 		Assert.assertEquals(
 			objectField.getObjectFieldId(),
@@ -1914,7 +1915,7 @@ public class ObjectDefinitionLocalServiceTest {
 				objectDefinition.isActive(), true, false, false, false, false,
 				LocalizedMapUtil.getLocalizedMap("Able"), "Able", null, null,
 				false, LocalizedMapUtil.getLocalizedMap("Ables"),
-				objectDefinition.getScope());
+				objectDefinition.getScope(), objectDefinition.getStatus());
 
 		Assert.assertEquals(
 			externalReferenceCode, objectDefinition.getExternalReferenceCode());
@@ -1939,7 +1940,7 @@ public class ObjectDefinitionLocalServiceTest {
 				false, objectDefinition.isActive(), true, false, false, false,
 				true, LocalizedMapUtil.getLocalizedMap("Baker"), "Baker", null,
 				null, false, LocalizedMapUtil.getLocalizedMap("Bakers"),
-				objectDefinition.getScope());
+				objectDefinition.getScope(), objectDefinition.getStatus());
 
 		Assert.assertFalse(objectDefinition.isActive());
 		Assert.assertTrue(objectDefinition.isEnableObjectEntryHistory());
@@ -1951,9 +1952,10 @@ public class ObjectDefinitionLocalServiceTest {
 			LocalizedMapUtil.getLocalizedMap("Bakers"),
 			objectDefinition.getPluralLabelMap());
 
-		_objectDefinitionLocalService.publishCustomObjectDefinition(
-			TestPropsValues.getUserId(),
-			objectDefinition.getObjectDefinitionId());
+		objectDefinition =
+			_objectDefinitionLocalService.publishCustomObjectDefinition(
+				TestPropsValues.getUserId(),
+				objectDefinition.getObjectDefinitionId());
 
 		objectDefinition =
 			_objectDefinitionLocalService.updateCustomObjectDefinition(
@@ -1961,7 +1963,7 @@ public class ObjectDefinitionLocalServiceTest {
 				false, true, true, false, false, false, true,
 				LocalizedMapUtil.getLocalizedMap("Charlie"), "Charlie", null,
 				null, false, LocalizedMapUtil.getLocalizedMap("Charlies"),
-				objectDefinition.getScope());
+				objectDefinition.getScope(), objectDefinition.getStatus());
 
 		Assert.assertTrue(objectDefinition.isActive());
 		Assert.assertTrue(objectDefinition.isEnableObjectEntryHistory());
@@ -2093,7 +2095,8 @@ public class ObjectDefinitionLocalServiceTest {
 				objectFolderId, 0, false, false, false, true, false, false,
 				false, LocalizedMapUtil.getLocalizedMap("Charlie"), "Charlie",
 				null, null, false, LocalizedMapUtil.getLocalizedMap("Charlie"),
-				ObjectDefinitionConstants.SCOPE_SITE));
+				ObjectDefinitionConstants.SCOPE_SITE,
+				objectDefinition1.getStatus()));
 
 		// Modifiable system object definition must be published to be actived
 
@@ -2105,7 +2108,8 @@ public class ObjectDefinitionLocalServiceTest {
 				false, true, false, true, false, false, false,
 				LocalizedMapUtil.getLocalizedMap("Charlie"), "Charlie", null,
 				null, false, LocalizedMapUtil.getLocalizedMap("Charlies"),
-				ObjectDefinitionConstants.SCOPE_SITE));
+				ObjectDefinitionConstants.SCOPE_SITE,
+				objectDefinition1.getStatus()));
 
 		// Label is null
 
@@ -2116,7 +2120,8 @@ public class ObjectDefinitionLocalServiceTest {
 				null, objectDefinition1.getObjectDefinitionId(), 0, 0, 0, 0,
 				false, false, false, true, false, false, false, null, "Charlie",
 				null, null, false, LocalizedMapUtil.getLocalizedMap("Charlie"),
-				ObjectDefinitionConstants.SCOPE_SITE));
+				ObjectDefinitionConstants.SCOPE_SITE,
+				objectDefinition1.getStatus()));
 
 		// Plural label is null
 
@@ -2127,7 +2132,8 @@ public class ObjectDefinitionLocalServiceTest {
 				null, objectDefinition1.getObjectDefinitionId(), 0, 0, 0, 0,
 				false, false, false, true, false, false, false,
 				LocalizedMapUtil.getLocalizedMap("Charlie"), "Charlie", null,
-				null, false, null, ObjectDefinitionConstants.SCOPE_SITE));
+				null, false, null, ObjectDefinitionConstants.SCOPE_SITE,
+				objectDefinition1.getStatus()));
 
 		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition1);
 
@@ -2162,7 +2168,7 @@ public class ObjectDefinitionLocalServiceTest {
 				false, false, false,
 				LocalizedMapUtil.getLocalizedMap("Charlie"), "Charlie", null,
 				null, false, LocalizedMapUtil.getLocalizedMap("Charlies"),
-				objectDefinition2.getScope());
+				objectDefinition2.getScope(), objectDefinition2.getStatus());
 
 		Assert.assertEquals(
 			objectFolder.getObjectFolderId(),
@@ -2696,7 +2702,8 @@ public class ObjectDefinitionLocalServiceTest {
 					false, LocalizedMapUtil.getLocalizedMap("Able"), "Able",
 					null, null, false,
 					LocalizedMapUtil.getLocalizedMap("Ables"),
-					objectDefinition2.getScope());
+					objectDefinition2.getScope(),
+					objectDefinition2.getStatus());
 
 			Assert.fail();
 		}
@@ -2725,14 +2732,15 @@ public class ObjectDefinitionLocalServiceTest {
 			String externalReferenceCode, long objectDefinitionId,
 			long descriptionObjectFieldId, long titleObjectFieldId,
 			boolean enableObjectEntryHistory, Map<Locale, String> labelMap,
-			String name, Map<Locale, String> pluralLabelMap, String scope)
+			String name, Map<Locale, String> pluralLabelMap, String scope,
+			int status)
 		throws PortalException {
 
 		return _objectDefinitionLocalService.updateCustomObjectDefinition(
 			externalReferenceCode, objectDefinitionId, 0,
 			descriptionObjectFieldId, 0, titleObjectFieldId, false, false,
 			false, false, false, false, enableObjectEntryHistory, labelMap,
-			name, null, null, false, pluralLabelMap, scope);
+			name, null, null, false, pluralLabelMap, scope, status);
 	}
 
 	private static ObjectFolder _defaultObjectFolder;

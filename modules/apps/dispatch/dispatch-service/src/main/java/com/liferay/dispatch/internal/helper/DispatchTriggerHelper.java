@@ -128,13 +128,15 @@ public class DispatchTriggerHelper {
 
 	private String _getGroupName(DispatchTrigger dispatchTrigger) {
 		return StringBundler.concat(
-			"DISPATCH_GROUP_", dispatchTrigger.getDispatchTriggerId(),
+			"DISPATCH_GROUP_",
+			String.format("%07d", dispatchTrigger.getDispatchTriggerId()),
 			StringPool.AT, dispatchTrigger.getCompanyId());
 	}
 
 	private String _getJobName(DispatchTrigger dispatchTrigger) {
 		return StringBundler.concat(
-			"DISPATCH_JOB_", dispatchTrigger.getDispatchTriggerId(),
+			"DISPATCH_JOB_",
+			String.format("%07d", dispatchTrigger.getDispatchTriggerId()),
 			StringPool.AT, dispatchTrigger.getCompanyId());
 	}
 

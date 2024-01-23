@@ -8,13 +8,15 @@ import {defineConfig} from '@playwright/test';
 import {config as batchPlanner} from './tests/batch-planner/config';
 import {config as dataSetManager} from './tests/data-set-manager/config';
 import {config as exportImportWeb} from './tests/export-import-web/config';
-import {config as setup} from './tests/global.setup.config';
 import {config as layoutContentPageEditorWeb} from './tests/layout-content-page-editor-web/config';
 import {config as object} from './tests/object-web/config';
 import {config as portalWeb} from './tests/portal-web/config';
 import {config as usersAdminWeb} from './tests/users-admin-web/config';
 
 export default defineConfig({
+	expect: {
+		timeout: 15 * 1000,
+	},
 	forbidOnly: !!process.env.CI,
 	projects: [
 		batchPlanner,
@@ -23,7 +25,6 @@ export default defineConfig({
 		layoutContentPageEditorWeb,
 		object,
 		portalWeb,
-		setup,
 		usersAdminWeb,
 	],
 	reporter: [
@@ -42,6 +43,7 @@ export default defineConfig({
 	],
 	retries: process.env.CI ? 2 : 0,
 	testDir: './tests',
+	timeout: 90 * 1000,
 	use: {
 		baseURL: process.env.PORTAL_URL
 			? process.env.PORTAL_URL
