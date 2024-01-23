@@ -7,8 +7,13 @@ import {expect, mergeTests} from '@playwright/test';
 
 import {apiHelpersTest} from '../../fixtures/apiHelpersTest';
 import {dataSetManagerPagesTest} from '../../fixtures/dataSetManagerPageTest';
+import {loginTest} from '../../fixtures/loginTest';
 
-export const test = mergeTests(apiHelpersTest, dataSetManagerPagesTest);
+export const test = mergeTests(
+	apiHelpersTest,
+	dataSetManagerPagesTest,
+	loginTest
+);
 
 test('Data Set Test is created', async ({dataSetManagerPage, page}) => {
 	await dataSetManagerPage.goto();
