@@ -15,11 +15,11 @@ export class DataSetManagerActionsPage {
 	readonly newItemActionForm: {
 		addIconButton: Locator;
 		name: Locator;
+		saveButton: Locator;
 		selectIconModal: {
 			iconsList: Locator;
 			search: Locator;
-		}
-		saveButton: Locator;
+		};
 		type: Locator;
 		url: Locator;
 	};
@@ -27,17 +27,17 @@ export class DataSetManagerActionsPage {
 
 	constructor(page: Page) {
 		this.dataSetManagerViewsPage = new DataSetManagerViewsPage(page);
-		this.newActionButton = page.getByRole('button', { name: /Add Action/ });
+		this.newActionButton = page.getByRole('button', {name: /Add Action/});
 		this.newItemActionForm = {
 			addIconButton: page.getByLabel('add-icon'),
 			name: page.getByPlaceholder('Action Name'),
+			saveButton: page.getByRole('button', {name: /Save/}),
 			selectIconModal: {
 				iconsList: page.locator('li'),
-				search: page.getByPlaceholder('Search')
+				search: page.getByPlaceholder('Search'),
 			},
-			saveButton: page.getByRole('button', { name: /Save/ }),
-			type: page.getByLabel('TypeRequired', { exact: true }),
-			url: page.getByPlaceholder('Add a URL here.')
+			type: page.getByLabel('TypeRequired', {exact: true}),
+			url: page.getByPlaceholder('Add a URL here.'),
 		};
 		this.page = page;
 	}
@@ -46,26 +46,43 @@ export class DataSetManagerActionsPage {
 		await this.dataSetManagerViewsPage.goto();
 		await this.dataSetManagerViewsPage.gotoTestDataSetView();
 
-		this.page.getByRole('button', { name: /Actions/ }).first().click()
+		this.page
+			.getByRole('button', {name: /Actions/})
+			.first()
+			.click();
 	}
 
-	async createTestDataSetAction({icon, name, type, url}: {name: string, type: ActionTypes, url: string, icon: string}) {
+	async createTestDataSetAction({
+		icon,
+		name,
+		type,
+		url,
+	}: {
+		icon: string;
+		name: string;
+		type: ActionTypes;
+		url: string;
+	}) {
 		await this.newActionButton.click();
 
-        await this.newItemActionForm.name.fill(name);
+		await this.newItemActionForm.name.fill(name);
 		await this.newItemActionForm.addIconButton.click();
-        
-        await this.newItemActionForm.selectIconModal.search.fill(icon);
-		await this.newItemActionForm.selectIconModal.iconsList.filter({hasText: icon}).click();
 
-        await this.newItemActionForm.type.selectOption(type);
+		await this.newItemActionForm.selectIconModal.search.fill(icon);
+		await this.newItemActionForm.selectIconModal.iconsList
+			.filter({hasText: icon})
+			.click();
 
-		if( type == 'modal' || type == 'sidePanel' ){
+		await this.newItemActionForm.type.selectOption(type);
+
+		if (type === 'modal' || type === 'sidePanel') {
 			await this.page.getByPlaceholder(/add-here-the-title/).click();
-			await this.page.getByPlaceholder(/add-here-the-title/).fill(`${name} Title`);
+			await this.page
+				.getByPlaceholder(/add-here-the-title/)
+				.fill(`${name} Title`);
 		}
 
-        await this.newItemActionForm.url.fill(url);
-        await this.newItemActionForm.saveButton.click();
+		await this.newItemActionForm.url.fill(url);
+		await this.newItemActionForm.saveButton.click();
 	}
 }

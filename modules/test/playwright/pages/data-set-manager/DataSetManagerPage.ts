@@ -30,31 +30,37 @@ export class DataSetManagerPage {
 	readonly page: Page;
 
 	constructor(page: Page) {
-		this.apiHelpers =  new ApiHelpers(page);
+		this.apiHelpers = new ApiHelpers(page);
 		this.applicationsMenuPage = new ApplicationsMenuPage(page);
 		this.basePath = 'data-set-manager/entries';
 		this.dataSetsTable = page.locator('.data-set > div:nth-child(2)');
 		this.newDataSetButton = page.getByLabel('New Data Set').first();
 		this.newDataSetModal = {
-			heading: page.getByRole('heading', { name: 'New Data Set' }),
-			name: page.getByLabel('NameRequired'), 
-			restApplicationField: page.getByLabel('REST ApplicationRequired'), 
-			restApplicationOptions: page.locator('.fds-entries-dropdown-menu').first(), 
+			heading: page.getByRole('heading', {name: 'New Data Set'}),
+			name: page.getByLabel('NameRequired'),
+			restApplicationField: page.getByLabel('REST ApplicationRequired'),
+			restApplicationOptions: page
+				.locator('.fds-entries-dropdown-menu')
+				.first(),
 			restEndpointField: page.getByLabel('REST EndpointRequired'),
-			restEndpointOptions: page.locator('.fds-entries-dropdown-menu').locator('nth=2'), 
-			restSchemaField: page.getByLabel('REST SchemaRequired'), 
-			restSchemaOptions: page.locator('.fds-entries-dropdown-menu').locator('nth=1'), 
-			saveButton: page.getByRole('button', { name: 'Save' })
+			restEndpointOptions: page
+				.locator('.fds-entries-dropdown-menu')
+				.locator('nth=2'),
+			restSchemaField: page.getByLabel('REST SchemaRequired'),
+			restSchemaOptions: page
+				.locator('.fds-entries-dropdown-menu')
+				.locator('nth=1'),
+			saveButton: page.getByRole('button', {name: 'Save'}),
 		};
 		this.page = page;
 	}
 
 	async createTestDataSetAPI() {
 		this.apiHelpers.post(`${this.apiHelpers.baseUrl}${this.basePath}`, {
-			label:	"Data Set Test",
-			restApplication: "/data-set-manager/fields",
-			restEndpoint: "/",
-			restSchema: "FDSField"
+			label: 'Data Set Test',
+			restApplication: '/data-set-manager/fields',
+			restEndpoint: '/',
+			restSchema: 'FDSField',
 		});
 	}
 
@@ -64,18 +70,21 @@ export class DataSetManagerPage {
 
 		await this.newDataSetModal.name.fill('Data Set Test');
 		await this.newDataSetModal.restApplicationField.click();
-		await this.newDataSetModal.restApplicationOptions.getByRole('option', { name: '/data-set-manager/fields' })
+		await this.newDataSetModal.restApplicationOptions
+			.getByRole('option', {name: '/data-set-manager/fields'})
 			.click();
 
 		await this.newDataSetModal.restSchemaField.waitFor();
 		await this.newDataSetModal.restSchemaField.click();
-		await this.newDataSetModal.restSchemaOptions.getByRole('option', { name: 'FDSField' })
+		await this.newDataSetModal.restSchemaOptions
+			.getByRole('option', {name: 'FDSField'})
 			.click();
 		await this.newDataSetModal.restSchemaField.click();
 
 		await this.newDataSetModal.restEndpointField.waitFor();
 		await this.newDataSetModal.restEndpointField.click();
-		await this.newDataSetModal.restEndpointOptions.getByRole('option', { name: '/' })
+		await this.newDataSetModal.restEndpointOptions
+			.getByRole('option', {name: '/'})
 			.click();
 		await this.newDataSetModal.restEndpointField.click();
 
@@ -83,9 +92,12 @@ export class DataSetManagerPage {
 	}
 
 	async deleteTestDataSetUI() {
-		await this.page.locator('.d-flex > .dropdown > .dropdown-toggle').first().click();
-		await this.page.getByRole('menuitem', { name: 'Delete' }).click();
-		await this.page.getByRole('button', { name: 'Delete' }).click();
+		await this.page
+			.locator('.d-flex > .dropdown > .dropdown-toggle')
+			.first()
+			.click();
+		await this.page.getByRole('menuitem', {name: 'Delete'}).click();
+		await this.page.getByRole('button', {name: 'Delete'}).click();
 	}
 
 	async goto() {
@@ -93,6 +105,9 @@ export class DataSetManagerPage {
 	}
 
 	async gotoTestDataSet() {
-		await this.dataSetsTable.getByRole('link', { name: 'Data Set Test' }).first().click();
+		await this.dataSetsTable
+			.getByRole('link', {name: 'Data Set Test'})
+			.first()
+			.click();
 	}
 }

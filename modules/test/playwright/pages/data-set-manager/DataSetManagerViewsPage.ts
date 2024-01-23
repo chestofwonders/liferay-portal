@@ -20,12 +20,14 @@ export class DataSetManagerViewsPage {
 
 	constructor(page: Page) {
 		this.dataSetManagerPage = new DataSetManagerPage(page);
-		this.dataSetsViewTable = page.getByText('ViewsData Set View TestActions')
+		this.dataSetsViewTable = page.getByText(
+			'ViewsData Set View TestActions'
+		);
 		this.newDataSetViewButton = page.getByLabel('New Data Set View');
 		this.newDataSetViewEmptyButton = page.getByText('New Data Set View');
 		this.newDataSetViewModal = {
 			name: page.getByLabel('NameRequired'),
-			saveButton: page.getByRole('button', { name: 'Save' })
+			saveButton: page.getByRole('button', {name: 'Save'}),
 		};
 		this.page = page;
 	}
@@ -43,7 +45,10 @@ export class DataSetManagerViewsPage {
 		await this.newDataSetViewModal.saveButton.click();
 	}
 
-	async gotoTestDataSetView(){
-		await this.dataSetsViewTable.getByRole('link', { name: 'Data Set View Test' }).first().click();
+	async gotoTestDataSetView() {
+		await this.dataSetsViewTable
+			.getByRole('link', {name: 'Data Set View Test'})
+			.first()
+			.click();
 	}
 }

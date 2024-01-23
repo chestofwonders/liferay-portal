@@ -59,7 +59,7 @@ export class ApplicationsMenuPage {
 		await this.goToControlPanel();
 		await this.dataSetManagerMenuItem.click();
 	}
-	
+
 	async goToApplicationsMenu() {
 		await this.goto();
 		await this.applicationMenuButton.click();

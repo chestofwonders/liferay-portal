@@ -10,10 +10,13 @@ import {DataSetManagerPage} from '../pages/data-set-manager/DataSetManagerPage';
 import {DataSetManagerViewsPage} from '../pages/data-set-manager/DataSetManagerViewsPage';
 
 const dataSetManagerPagesTest = test.extend<{
+	dataSetManagerActionsPage: DataSetManagerActionsPage;
 	dataSetManagerPage: DataSetManagerPage;
 	dataSetManagerViewsPage: DataSetManagerViewsPage;
-	dataSetManagerActionsPage: DataSetManagerActionsPage;
 }>({
+	dataSetManagerActionsPage: async ({page}, use) => {
+		await use(new DataSetManagerActionsPage(page));
+	},
 	dataSetManagerPage: async ({page}, use) => {
 		const dataSetManagerPage = new DataSetManagerPage(page);
 
@@ -24,9 +27,6 @@ const dataSetManagerPagesTest = test.extend<{
 	},
 	dataSetManagerViewsPage: async ({page}, use) => {
 		await use(new DataSetManagerViewsPage(page));
-	},
-	dataSetManagerActionsPage: async ({page}, use) => {
-		await use(new DataSetManagerActionsPage(page));
 	},
 });
 
