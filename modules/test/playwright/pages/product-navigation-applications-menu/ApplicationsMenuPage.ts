@@ -8,12 +8,15 @@ import {Locator, Page, expect} from '@playwright/test';
 import {HomePage} from '../portal-web/HomePage';
 
 export class ApplicationsMenuPage {
+	readonly applicationMenuButton: Locator;
 	private readonly applicationsMenuTabButton: Locator;
 	private readonly clientExtensionsLink: Locator;
 	private readonly controlPanelButton: Locator;
 	private readonly dataMigrationCenterMenuItem: Locator;
+	readonly dataSetManagerMenuItem: Locator;
 	private readonly homePage: HomePage;
 	private readonly instanceSettingsLink: Locator;
+	readonly objectsLink: Locator;
 	private readonly objectsMenuItem: Locator;
 	readonly page: Page;
 	private readonly usersAndOrganizationsItem: Locator;
@@ -36,6 +39,10 @@ export class ApplicationsMenuPage {
 			exact: true,
 			name: 'Data Migration Center',
 		});
+		this.dataSetManagerMenuItem = page.getByRole('menuitem', {
+			exact: true,
+			name: 'Data Sets',
+		});
 		this.objectsMenuItem = page.getByRole('menuitem', {
 			exact: true,
 			name: 'Objects',
@@ -52,6 +59,11 @@ export class ApplicationsMenuPage {
 		await this.homePage.openApplicationMenu();
 
 		await expect(this.applicationsMenuTabButton).toBeVisible();
+	}
+
+	async goToDataSetManager() {
+		await this.goToControlPanel();
+		await this.dataSetManagerMenuItem.click();
 	}
 
 	async goToApplicationsMenu() {
