@@ -6,8 +6,8 @@
 import {devices} from '@playwright/test';
 
 export const config = {
-	name: 'dataSetManager',
-	testDir: 'tests/data-set-manager',
+	name: 'frontendDataSetViewsWeb',
+	testDir: 'tests/frontend-data-set-views-web',
 	use: {
 		...devices['Desktop Chrome'],
 	},

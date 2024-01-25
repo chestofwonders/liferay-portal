@@ -5,7 +5,7 @@
 
 import {expect, mergeTests} from '@playwright/test';
 
-import {dataSetManagerPagesTest} from '../../fixtures/dataSetManagerPageTest';
+import {dataSetManagerPagesTest} from './fixtures/dataSetManagerPageTest';
 import {loginTest} from '../../fixtures/loginTest';
 
 export const test = mergeTests(dataSetManagerPagesTest, loginTest);

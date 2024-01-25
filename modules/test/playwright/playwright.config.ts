@@ -8,8 +8,8 @@ import {defineConfig} from '@playwright/test';
 import {config as batchPlanner} from './tests/batch-planner/config';
 import {config as clientExtensionWebConfig} from './tests/client-extension-web/config';
 import {config as commerceConfig} from './tests/commerce/config';
-import {config as dataSetManagerConfig} from './tests/data-set-manager/config';
 import {config as exportImportWebConfig} from './tests/export-import-web/config';
+import {config as frontendDataSetViewsWebConfig} from './tests/frontend-data-set-views-web/config';
 import {config as layoutContentPageEditorWebConfig} from './tests/layout-content-page-editor-web/config';
 import {config as objectWebConfig} from './tests/object-web/config';
 import {config as portalWebConfig} from './tests/portal-web/config';
@@ -24,8 +24,8 @@ export default defineConfig({
 		batchPlanner,
 		clientExtensionWebConfig,
 		commerceConfig,
-		dataSetManagerConfig,
 		exportImportWebConfig,
+		frontendDataSetViewsWebConfig,
 		layoutContentPageEditorWebConfig,
 		objectWebConfig,
 		portalWebConfig,

@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {DataSetManagerPage} from './DataSetManagerPage';
+import {DataSetPage} from './DataSetPage';
 
 import type {Locator, Page} from '@playwright/test';
 
-export class DataSetManagerViewsPage {
-	readonly dataSetManagerPage: DataSetManagerPage;
+export class ViewsPage {
+	readonly dataSetPage: DataSetPage;
 	readonly dataSetsViewTable: Locator;
 	readonly newDataSetViewButton: Locator;
 	readonly newDataSetViewEmptyButton: Locator;
@@ -19,7 +19,7 @@ export class DataSetManagerViewsPage {
 	readonly page: Page;
 
 	constructor(page: Page) {
-		this.dataSetManagerPage = new DataSetManagerPage(page);
+		this.dataSetPage = new DataSetPage(page);
 		this.dataSetsViewTable = page.getByText(
 			'ViewsData Set View TestActions'
 		);
@@ -33,8 +33,8 @@ export class DataSetManagerViewsPage {
 	}
 
 	async goto() {
-		await this.dataSetManagerPage.goto();
-		await this.dataSetManagerPage.gotoTestDataSet();
+		await this.dataSetPage.goto();
+		await this.dataSetPage.gotoTestDataSet();
 	}
 
 	async createTestDataSetView() {

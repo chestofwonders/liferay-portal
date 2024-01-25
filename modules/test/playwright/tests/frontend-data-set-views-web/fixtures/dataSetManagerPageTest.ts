@@ -5,20 +5,20 @@
 
 import {test} from '@playwright/test';
 
-import {DataSetManagerActionsPage} from '../pages/data-set-manager/DataSetManagerActionsPage';
-import {DataSetManagerPage} from '../pages/data-set-manager/DataSetManagerPage';
-import {DataSetManagerViewsPage} from '../pages/data-set-manager/DataSetManagerViewsPage';
+import {ActionsPage} from '../pages/ActionsPage';
+import {DataSetPage} from '../pages/DataSetPage';
+import {ViewsPage} from '../pages/ViewsPage';
 
 const dataSetManagerPagesTest = test.extend<{
-	dataSetManagerActionsPage: DataSetManagerActionsPage;
-	dataSetManagerPage: DataSetManagerPage;
-	dataSetManagerViewsPage: DataSetManagerViewsPage;
+	dataSetManagerActionsPage: ActionsPage;
+	dataSetManagerPage: DataSetPage;
+	dataSetManagerViewsPage: ViewsPage;
 }>({
 	dataSetManagerActionsPage: async ({page}, use) => {
-		await use(new DataSetManagerActionsPage(page));
+		await use(new ActionsPage(page));
 	},
 	dataSetManagerPage: async ({page}, use) => {
-		const dataSetManagerPage = new DataSetManagerPage(page);
+		const dataSetManagerPage = new DataSetPage(page);
 
 		await dataSetManagerPage.goto();
 		await dataSetManagerPage.createTestDataSetUI();
@@ -26,7 +26,7 @@ const dataSetManagerPagesTest = test.extend<{
 		await dataSetManagerPage.deleteTestDataSetUI();
 	},
 	dataSetManagerViewsPage: async ({page}, use) => {
-		const dataSetManagerViewsPage = new DataSetManagerViewsPage(page);
+		const dataSetManagerViewsPage = new ViewsPage(page);
 
 		await dataSetManagerViewsPage.goto();
 		await dataSetManagerViewsPage.createTestDataSetView();

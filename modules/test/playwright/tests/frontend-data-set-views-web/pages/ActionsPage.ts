@@ -3,14 +3,14 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {DataSetManagerViewsPage} from './DataSetManagerViewsPage';
+import {ViewsPage} from './ViewsPage';
 
 import type {Locator, Page} from '@playwright/test';
 
 export type ActionTypes = 'modal' | 'link' | 'sidePanel';
 
-export class DataSetManagerActionsPage {
-	readonly dataSetManagerViewsPage: DataSetManagerViewsPage;
+export class ActionsPage {
+	readonly viewsPage: ViewsPage;
 	readonly newActionButton: Locator;
 	readonly newItemActionForm: {
 		addIconButton: Locator;
@@ -26,7 +26,7 @@ export class DataSetManagerActionsPage {
 	readonly page: Page;
 
 	constructor(page: Page) {
-		this.dataSetManagerViewsPage = new DataSetManagerViewsPage(page);
+		this.viewsPage = new ViewsPage(page);
 		this.newActionButton = page.getByRole('button', {name: /Add Action/});
 		this.newItemActionForm = {
 			addIconButton: page.getByLabel('add-icon'),
@@ -43,8 +43,8 @@ export class DataSetManagerActionsPage {
 	}
 
 	async goto() {
-		await this.dataSetManagerViewsPage.goto();
-		await this.dataSetManagerViewsPage.gotoTestDataSetView();
+		await this.viewsPage.goto();
+		await this.viewsPage.gotoTestDataSetView();
 
 		this.page
 			.getByRole('button', {name: /Actions/})

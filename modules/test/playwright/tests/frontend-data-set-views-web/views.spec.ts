@@ -5,15 +5,20 @@
 
 import {expect, mergeTests} from '@playwright/test';
 
-import {dataSetManagerPagesTest} from '../../fixtures/dataSetManagerPageTest';
+import {dataSetManagerPagesTest} from './fixtures/dataSetManagerPageTest';
 import {loginTest} from '../../fixtures/loginTest';
 
 export const test = mergeTests(dataSetManagerPagesTest, loginTest);
 
-test('Data Set Test is created', async ({dataSetManagerPage, page}) => {
+test('View Test is created', async ({
+	dataSetManagerPage,
+	dataSetManagerViewsPage,
+	page,
+}) => {
 	await dataSetManagerPage.goto();
+	await dataSetManagerViewsPage.goto();
 
 	await expect(
-		page.getByRole('link', {name: 'Data Set Test'}).first()
+		page.getByRole('link', {name: 'Data Set View Test'})
 	).toBeVisible();
 });

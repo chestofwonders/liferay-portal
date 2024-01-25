@@ -5,12 +5,12 @@
 
 import {expect} from '@playwright/test';
 
-import {ApiHelpers} from '../../helpers/ApiHelpers';
-import {ApplicationsMenuPage} from '../product-navigation-applications-menu/ApplicationsMenuPage';
+import {ApiHelpers} from '../../../helpers/ApiHelpers';
+import {ApplicationsMenuPage} from '../../../pages/product-navigation-applications-menu/ApplicationsMenuPage'
 
 import type {Locator, Page} from '@playwright/test';
 
-export class DataSetManagerPage {
+export class DataSetPage {
 	readonly apiHelpers: ApiHelpers;
 	readonly applicationsMenuPage: ApplicationsMenuPage;
 	readonly basePath: string;
