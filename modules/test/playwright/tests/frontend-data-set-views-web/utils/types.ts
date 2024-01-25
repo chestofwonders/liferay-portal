@@ -1,0 +1,1 @@
+export type ActionTypes = 'modal' | 'link' | 'sidePanel';
