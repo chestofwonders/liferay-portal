@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {Locator, Page, expect} from '@playwright/test';
+import {Locator, Page} from '@playwright/test';
 
 import {ApiHelpers} from '../../../helpers/ApiHelpers';
 import {ApplicationsMenuPage} from '../../../pages/product-navigation-applications-menu/ApplicationsMenuPage';
@@ -64,7 +64,7 @@ export class DataSetPage {
 
 	async createTestDataSetUI() {
 		await this.newDataSetButton.click();
-		await expect(this.newDataSetModal.nameInput).toBeVisible();
+		await this.newDataSetModal.nameInput.waitFor();
 
 		await this.newDataSetModal.nameInput.fill('Data Set Test');
 		await this.newDataSetModal.restApplicationField.click();
