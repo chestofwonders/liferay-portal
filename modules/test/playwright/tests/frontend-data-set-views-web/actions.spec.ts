@@ -10,7 +10,7 @@ import {loginTest} from '../../fixtures/loginTest';
 
 export const test = mergeTests(dataSetManagerPagesTest, loginTest);
 
-test('There are no item actions created in the Action tab', async ({
+test('If no actions are created, show informative text', async ({
 	actionsPage,
 	viewsPage,
 	page,
