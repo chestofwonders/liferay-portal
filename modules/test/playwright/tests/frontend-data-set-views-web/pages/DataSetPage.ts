@@ -18,7 +18,7 @@ export class DataSetPage {
 	readonly newDataSetButton: Locator;
 	readonly newDataSetModal: {
 		readonly heading: Locator;
-		readonly name: Locator;
+		readonly nameInput: Locator;
 		readonly restApplicationField: Locator;
 		readonly restApplicationOptions: Locator;
 		readonly restEndpointField: Locator;
@@ -37,7 +37,7 @@ export class DataSetPage {
 		this.newDataSetButton = page.getByLabel('New Data Set').first();
 		this.newDataSetModal = {
 			heading: page.getByRole('heading', {name: 'New Data Set'}),
-			name: page.getByLabel('NameRequired'),
+			nameInput: page.getByLabel('NameRequired'),
 			restApplicationField: page.getByLabel('REST ApplicationRequired'),
 			restApplicationOptions: page
 				.locator('.fds-entries-dropdown-menu')
@@ -66,9 +66,9 @@ export class DataSetPage {
 
 	async createTestDataSetUI() {
 		await this.newDataSetButton.click();
-		await expect(this.newDataSetModal.name).toBeVisible();
+		await expect(this.newDataSetModal.nameInput).toBeVisible();
 
-		await this.newDataSetModal.name.fill('Data Set Test');
+		await this.newDataSetModal.nameInput.fill('Data Set Test');
 		await this.newDataSetModal.restApplicationField.click();
 		await this.newDataSetModal.restApplicationOptions
 			.getByRole('option', {name: '/data-set-manager/fields'})

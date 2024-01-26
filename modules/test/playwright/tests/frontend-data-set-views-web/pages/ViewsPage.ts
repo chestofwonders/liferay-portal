@@ -13,7 +13,7 @@ export class ViewsPage {
 	readonly newDataSetViewButton: Locator;
 	readonly newDataSetViewEmptyButton: Locator;
 	readonly newDataSetViewModal: {
-		name: Locator;
+		nameInput: Locator;
 		saveButton: Locator;
 	};
 	readonly page: Page;
@@ -26,7 +26,7 @@ export class ViewsPage {
 		this.newDataSetViewButton = page.getByLabel('New Data Set View');
 		this.newDataSetViewEmptyButton = page.getByText('New Data Set View');
 		this.newDataSetViewModal = {
-			name: page.getByLabel('NameRequired'),
+			nameInput: page.getByLabel('NameRequired'),
 			saveButton: page.getByRole('button', {name: 'Save'}),
 		};
 		this.page = page;
@@ -40,7 +40,7 @@ export class ViewsPage {
 	async createTestDataSetView() {
 		await this.newDataSetViewButton.click();
 
-		await this.newDataSetViewModal.name.fill('Data Set View Test');
+		await this.newDataSetViewModal.nameInput.fill('Data Set View Test');
 
 		await this.newDataSetViewModal.saveButton.click();
 	}

@@ -13,14 +13,14 @@ export class ActionsPage {
 	readonly newActionButton: Locator;
 	readonly newItemActionForm: {
 		addIconButton: Locator;
-		name: Locator;
+		nameInput: Locator;
 		saveButton: Locator;
 		selectIconModal: {
 			iconsList: Locator;
-			search: Locator;
+			searchInput: Locator;
 		};
-		type: Locator;
-		url: Locator;
+		typeSelect: Locator;
+		urlText: Locator;
 	};
 	readonly page: Page;
 
@@ -29,14 +29,14 @@ export class ActionsPage {
 		this.newActionButton = page.getByRole('button', {name: /Add Action/});
 		this.newItemActionForm = {
 			addIconButton: page.getByLabel('add-icon'),
-			name: page.getByPlaceholder('Action Name'),
+			nameInput: page.getByPlaceholder('Action Name'),
 			saveButton: page.getByRole('button', {name: /Save/}),
 			selectIconModal: {
 				iconsList: page.locator('li'),
-				search: page.getByPlaceholder('Search'),
+				searchInput: page.getByPlaceholder('Search'),
 			},
-			type: page.getByLabel('TypeRequired', {exact: true}),
-			url: page.getByPlaceholder('Add a URL here.'),
+			typeSelect: page.getByLabel('TypeRequired', {exact: true}),
+			urlText: page.getByPlaceholder('Add a URL here.'),
 		};
 		this.page = page;
 	}
@@ -64,15 +64,15 @@ export class ActionsPage {
 	}) {
 		await this.newActionButton.click();
 
-		await this.newItemActionForm.name.fill(name);
+		await this.newItemActionForm.nameInput.fill(name);
 		await this.newItemActionForm.addIconButton.click();
 
-		await this.newItemActionForm.selectIconModal.search.fill(icon);
+		await this.newItemActionForm.selectIconModal.searchInput.fill(icon);
 		await this.newItemActionForm.selectIconModal.iconsList
 			.filter({hasText: icon})
 			.click();
 
-		await this.newItemActionForm.type.selectOption(type);
+		await this.newItemActionForm.typeSelect.selectOption(type);
 
 		if (type === 'modal' || type === 'sidePanel') {
 			await this.page.getByPlaceholder(/add-here-the-title/).click();
@@ -81,7 +81,7 @@ export class ActionsPage {
 				.fill(`${name} Title`);
 		}
 
-		await this.newItemActionForm.url.fill(url);
+		await this.newItemActionForm.urlText.fill(url);
 		await this.newItemActionForm.saveButton.click();
 	}
 }
