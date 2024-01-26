@@ -10,8 +10,8 @@ import {loginTest} from '../../fixtures/loginTest';
 
 export const test = mergeTests(dataSetManagerPagesTest, loginTest);
 
-test('Data Set Test is created', async ({dataSetManagerPage, page}) => {
-	await dataSetManagerPage.goto();
+test('Data Set Test is created', async ({dataSetsPage, page}) => {
+	await dataSetsPage.goto();
 
 	await expect(
 		page.getByRole('link', {name: 'Data Set Test'}).first()

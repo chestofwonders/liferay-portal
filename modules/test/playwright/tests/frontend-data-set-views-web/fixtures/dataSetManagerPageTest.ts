@@ -10,28 +10,28 @@ import {DataSetPage} from '../pages/DataSetPage';
 import {ViewsPage} from '../pages/ViewsPage';
 
 const dataSetManagerPagesTest = test.extend<{
-	dataSetManagerActionsPage: ActionsPage;
-	dataSetManagerPage: DataSetPage;
-	dataSetManagerViewsPage: ViewsPage;
+	actionsPage: ActionsPage;
+	dataSetsPage: DataSetPage;
+	viewsPage: ViewsPage;
 }>({
-	dataSetManagerActionsPage: async ({page}, use) => {
+	actionsPage: async ({page}, use) => {
 		await use(new ActionsPage(page));
 	},
-	dataSetManagerPage: async ({page}, use) => {
-		const dataSetManagerPage = new DataSetPage(page);
+	dataSetsPage: async ({page}, use) => {
+		const dataSetsPage = new DataSetPage(page);
 
-		await dataSetManagerPage.goto();
-		await dataSetManagerPage.createTestDataSetUI();
-		await use(dataSetManagerPage);
-		await dataSetManagerPage.deleteTestDataSetUI();
+		await dataSetsPage.goto();
+		await dataSetsPage.createTestDataSetUI();
+		await use(dataSetsPage);
+		await dataSetsPage.deleteTestDataSetUI();
 	},
-	dataSetManagerViewsPage: async ({page}, use) => {
-		const dataSetManagerViewsPage = new ViewsPage(page);
+	viewsPage: async ({page}, use) => {
+		const viewsPage = new ViewsPage(page);
 
-		await dataSetManagerViewsPage.goto();
-		await dataSetManagerViewsPage.createTestDataSetView();
-		await dataSetManagerViewsPage.gotoTestDataSetView();
-		await use(dataSetManagerViewsPage);
+		await viewsPage.goto();
+		await viewsPage.createTestDataSetView();
+		await viewsPage.gotoTestDataSetView();
+		await use(viewsPage);
 	},
 });
 

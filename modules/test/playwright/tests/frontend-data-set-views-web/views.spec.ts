@@ -11,12 +11,12 @@ import {loginTest} from '../../fixtures/loginTest';
 export const test = mergeTests(dataSetManagerPagesTest, loginTest);
 
 test('View Test is created', async ({
-	dataSetManagerPage,
-	dataSetManagerViewsPage,
+	dataSetsPage,
+	viewsPage,
 	page,
 }) => {
-	await dataSetManagerPage.goto();
-	await dataSetManagerViewsPage.goto();
+	await dataSetsPage.goto();
+	await viewsPage.goto();
 
 	await expect(
 		page.getByRole('link', {name: 'Data Set View Test'})

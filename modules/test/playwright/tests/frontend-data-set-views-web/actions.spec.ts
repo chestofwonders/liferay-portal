@@ -11,12 +11,12 @@ import {loginTest} from '../../fixtures/loginTest';
 export const test = mergeTests(dataSetManagerPagesTest, loginTest);
 
 test('There are no item actions created in the Action tab', async ({
-	dataSetManagerActionsPage,
-	dataSetManagerViewsPage,
+	actionsPage,
+	viewsPage,
 	page,
 }) => {
-	await dataSetManagerViewsPage.goto();
-	await dataSetManagerActionsPage.goto();
+	await viewsPage.goto();
+	await actionsPage.goto();
 
 	await expect(
 		page.getByRole('tabpanel').getByText('No actions were created.')
@@ -24,12 +24,12 @@ test('There are no item actions created in the Action tab', async ({
 });
 
 test('The "New Creation Action" button is present', async ({
-	dataSetManagerActionsPage,
-	dataSetManagerViewsPage,
+	actionsPage,
+	viewsPage,
 	page,
 }) => {
-	await dataSetManagerViewsPage.goto();
-	await dataSetManagerActionsPage.goto();
+	await viewsPage.goto();
+	await actionsPage.goto();
 
 	await expect(
 		page.getByRole('button', {name: 'New Item Action'})
@@ -37,14 +37,14 @@ test('The "New Creation Action" button is present', async ({
 });
 
 test('A new Link action is created', async ({
-	dataSetManagerActionsPage,
-	dataSetManagerViewsPage,
+	actionsPage,
+	viewsPage,
 	page,
 }) => {
-	await dataSetManagerViewsPage.goto();
-	await dataSetManagerActionsPage.goto();
+	await viewsPage.goto();
+	await actionsPage.goto();
 
-	await dataSetManagerActionsPage.createTestDataSetAction({
+	await actionsPage.createTestDataSetAction({
 		icon: 'arrow-right-full',
 		name: 'Link action',
 		type: 'link',
