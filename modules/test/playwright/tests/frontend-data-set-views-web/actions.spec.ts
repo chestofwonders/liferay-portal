@@ -5,15 +5,16 @@
 
 import {expect, mergeTests} from '@playwright/test';
 
-import {dataSetManagerPagesTest} from './fixtures/dataSetManagerPageTest';
 import {loginTest} from '../../fixtures/loginTest';
+import {liferayConfig} from '../../liferay.config';
+import {dataSetManagerPagesTest} from './fixtures/dataSetManagerPageTest';
 
 export const test = mergeTests(dataSetManagerPagesTest, loginTest);
 
 test('If no actions are created, show informative text', async ({
 	actionsPage,
-	viewsPage,
 	page,
+	viewsPage,
 }) => {
 	await viewsPage.goto();
 	await actionsPage.goto();
@@ -25,8 +26,8 @@ test('If no actions are created, show informative text', async ({
 
 test('The "New Creation Action" button is present', async ({
 	actionsPage,
-	viewsPage,
 	page,
+	viewsPage,
 }) => {
 	await viewsPage.goto();
 	await actionsPage.goto();
@@ -36,11 +37,7 @@ test('The "New Creation Action" button is present', async ({
 	).toBeVisible();
 });
 
-test('A new Link action is created', async ({
-	actionsPage,
-	viewsPage,
-	page,
-}) => {
+test('A new Link action is created', async ({actionsPage, page, viewsPage}) => {
 	await viewsPage.goto();
 	await actionsPage.goto();
 
@@ -48,7 +45,7 @@ test('A new Link action is created', async ({
 		icon: 'arrow-right-full',
 		name: 'Link action',
 		type: 'link',
-		url: 'http://localhost:8080',
+		url: liferayConfig.environment.baseUrl,
 	});
 
 	await expect(
