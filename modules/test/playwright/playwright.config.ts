@@ -5,7 +5,7 @@
 
 import {defineConfig} from '@playwright/test';
 
-import {config as batchPlanner} from './tests/batch-planner/config';
+import {config as batchPlannerConfig} from './tests/batch-planner/config';
 import {config as clientExtensionWebConfig} from './tests/client-extension-web/config';
 import {config as commerceConfig} from './tests/commerce/config';
 import {config as exportImportWebConfig} from './tests/export-import-web/config';
@@ -21,7 +21,7 @@ export default defineConfig({
 	},
 	forbidOnly: !!process.env.CI,
 	projects: [
-		batchPlanner,
+		batchPlannerConfig,
 		clientExtensionWebConfig,
 		commerceConfig,
 		exportImportWebConfig,
