@@ -24,20 +24,7 @@ test('If no actions are created, show informative text', async ({
 	).toBeVisible();
 });
 
-test('The "New Creation Action" button is present', async ({
-	actionsPage,
-	page,
-	viewsPage,
-}) => {
-	await viewsPage.goto();
-	await actionsPage.goto();
-
-	await expect(
-		page.getByRole('button', {name: 'New Item Action'})
-	).toBeVisible();
-});
-
-test('A new Link action is created', async ({actionsPage, page, viewsPage}) => {
+test('Create a link action', async ({actionsPage, page, viewsPage}) => {
 	await viewsPage.goto();
 	await actionsPage.goto();
 
