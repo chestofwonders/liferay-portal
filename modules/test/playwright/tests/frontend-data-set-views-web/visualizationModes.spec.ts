@@ -72,7 +72,7 @@ test('Assign field to a cards section @LPD-10735', async ({
 		const container =
 			visualizationModesPage.cardsVisualizationModeContainer;
 
-		await visualizationModesPage.openAssignFieldModal({
+		await visualizationModesPage.openChangeFieldModal({
 			container,
 			sectionLabel,
 		});
@@ -94,6 +94,27 @@ test('Assign field to a cards section @LPD-10735', async ({
 			});
 
 		expect(assignedFieldLocator).toHaveText(newFieldName);
+	});
+
+	await test.step('Clear field to title section @LPD-15145', async () => {
+		const notAssignedLabel = 'Not Assigned';
+		const sectionLabel = 'Title';
+
+		const container =
+			visualizationModesPage.cardsVisualizationModeContainer;
+
+		await visualizationModesPage.clearAssignedField({
+			container,
+			sectionLabel,
+		});
+
+		const assignedFieldLocator =
+			await visualizationModesPage.getAssignedFieldLocator({
+				container,
+				sectionLabel,
+			});
+
+		expect(assignedFieldLocator).toHaveText(notAssignedLabel);
 	});
 });
 
@@ -146,7 +167,7 @@ test('Assign field to a list section @LPD-10735', async ({
 
 		const container = visualizationModesPage.listVisualizationModeContainer;
 
-		await visualizationModesPage.openAssignFieldModal({
+		await visualizationModesPage.openChangeFieldModal({
 			container,
 			sectionLabel,
 		});
@@ -168,6 +189,26 @@ test('Assign field to a list section @LPD-10735', async ({
 			});
 
 		expect(assignedFieldLocator).toHaveText(newFieldName);
+	});
+
+	await test.step('Clear field to title section @LPD-6701', async () => {
+		const notAssignedLabel = 'Not Assigned';
+		const sectionLabel = 'Title';
+
+		const container = visualizationModesPage.listVisualizationModeContainer;
+
+		await visualizationModesPage.clearAssignedField({
+			container,
+			sectionLabel,
+		});
+
+		const assignedFieldLocator =
+			await visualizationModesPage.getAssignedFieldLocator({
+				container,
+				sectionLabel,
+			});
+
+		expect(assignedFieldLocator).toHaveText(notAssignedLabel);
 	});
 });
 

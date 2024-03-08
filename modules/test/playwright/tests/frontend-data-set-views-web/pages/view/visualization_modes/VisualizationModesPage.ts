@@ -30,6 +30,27 @@ export class VisualizationModesPage {
 		this.viewPage = new ViewPage(page);
 	}
 
+	async clearAssignedField({
+		container,
+		sectionLabel,
+	}: {
+		container: Locator;
+		sectionLabel: string;
+	}) {
+		await container
+			.locator('tr')
+			.filter({has: this.page.getByText(sectionLabel)})
+			.getByTitle(`View ${sectionLabel} Options`)
+			.click();
+
+		const clearAssignmentButton = this.page.getByRole('menuitem', {
+			name: 'Clear Assignment',
+		});
+
+		await clearAssignmentButton.waitFor();
+		await clearAssignmentButton.click();
+	}
+
 	async getAssignedFieldLocator({
 		container,
 		sectionLabel,
@@ -70,6 +91,31 @@ export class VisualizationModesPage {
 			.filter({has: this.page.getByText(sectionLabel)})
 			.getByTitle('Assign Field')
 			.click();
+
+		await this.fieldSelectModalContainer
+			.getByPlaceholder('Search')
+			.waitFor();
+	}
+
+	async openChangeFieldModal({
+		container,
+		sectionLabel,
+	}: {
+		container: Locator;
+		sectionLabel: string;
+	}) {
+		await container
+			.locator('tr')
+			.filter({has: this.page.getByText(sectionLabel)})
+			.getByTitle(`View ${sectionLabel} Options`)
+			.click();
+
+		const changeAssignmentButton = this.page.getByRole('menuitem', {
+			name: 'Change Assignment',
+		});
+
+		await changeAssignmentButton.waitFor();
+		await changeAssignmentButton.click();
 
 		await this.fieldSelectModalContainer
 			.getByPlaceholder('Search')
