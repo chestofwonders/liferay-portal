@@ -20,6 +20,9 @@ export declare enum EFieldType {
 	OBJECT = 'object',
 	STRING = 'string',
 }
+export declare enum ESelectionFilterSourceType {
+	PICKLIST = 'PICKLIST',
+}
 export interface IBaseVisualizationMode<Mode extends string> {
 	label: string;
 	mode: Mode;
