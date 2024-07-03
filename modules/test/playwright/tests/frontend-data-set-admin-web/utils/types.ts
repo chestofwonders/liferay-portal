@@ -36,6 +36,10 @@ interface IBaseFilter {
 	name: string;
 }
 
+export interface IClientExtensionFilter extends IBaseFilter {
+	clientExtension: string;
+}
+
 export interface IDateRangeFilter extends IBaseFilter {
 	from?: string;
 	to?: string;
