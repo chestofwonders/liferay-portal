@@ -11,12 +11,21 @@ import React, {useEffect, useState} from 'react';
 import RequiredMark from '../../../../../components/RequiredMark';
 import ValidationFeedback from '../../../../../components/ValidationFeedback';
 import getAllPicklists from '../../../../../utils/getAllPicklists';
+import fuzzy from 'fuzzy';
 import {IFilter, IPickList} from '../../../../../utils/types';
+import {TItem} from '@clayui/form/lib/SelectBox';
 
 interface IObjectPicklistProps {
 	filter?: IFilter;
 	namespace: string;
-	onChange: Function;
+	onChange: ({
+		picklist,
+		sourceItems,
+	}: {
+		picklist: IPickList;
+		sourceItems: TItem[];
+	}) => void;
+	preselectedValueInput: string;
 	sourceValidationError: boolean;
 }
 
@@ -24,6 +33,7 @@ function ObjectPicklist({
 	filter,
 	namespace,
 	onChange,
+	preselectedValueInput,
 	sourceValidationError,
 }: IObjectPicklistProps) {
 	const [picklists, setPicklists] = useState<IPickList[]>();
@@ -79,8 +89,27 @@ function ObjectPicklist({
 										String(item.externalReferenceCode) ===
 										event.target.value
 								);
-								setSelectedPicklist(picklist);
-								onChange(picklist);
+
+								if(picklist) {
+									setSelectedPicklist(picklist);
+
+									const sourceItems =
+										!picklist
+											? []
+											: (picklist as IPickList).listTypeEntries
+													.filter((item) =>
+														fuzzy.match(preselectedValueInput, item.name)
+													)
+													.map((item) => ({
+														label: item.name,
+														value: String(item.externalReferenceCode),
+													}));
+
+									onChange({
+										picklist, 
+										sourceItems
+									});
+								}
 							}}
 							options={[
 								{

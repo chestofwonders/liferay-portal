@@ -9,6 +9,7 @@ import ClayForm from '@clayui/form';
 import {TItem} from '@clayui/form/lib/SelectBox';
 import classNames from 'classnames';
 import {fetch} from 'frontend-js-web';
+import getAPISourceItems from '../../../../../utils/getAPISourceItems';
 import fuzzy from 'fuzzy';
 import React, {useEffect, useState} from 'react';
 
@@ -106,55 +107,6 @@ function ApiRestApplication({
 
 		return true;
 	};
-
-	async function getSourceItems({
-		preselectedValueInput,
-		selectedItemKey,
-		selectedItemLabel,
-		source,
-	}: {
-		preselectedValueInput: string;
-		selectedItemKey: string;
-		selectedItemLabel: string;
-		source: string | null;
-	}) {
-		const isValidSource =
-			source && !(source as string).match(/\{[A-Za-z0-9]+\}/g);
-
-		if (!isValidSource || !selectedItemKey || !selectedItemLabel) {
-			return [];
-		}
-
-		const sourceItems = await fetch(source as string)
-			.then((response) => {
-				if (!response.ok) {
-					return [];
-				}
-
-				const responseJSON = response.json();
-
-				return responseJSON;
-			})
-			.then((apiValues) => {
-				return !apiValues?.items?.length
-					? []
-					: apiValues.items
-							.filter((item: any) => {
-								return fuzzy.match(
-									preselectedValueInput,
-									String(item[selectedItemLabel])
-								);
-							})
-							.map((item: any) => {
-								return {
-									label: String(item[selectedItemLabel]),
-									value: String(item[selectedItemKey]),
-								};
-							});
-			});
-
-		return sourceItems;
-	}
 
 	const getRESTSchemas = async (restApplication: string) => {
 		if (!restApplication) {
@@ -568,7 +520,7 @@ function ApiRestApplication({
 				}
 			})
 			.then(() =>
-				getSourceItems({
+				getAPISourceItems({
 					preselectedValueInput,
 					selectedItemKey: filter.itemKey,
 					selectedItemLabel: filter.itemLabel,
@@ -720,7 +672,7 @@ function ApiRestApplication({
 										let currentSourceItems: TItem[] =
 											sourceItems;
 
-										getSourceItems({
+										getAPISourceItems({
 											preselectedValueInput,
 											selectedItemKey: itemKey,
 											selectedItemLabel,
@@ -791,7 +743,7 @@ function ApiRestApplication({
 										let currentSourceItems: TItem[] =
 											sourceItems;
 
-										getSourceItems({
+										getAPISourceItems({
 											preselectedValueInput,
 											selectedItemKey,
 											selectedItemLabel: itemLabel,
