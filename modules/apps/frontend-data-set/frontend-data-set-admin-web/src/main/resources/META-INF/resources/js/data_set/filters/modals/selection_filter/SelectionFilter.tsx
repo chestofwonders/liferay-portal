@@ -18,6 +18,7 @@ import React, {useEffect, useState} from 'react';
 
 import CheckboxMultiSelect from '../../../../components/CheckboxMultiSelect';
 import RequiredMark from '../../../../components/RequiredMark';
+import getAPISourceItems from '../../../../utils/getAPISourceItems';
 import getAllPicklists from '../../../../utils/getAllPicklists';
 import {
 	ESelectionFilterSourceType,
@@ -30,7 +31,6 @@ import Configuration from '../Configuration';
 import Footer from '../Footer';
 import ApiRestApplication from './source_type/ApiRestApplication';
 import ObjectPicklist from './source_type/ObjectPicklist';
-import getAPISourceItems from '../../../../utils/getAPISourceItems';
 
 function Header() {
 	return <>{Liferay.Language.get('new-selection-filter')}</>;
@@ -289,8 +289,11 @@ function Body({
 		}
 
 		const selectionFilter = filter as ISelectionFilter;
-		
-		if (selectionFilter.sourceType === ESelectionFilterSourceType.API_HEADLESS) {
+
+		if (
+			selectionFilter.sourceType ===
+			ESelectionFilterSourceType.API_HEADLESS
+		) {
 			const selectionFilter = filter as ISelectionFilter;
 
 			setSelectedRESTApplication(selectionFilter.restApplication);
@@ -308,8 +311,7 @@ function Body({
 				selectedItemKey: selectionFilter.itemKey,
 				selectedItemLabel: selectionFilter.itemLabel,
 				source: selectionFilter.source,
-			})
-			.then((sourceItems) => {
+			}).then((sourceItems) => {
 				const filterPreselectedValues = JSON.parse(
 					selectionFilter.preselectedValues || '[]'
 				);
@@ -322,7 +324,7 @@ function Body({
 								filterValue.value === item.value
 						)
 				);
-				
+
 				setPreselectedValues(validSavedPreselectedValues);
 				setIncludeMode(
 					validSavedPreselectedValues?.length
@@ -331,8 +333,9 @@ function Body({
 							: 'exclude'
 						: 'include'
 				);
-			})	
+			});
 		}
+
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
@@ -342,37 +345,42 @@ function Body({
 		}
 
 		const selectionFilter = filter as ISelectionFilter;
-		
-		if( selectionFilter.sourceType === ESelectionFilterSourceType.PICKLIST ) {
+
+		if (
+			selectionFilter.sourceType === ESelectionFilterSourceType.PICKLIST
+		) {
 			getAllPicklists().then((items) => {
-				if (items.length === 0) {
+				if (!items.length) {
 					setNoPicklistsAvailableValidationError(true);
-				} else {
+				}
+				else {
 					setNoPicklistsAvailableValidationError(false);
 					setSourceType(selectionFilter.sourceType);
-		
+
 					const picklist = items.find(
 						(item) =>
 							String(item.externalReferenceCode) ===
 							selectionFilter?.source
 					);
-		
+
 					if (picklist) {
 						setSource(picklist);
 
 						let validSavedPreselectedValues: any[] = [];
 
-						validSavedPreselectedValues = picklist.listTypeEntries.filter((item) =>
-							JSON.parse(selectionFilter.preselectedValues || '[]')
-								.includes(item.externalReferenceCode)
-						);
+						validSavedPreselectedValues =
+							picklist.listTypeEntries.filter((item) =>
+								JSON.parse(
+									selectionFilter.preselectedValues || '[]'
+								).includes(item.externalReferenceCode)
+							);
 
-						const sourceItems = picklist.listTypeEntries
-							.map((item) => 
-								({
-									label: item.name, 
-									value: item.externalReferenceCode
-								}));
+						const sourceItems = picklist.listTypeEntries.map(
+							(item) => ({
+								label: item.name,
+								value: item.externalReferenceCode,
+							})
+						);
 
 						setFilteredSourceItems(sourceItems);
 						setPreselectedValues(validSavedPreselectedValues);
@@ -387,6 +395,7 @@ function Body({
 				}
 			});
 		}
+
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
@@ -467,12 +476,20 @@ function Body({
 
 									setSourceType(newSourceType);
 
-									if( newSourceType === ESelectionFilterSourceType.PICKLIST ) {
+									if (
+										newSourceType ===
+										ESelectionFilterSourceType.PICKLIST
+									) {
 										getAllPicklists().then((items) => {
-											if (items.length === 0) {
-												setNoPicklistsAvailableValidationError(true);
-											} else {
-												setNoPicklistsAvailableValidationError(false);
+											if (!items.length) {
+												setNoPicklistsAvailableValidationError(
+													true
+												);
+											}
+											else {
+												setNoPicklistsAvailableValidationError(
+													false
+												);
 											}
 										});
 									}
@@ -531,16 +548,15 @@ function Body({
 								<ObjectPicklist
 									filter={filter}
 									namespace={namespace}
-									onChange={({
-										picklist,
-										sourceItems
-										}) => {
-											setSource(picklist);
-											setSourceValidationError(false);
-											setFilteredSourceItems(sourceItems);
-											setPreselectedValues([]);
+									onChange={({picklist, sourceItems}) => {
+										setSource(picklist);
+										setSourceValidationError(false);
+										setFilteredSourceItems(sourceItems);
+										setPreselectedValues([]);
 									}}
-									preselectedValueInput={preselectedValueInput}
+									preselectedValueInput={
+										preselectedValueInput
+									}
 									sourceValidationError={
 										sourceValidationError
 									}
@@ -672,7 +688,6 @@ function Body({
 												sourceType ===
 												ESelectionFilterSourceType.PICKLIST
 											) {
-												
 												valueItem = {
 													label: item.name,
 													value: String(

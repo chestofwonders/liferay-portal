@@ -5,15 +5,15 @@
 
 import ClayAlert from '@clayui/alert';
 import ClayForm, {ClaySelectWithOption} from '@clayui/form';
+import {TItem} from '@clayui/form/lib/SelectBox';
 import classNames from 'classnames';
+import fuzzy from 'fuzzy';
 import React, {useEffect, useState} from 'react';
 
 import RequiredMark from '../../../../../components/RequiredMark';
 import ValidationFeedback from '../../../../../components/ValidationFeedback';
 import getAllPicklists from '../../../../../utils/getAllPicklists';
-import fuzzy from 'fuzzy';
 import {IFilter, IPickList} from '../../../../../utils/types';
-import {TItem} from '@clayui/form/lib/SelectBox';
 
 interface IObjectPicklistProps {
 	filter?: IFilter;
@@ -90,24 +90,30 @@ function ObjectPicklist({
 										event.target.value
 								);
 
-								if(picklist) {
+								if (picklist) {
 									setSelectedPicklist(picklist);
 
-									const sourceItems =
-										!picklist
-											? []
-											: (picklist as IPickList).listTypeEntries
-													.filter((item) =>
-														fuzzy.match(preselectedValueInput, item.name)
+									const sourceItems = !picklist
+										? []
+										: (
+												picklist as IPickList
+											).listTypeEntries
+												.filter((item) =>
+													fuzzy.match(
+														preselectedValueInput,
+														item.name
 													)
-													.map((item) => ({
-														label: item.name,
-														value: String(item.externalReferenceCode),
-													}));
+												)
+												.map((item) => ({
+													label: item.name,
+													value: String(
+														item.externalReferenceCode
+													),
+												}));
 
 									onChange({
-										picklist, 
-										sourceItems
+										picklist,
+										sourceItems,
 									});
 								}
 							}}

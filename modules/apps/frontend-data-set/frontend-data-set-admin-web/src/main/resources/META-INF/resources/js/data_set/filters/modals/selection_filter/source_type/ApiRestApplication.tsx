@@ -9,7 +9,6 @@ import ClayForm from '@clayui/form';
 import {TItem} from '@clayui/form/lib/SelectBox';
 import classNames from 'classnames';
 import {fetch} from 'frontend-js-web';
-import getAPISourceItems from '../../../../../utils/getAPISourceItems';
 import fuzzy from 'fuzzy';
 import React, {useEffect, useState} from 'react';
 
@@ -23,6 +22,7 @@ import {
 	ALLOWED_ENDPOINTS_PARAMETERS,
 	FUZZY_OPTIONS,
 } from '../../../../../utils/constants';
+import getAPISourceItems from '../../../../../utils/getAPISourceItems';
 import getFields, {
 	ISchemas,
 	getValidFields,
