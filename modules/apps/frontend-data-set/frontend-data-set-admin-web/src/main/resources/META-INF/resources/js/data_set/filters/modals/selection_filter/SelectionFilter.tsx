@@ -468,6 +468,7 @@ function Body({
 								aria-label={Liferay.Language.get(
 									'choose-an-option'
 								)}
+								disabled={!!filter}
 								id={sourceOptionFormElementId}
 								name={sourceOptionFormElementId}
 								onChange={(event) => {
