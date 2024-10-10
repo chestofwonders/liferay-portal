@@ -10,6 +10,7 @@
 <%@ taglib uri="http://liferay.com/tld/clay" prefix="clay" %><%@
 taglib uri="http://liferay.com/tld/react" prefix="react" %><%@
 taglib uri="http://liferay.com/tld/theme" prefix="liferay-theme" %><%@
+taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui" %><%@
 taglib uri="http://liferay.com/tld/util" prefix="liferay-util" %>
 
 <%@ page import="com.liferay.frontend.taglib.clay.sample.web.constants.ClaySamplePortletKeys" %><%@
@@ -25,6 +26,7 @@ page import="com.liferay.frontend.taglib.clay.sample.web.internal.display.contex
 page import="com.liferay.frontend.taglib.clay.sample.web.internal.display.context.DropdownsDisplayContext" %><%@
 page import="com.liferay.frontend.taglib.clay.sample.web.internal.display.context.MultiselectDisplayContext" %><%@
 page import="com.liferay.frontend.taglib.clay.sample.web.internal.display.context.NavigationBarsDisplayContext" %><%@
+page import="com.liferay.frontend.taglib.clay.sample.web.internal.display.context.SearchPaginatorDisplayContext" %><%@
 page import="com.liferay.frontend.taglib.clay.sample.web.internal.display.context.TabsDisplayContext" %><%@
 page import="com.liferay.frontend.taglib.clay.sample.web.internal.display.context.VerticalNavDisplayContext" %><%@
 page import="com.liferay.frontend.taglib.clay.servlet.taglib.util.PaginationBarDelta" %><%@
@@ -48,6 +50,7 @@ ClaySampleDisplayContext claySampleDisplayContext = (ClaySampleDisplayContext)re
 DropdownsDisplayContext dropdownsDisplayContext = (DropdownsDisplayContext)request.getAttribute(ClaySamplePortletKeys.DROPDOWNS_DISPLAY_CONTEXT);
 MultiselectDisplayContext multiselectDisplayContext = (MultiselectDisplayContext)request.getAttribute(ClaySamplePortletKeys.MULTISELECT_DISPLAY_CONTEXT);
 NavigationBarsDisplayContext navigationBarsDisplayContext = (NavigationBarsDisplayContext)request.getAttribute(ClaySamplePortletKeys.NAVIGATION_BARS_DISPLAY_CONTEXT);
+SearchPaginatorDisplayContext searchPaginatorDisplayContext = (SearchPaginatorDisplayContext)request.getAttribute(ClaySamplePortletKeys.SEARCH_PAGINATOR_DISPLAY_CONTEXT);
 TabsDisplayContext tabsDisplayContext = (TabsDisplayContext)request.getAttribute(ClaySamplePortletKeys.TABS_DISPLAY_CONTEXT);
 VerticalNavDisplayContext verticalNavDisplayContext = (VerticalNavDisplayContext)request.getAttribute(ClaySamplePortletKeys.VERTICAL_NAV_DISPLAY_CONTEXT);
 %>

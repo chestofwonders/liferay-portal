@@ -111,6 +111,11 @@ public class ClaySampleDisplayContext {
 				tabsItem.setLabel("Vertical Nav");
 				tabsItem.setPanelId("vertical_nav");
 			}
+		).add(
+			tabsItem -> {
+				tabsItem.setLabel("Search Paginator");
+				tabsItem.setPanelId("search_paginator");
+			}
 		).build();
 
 		return _tabsItems;
