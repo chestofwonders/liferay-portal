@@ -6,7 +6,7 @@
 import {Card, ICardSchema} from '@liferay/frontend-data-set-web';
 import React, {useState} from 'react';
 
-import './css/CarouselView.scss';
+import '../css/CarouselView.scss';
 
 const CarouselView = ({
 	items,
