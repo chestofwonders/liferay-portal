@@ -118,7 +118,7 @@ const FrontendDataSet = ({
 
 	const getInitialViewsState = () => {
 		const customInternalViews =
-			customRenderers?.view?.map((customRenderer) => ({
+			customRenderers?.views?.map((customRenderer) => ({
 				component: customRenderer.component,
 				default: customRenderer.default,
 				label: customRenderer.label,

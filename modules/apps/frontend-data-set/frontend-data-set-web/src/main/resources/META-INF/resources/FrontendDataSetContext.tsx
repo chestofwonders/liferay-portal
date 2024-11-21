@@ -14,7 +14,10 @@ export interface IFrontendDataSetContext {
 	applyItemInlineUpdates: Function;
 	createInlineItem: Function;
 	customDataRenderers?: Array<any>;
-	customRenderers?: {tableCell?: Array<TRenderer>};
+	customRenderers?: {
+		tableCell?: Array<TRenderer>;
+		views?: Array<TRenderer>;
+	};
 	executeAsyncItemAction: Function;
 	formId?: string;
 	formName?: string;
@@ -26,7 +29,7 @@ export interface IFrontendDataSetContext {
 		defaultBodyContent?: object;
 	};
 	inlineEditingSettings?: IInlineEditingSettings;
-	itemsActions?: IItemsActions[];
+	itemsActions?: Array<IItemsActions>;
 	itemsChanges?: Array<any>;
 	loadData: Function;
 	modalId?: string;
