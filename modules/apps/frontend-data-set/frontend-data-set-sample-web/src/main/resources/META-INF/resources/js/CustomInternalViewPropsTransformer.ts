@@ -20,7 +20,7 @@ export default function propsTransformer({...otherProps}: any) {
 	return {
 		...otherProps,
 		customRenderers: {
-			view: [carouselViewRenderer],
+			views: [carouselViewRenderer],
 		},
 		views: [
 			{
