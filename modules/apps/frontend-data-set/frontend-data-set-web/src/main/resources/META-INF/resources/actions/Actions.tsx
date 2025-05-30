@@ -29,7 +29,6 @@ function Actions({
 	const {
 		allItemsSelectedActive,
 		executeAsyncItemAction,
-		highlightItems,
 		inlineEditingSettings,
 		loadData,
 		onActionDropdownItemClick,
@@ -61,7 +60,7 @@ function Actions({
 	const inlineEditingAlwaysOn =
 		inlineEditingAvailable && inlineEditingSettings.alwaysOn;
 
-	const formattedActions = filterItemActions(actions, itemData);
+	const formattedActions = filterItemActions({actions, itemData});
 
 	if (inlineEditingAvailable && !inlineEditingAlwaysOn) {
 		formattedActions.unshift({
@@ -85,7 +84,6 @@ function Actions({
 			closeMenu,
 			event,
 			executeAsyncItemAction,
-			highlightItems,
 			itemData,
 			itemId,
 			loadData,

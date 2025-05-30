@@ -101,10 +101,10 @@ describe('filterItemActions', () => {
 				{permissionKey: 'DELETE'},
 				{permissionKey: 'POST'},
 			]);
-			const filteredActions = filterItemActions(
-				customActionsWithPermissionKey,
-				availableItemData
-			);
+			const filteredActions = filterItemActions({
+				actions: customActionsWithPermissionKey,
+				itemData: availableItemData,
+			});
 
 			expect(filteredActions.length).toBeLessThan(
 				customActionsWithPermissionKey.length
@@ -117,10 +117,10 @@ describe('filterItemActions', () => {
 					permissionKey: 'STANDALONEACTION',
 				},
 			]);
-			const filteredActions = filterItemActions(
-				customItemActions,
-				availableItemData
-			);
+			const filteredActions = filterItemActions({
+				actions: customItemActions,
+				itemData: availableItemData,
+			});
 
 			expect(filteredActions[0].data).toMatchObject(
 				customItemActions[0].data!
@@ -132,10 +132,10 @@ describe('filterItemActions', () => {
 		it('returns all the actions', () => {
 			const customItemActions = generateCustomItemActions();
 
-			const filteredActions = filterItemActions(
-				customItemActions,
-				availableItemData
-			);
+			const filteredActions = filterItemActions({
+				actions: customItemActions,
+				itemData: availableItemData,
+			});
 
 			expect(filteredActions).toMatchObject(customItemActions);
 		});
@@ -154,10 +154,10 @@ describe('filterItemActions', () => {
 				},
 			]);
 
-			const filteredActions = filterItemActions(
-				customItemActions,
-				availableItemData
-			);
+			const filteredActions = filterItemActions({
+				actions: customItemActions,
+				itemData: availableItemData,
+			});
 
 			expect(filteredActions.length).toEqual(1);
 			expect(filteredActions[0]).toMatchObject(customItemActions[1]);
@@ -175,10 +175,10 @@ describe('filterItemActions', () => {
 				},
 			]);
 
-			const filteredActions = filterItemActions(
-				customItemActions,
-				availableItemData
-			);
+			const filteredActions = filterItemActions({
+				actions: customItemActions,
+				itemData: availableItemData,
+			});
 
 			expect(filteredActions.length).toEqual(1);
 
@@ -198,10 +198,10 @@ describe('filterItemActions', () => {
 				},
 			]);
 
-			const filteredActions = filterItemActions(
-				customItemActions,
-				availableItemData
-			);
+			const filteredActions = filterItemActions({
+				actions: customItemActions,
+				itemData: availableItemData,
+			});
 
 			expect(filteredActions.length).toEqual(0);
 		});
@@ -219,10 +219,10 @@ describe('filterItemActions', () => {
 				},
 			]);
 
-			const filteredActions = filterItemActions(
-				customItemActions,
-				availableItemData
-			);
+			const filteredActions = filterItemActions({
+				actions: customItemActions,
+				itemData: availableItemData,
+			});
 
 			expect(filteredActions.length).toEqual(1);
 			expect(filteredActions[0]).toMatchObject(customItemActions[1]);
@@ -241,10 +241,10 @@ describe('filterItemActions', () => {
 				},
 			]);
 
-			const filteredActions = filterItemActions(
-				customItemActions,
-				availableItemData
-			);
+			const filteredActions = filterItemActions({
+				actions: customItemActions,
+				itemData: availableItemData,
+			});
 
 			expect(filteredActions.length).toEqual(1);
 			expect(filteredActions[0]).toMatchObject(customItemActions[1]);
@@ -269,10 +269,10 @@ describe('filterItemActions', () => {
 					};
 				});
 
-			const filteredActions = filterItemActions(
-				testActionsWithIsVisibleCallback,
-				availableItemData
-			);
+			const filteredActions = filterItemActions({
+				actions: testActionsWithIsVisibleCallback,
+				itemData: availableItemData,
+			});
 
 			expect(spyCallback).toHaveBeenCalledTimes(2);
 			expect(filteredActions.length).toEqual(0);

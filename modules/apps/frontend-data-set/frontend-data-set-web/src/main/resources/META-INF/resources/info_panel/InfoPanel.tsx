@@ -19,11 +19,11 @@ export function InfoPanel({
 	SidePanelProps,
 	'className' | 'containerRef' | 'id' | 'onOpenChange' | 'open' | 'position'
 >) {
-	const {selectedItems} = useContext(FrontendDataSetContext);
+	const {highlightedItems} = useContext(FrontendDataSetContext);
 
 	return (
 		<SidePanel {...props}>
-			<InfoPanelContent items={selectedItems} />
+			<InfoPanelContent items={highlightedItems} />
 		</SidePanel>
 	);
 }

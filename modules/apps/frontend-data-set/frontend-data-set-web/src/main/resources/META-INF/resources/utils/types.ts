@@ -108,6 +108,7 @@ export interface ICreationActionItem {
 
 export interface IItemsActions {
 	data?: IItemActionsData;
+	disabled?: boolean;
 	href?: string;
 	icon?: string;
 	id?: string | number;

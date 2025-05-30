@@ -31,6 +31,8 @@ const Card = forwardRef<HTMLDivElement, any>(
 		const {
 			executeAsyncItemAction,
 			highlightItems,
+			highlightedItems,
+			infoPanelOpen,
 			itemsActions,
 			loadData,
 			onActionDropdownItemClick,
@@ -65,8 +67,14 @@ const Card = forwardRef<HTMLDivElement, any>(
 			getLocalizedValue(item, schema.title)?.value || '';
 		const selectedItemKey = selectedItemsKey && item[selectedItemsKey];
 		const formattedActions =
-			actionsRef.current &&
-			(filterItemActions(actionsRef.current, item) as any);
+		actionsRef.current &&
+		(filterItemActions({
+			actions: actionsRef.current,
+			infoPanelOpen,
+			itemData: item,
+			selectedItemsKey,
+			selectedItemsValue,
+		}) as any);
 
 		const getLabels = (
 			item: any

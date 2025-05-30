@@ -20,6 +20,8 @@ const handleActionClick = ({
 	event,
 	executeAsyncItemAction,
 	highlightItems,
+	highlightedItems,
+	infoPanelOpen,
 	itemData,
 	itemId,
 	loadData,
@@ -27,6 +29,7 @@ const handleActionClick = ({
 	onInfoPanelToggleButtonClick,
 	openModal,
 	openSidePanel,
+	selectItems,
 	setLoading,
 	toggleItemInlineEdit,
 }: {
@@ -34,7 +37,9 @@ const handleActionClick = ({
 	closeMenu?: any;
 	event: Event;
 	executeAsyncItemAction: Function;
-	highlightItems: Function;
+	highlightedItems?: string[];
+	highlightItems?: Function;
+	infoPanelOpen?: boolean;
 	itemData: any;
 	itemId: string | number;
 	loadData: Function;
@@ -42,6 +47,7 @@ const handleActionClick = ({
 	onInfoPanelToggleButtonClick?: Function;
 	openModal: Function;
 	openSidePanel: Function;
+	selectItems?: Function;
 	setLoading?: Function;
 	toggleItemInlineEdit: Function;
 }) => {
@@ -62,7 +68,18 @@ const handleActionClick = ({
 
 	const doAction = ({defaultPrevented}: {defaultPrevented: boolean}) => {
 		if (target === INFO_PANEL && onInfoPanelToggleButtonClick) {
-			onInfoPanelToggleButtonClick();
+			if (highlightedItems?.length && !infoPanelOpen) {
+				onInfoPanelToggleButtonClick();
+
+				return;
+			}
+
+			if (!infoPanelOpen) {
+				onInfoPanelToggleButtonClick();
+			}
+
+			highlightItems?.(itemId);
+			selectItems?.(itemId);
 		}
 		else if (target?.includes('modal')) {
 			event.preventDefault();
@@ -82,7 +99,7 @@ const handleActionClick = ({
 		else if (target === 'sidePanel') {
 			event.preventDefault();
 
-			highlightItems([itemId]);
+			highlightItems?.(itemId);
 
 			openSidePanel({
 				disableHeader,
@@ -122,6 +139,7 @@ const handleActionClick = ({
 			itemData,
 			loadData,
 			openSidePanel,
+			highlightItems,
 		};
 
 		if (onClick) {

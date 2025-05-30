@@ -144,8 +144,10 @@ const FrontendDataSetContent = ({
 	const dataSetSupportSidePanelIdRef = useRef(
 		sidePanelId || `support-side-panel-${getRandomId()}`
 	);
-
-	const [highlightedItemsValue, setHighlightedItemsValue] = useState([]);
+	const [highlightedItems, setHighlightedItems] = useState<Array<string>>([]);
+	const [highlightedItemsValue, setHighlightedItemsValue] = useState<
+		Array<string>
+	>([]);
 	const [infoPanelOpen, setInfoPanelOpen] = useState<boolean>(false);
 	const [items, setItems] = useState(itemsProp || []);
 	const [itemsChanges, setItemsChanges] = useState<{[key: string]: any}>({});
@@ -462,9 +464,12 @@ const FrontendDataSetContent = ({
 
 	function selectItems(value: any) {
 		if (selectionType === 'single') {
-			return setSelectedItemsValue(
-				Array.isArray(value) ? value : [value]
-			);
+			if (selectedItemsValue.includes(value)) {
+				return setSelectedItemsValue([]);
+			}
+			else {
+				return setSelectedItemsValue([value]);
+			}
 		}
 
 		if (Array.isArray(value)) {
@@ -485,16 +490,44 @@ const FrontendDataSetContent = ({
 		}
 	}
 
-	function highlightItems(value = []) {
-		if (Array.isArray(value)) {
-			return setHighlightedItemsValue(value);
-		}
+	function highlightItems(value: string) {
+		setHighlightedItemsValue((prev) => {
+			let updatedValues: string[];
 
-		const itemAdded = highlightedItemsValue.find((item) => item === value);
+			if (selectionType === 'single') {
+				if (prev.includes(value)) {
+					updatedValues = [];
+				}
+				else {
+					updatedValues = [value];
+				}
+			}
+			else {
+				if (prev.includes(value)) {
+					updatedValues = prev.filter((item) => item !== value);
+				}
+				else {
+					updatedValues = [...prev, value];
+				}
+			}
 
-		if (!itemAdded) {
-			setHighlightedItemsValue(highlightedItemsValue.concat(value));
-		}
+			const newHighlightedItems = updatedValues
+				.map((val) => {
+					return (
+						items.find(
+							(item) => item[selectedItemsKey as any] === val
+						) ||
+						highlightedItems.find(
+							(item) => item[selectedItemsKey as any] === val
+						)
+					);
+				})
+				.filter(Boolean);
+
+			setHighlightedItems(newHighlightedItems as any[]);
+
+			return updatedValues;
+		});
 	}
 
 	useEffect(() => {
@@ -765,6 +798,7 @@ const FrontendDataSetContent = ({
 								setAllItemsSelectedActive(false);
 							}
 							else {
+								highlightItems(selectedItem[selectedItemsKey]);
 								selectItems(selectedItem[selectedItemsKey]);
 							}
 						}}
@@ -1107,6 +1141,7 @@ const FrontendDataSetContent = ({
 				formId,
 				formName,
 				highlightItems,
+				highlightedItems,
 				highlightedItemsValue,
 				id,
 				infoPanelId: dataSetSupportInfoPanelIdRef.current,

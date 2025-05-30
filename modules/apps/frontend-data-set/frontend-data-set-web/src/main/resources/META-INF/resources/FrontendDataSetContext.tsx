@@ -37,6 +37,7 @@ export interface IFrontendDataSetContext {
 	formId?: string;
 	formName?: string;
 	highlightItems: Function;
+	highlightedItems?: Array<string>;
 	highlightedItemsValue?: Array<string>;
 	id?: string;
 	infoPanelId?: string;
@@ -126,6 +127,8 @@ const FrontendDataSetContext = React.createContext({
 	createInlineItem: () => {},
 	executeAsyncItemAction: () => {},
 	highlightItems: () => {},
+	highlightedItems: [],
+	highlightedItemsValue: [],
 	loadData: () => {},
 	onActionDropdownItemClick: () => {},
 	onBulkActionItemClick: () => {},

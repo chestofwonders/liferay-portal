@@ -79,7 +79,7 @@ function ActionLinkRenderer({actions, itemData, itemId, options, value}) {
 			else if (currentAction.target === 'sidePanel') {
 				event.preventDefault();
 
-				highlightItems([itemId]);
+				highlightItems(itemId);
 				openSidePanel({
 					size: currentAction.size || 'lg',
 					title: currentAction.title,
