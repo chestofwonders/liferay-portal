@@ -22,7 +22,7 @@ FDSSampleDisplayContext fdsSampleDisplayContext = (FDSSampleDisplayContext)reque
 	formId="fm"
 	id="<%= FDSSampleFDSNames.SINGLE_SELECTION %>"
 	itemsPerPage="<%= 10 %>"
-	propsTransformer="{AdvancedPropsTransformer} from frontend-data-set-sample-web"
+	propsTransformer="{SingleSelectionPropsTransformer} from frontend-data-set-sample-web"
 	selectedItemsKey="id"
 	selectionType="single"
 	showSelectAll="<%= true %>"
