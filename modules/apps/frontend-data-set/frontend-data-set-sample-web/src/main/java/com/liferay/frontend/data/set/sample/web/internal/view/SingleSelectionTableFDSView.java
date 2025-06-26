@@ -5,8 +5,6 @@
 
 package com.liferay.frontend.data.set.sample.web.internal.view;
 
-import com.liferay.client.extension.constants.ClientExtensionEntryConstants;
-import com.liferay.client.extension.type.FDSCellRendererCET;
 import com.liferay.client.extension.type.manager.CETManager;
 import com.liferay.frontend.data.set.constants.FDSTimeZoneBehaviorConstants;
 import com.liferay.frontend.data.set.sample.web.internal.constants.FDSSampleFDSNames;
@@ -16,24 +14,15 @@ import com.liferay.frontend.data.set.view.table.DateTimeFDSTableSchemaField;
 import com.liferay.frontend.data.set.view.table.FDSTableSchema;
 import com.liferay.frontend.data.set.view.table.FDSTableSchemaBuilder;
 import com.liferay.frontend.data.set.view.table.FDSTableSchemaBuilderFactory;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
-import com.liferay.portal.url.builder.AbsolutePortalURLBuilder;
 import com.liferay.portal.url.builder.AbsolutePortalURLBuilderFactory;
-import com.liferay.portal.vulcan.pagination.Pagination;
 
-import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 /**
- * @author Javier Gamarra
- * @author Javier de Arcos
+ * @author Miguel Arroyo
  */
 @Component(
 	enabled = true,
@@ -50,7 +39,7 @@ public class SingleSelectionTableFDSView extends BaseTableFDSView {
 		return fdsTableSchemaBuilder.add(
 			"id", "id",
 			fdsTableSchemaField -> fdsTableSchemaField.setActionId(
-				"sampleEditMessage"
+				"showDetails"
 			).setContentRenderer(
 				"actionLink"
 			).setSortable(
@@ -67,72 +56,6 @@ public class SingleSelectionTableFDSView extends BaseTableFDSView {
 			"description", "description"
 		).add(
 			_addDateTimeFDSTableSchemaField()
-		).add(
-			"color", "color",
-			fdsTableSchemaField -> {
-				boolean clientExtension = false;
-				String moduleName = null;
-
-				List<FDSCellRendererCET> fdsCellRendererCETs =
-					(List)_cetManager.getCETs(
-						CompanyThreadLocal.getCompanyId(), null,
-						ClientExtensionEntryConstants.TYPE_FDS_CELL_RENDERER,
-						Pagination.of(QueryUtil.ALL_POS, QueryUtil.ALL_POS),
-						null);
-
-				// Use the UI client extension if available
-
-				for (FDSCellRendererCET fdsCellRendererCET :
-						fdsCellRendererCETs) {
-
-					if (!fdsCellRendererCET.isReadOnly()) {
-						clientExtension = true;
-						moduleName =
-							"default from " + fdsCellRendererCET.getURL();
-
-						break;
-					}
-				}
-
-				// Use the workspace client extension if available
-
-				if (moduleName == null) {
-					for (FDSCellRendererCET fdsCellRendererCET :
-							fdsCellRendererCETs) {
-
-						if (Objects.equals(
-								fdsCellRendererCET.getExternalReferenceCode(),
-								"LXC:liferay-sample-fds-cell-renderer")) {
-
-							clientExtension = true;
-							moduleName =
-								"default from " + fdsCellRendererCET.getURL();
-						}
-					}
-				}
-
-				// Use the built-in AMD provided sample as a last resort
-
-				if (moduleName == null) {
-					ServiceContext serviceContext =
-						ServiceContextThreadLocal.getServiceContext();
-
-					AbsolutePortalURLBuilder absolutePortalURLBuilder =
-						_absolutePortalURLBuilderFactory.
-							getAbsolutePortalURLBuilder(
-								serviceContext.getRequest());
-
-					String moduleURL = absolutePortalURLBuilder.forESModule(
-						"frontend-data-set-sample-web", "index.js"
-					).build();
-
-					moduleName = "{GreenCheckColorTableCell} from " + moduleURL;
-				}
-
-				fdsTableSchemaField.setContentRendererClientExtension(
-					clientExtension);
-				fdsTableSchemaField.setContentRendererModuleURL(moduleName);
-			}
 		).add(
 			"size", "size"
 		).add(
