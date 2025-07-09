@@ -111,7 +111,7 @@ const Head = ({
 		<ClayTableHead
 			items={selectable ? [{fieldName: 'select'}, ...fields] : fields}
 		>
-			{(field) => {
+			{(field: Field) => {
 				if (field.fieldName === 'select') {
 					if (!!items.length && selectionType !== 'multiple') {
 						return (
@@ -358,7 +358,7 @@ const Body = ({
 					inlineAddingSettings ? [...items, defaultAddItem] : items
 				}
 			>
-				{(item) => {
+				{(item: any) => {
 					return (
 						<Row
 							active={
@@ -757,7 +757,7 @@ const Table = ({
 	);
 
 	const getSorting = (): Sorting | null => {
-		const activeSort = sorts.find((sort) => sort.active);
+		const activeSort = sorts.find((sort: any) => sort.active);
 
 		if (!activeSort) {
 			return null;
@@ -773,7 +773,7 @@ const Table = ({
 	const onSortChange = (sorting: Sorting | null) => {
 		let updatedSorts: TSort[] = [];
 
-		updatedSorts = sorts.map((sort) =>
+		updatedSorts = sorts.map((sort: any) =>
 			sort.key === sorting?.column
 				? {
 						...sort,
@@ -788,7 +788,7 @@ const Table = ({
 		);
 
 		const newSort: boolean = Boolean(
-			!sorts.find((sort) => sort.key === sorting?.column)
+			!sorts.find((sort: any) => sort.key === sorting?.column)
 		);
 
 		if (newSort) {
@@ -829,7 +829,7 @@ const Table = ({
 				}}
 				nestedKey={nestedItemsReferenceKey}
 				onSortChange={onSortChange}
-				onVisibleColumnsChange={(visibleColumns) => {
+				onVisibleColumnsChange={(visibleColumns: any) => {
 					const visibleFieldNames: VisibleFieldNames = {};
 
 					schema.fields.forEach(({fieldName}) => {
@@ -838,7 +838,7 @@ const Table = ({
 						}
 					});
 
-					visibleColumns.forEach((value, key) => {
+					visibleColumns.forEach((value: any, key: any) => {
 						visibleFieldNames[key] = true;
 					});
 
