@@ -27,8 +27,8 @@ export interface IFrontendDataSetContext {
 		successMessage,
 		url,
 	}: {
-		errorMessage: string;
-		method: string;
+		errorMessage?: string;
+		method?: string;
 		requestBody?: string;
 		setActionItemLoading?: (loading: boolean) => void;
 		successMessage?: string;
