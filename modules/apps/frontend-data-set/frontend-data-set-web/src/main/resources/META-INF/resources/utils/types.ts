@@ -145,7 +145,12 @@ export interface IItemsActions {
 		| 'modal-permissions'
 		| 'sidePanel'
 		| 'event';
-	type?: string;
+	type?: EItemActionsType;
+}
+
+export enum EItemActionsType {
+	GROUP = 'group',
+	ITEM = 'item',
 }
 
 export interface IItemActionsData {
