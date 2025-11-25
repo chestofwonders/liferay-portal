@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {ClayCardWithInfo} from '@clayui/card';
 import classNames from 'classnames';
 import {getObjectValueFromPath} from 'frontend-js-web';
 import React, {forwardRef, useContext, useRef} from 'react';
@@ -28,6 +27,7 @@ import {
 } from '../../utils/types';
 import ViewsContext from '../ViewsContext';
 import imagePropsTransformer from '../utils/imagePropsTransformer';
+import {FDSCard} from './FDSCard';
 
 const Card = forwardRef<HTMLDivElement, any>(
 	(
@@ -173,7 +173,7 @@ const Card = forwardRef<HTMLDivElement, any>(
 		};
 
 		const props = {
-			actions: formattedActions && getDropdownActions(formattedActions),
+			actions: formattedActions,
 			description: getLocalizedValue(item, schema.description)?.value,
 			href: (schema.link && item[schema.link]) || null,
 			imgProps:
@@ -181,6 +181,8 @@ const Card = forwardRef<HTMLDivElement, any>(
 				imagePropsTransformer(
 					getLocalizedValue(item, schema.image)?.value
 				),
+			item,
+			items,
 			labels: getLabels(item),
 			onClick: (event: React.MouseEvent) => {
 				const target = event.nativeEvent.target as Element;
@@ -219,6 +221,7 @@ const Card = forwardRef<HTMLDivElement, any>(
 								path: selectedItemsKey,
 							})
 				),
+			selectedItemsKey,
 			stickerProps: (schema.sticker && item[schema.sticker]) || null,
 			symbol: schema.symbol && item[schema.symbol],
 			title: getLocalizedValue(item, schema.title)?.value || '',
@@ -226,7 +229,7 @@ const Card = forwardRef<HTMLDivElement, any>(
 
 		return (
 			<div ref={ref}>
-				<ClayCardWithInfo
+				<FDSCard
 					{...props}
 					{...(activeView.setItemComponentProps?.({item, props}) ??
 						{})}
