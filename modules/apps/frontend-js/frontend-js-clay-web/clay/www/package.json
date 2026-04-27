@@ -41,6 +41,8 @@
 	"name": "@clayui/www",
 	"private": true,
 	"resolutions": {
+		"@babel/runtime": "^7.26.10",
+		"@babel/runtime-corejs3": "^7.26.10",
 		"minimatch": "9.0.5"
 	},
 	"scripts": {

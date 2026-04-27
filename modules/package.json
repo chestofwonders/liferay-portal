@@ -26,6 +26,8 @@
 	},
 	"private": true,
 	"resolutions": {
+		"@babel/runtime": "^7.26.10",
+		"@babel/runtime-corejs3": "^7.26.10",
 		"@types/html-minifier-terser": "5.1.0",
 		"ua-parser-js": "^0.7.30"
 	},
