@@ -70,7 +70,7 @@ function getJestConfig({rootDir = '<rootDir>'}) {
 			/* eslint-enable sort-keys */
 		},
 		transformIgnorePatterns: [
-			'/node_modules/(?!@clayui|@ckeditor|ckeditor5|lodash-es|vanilla-colorful)',
+			'/node_modules/(?!@clayui|@ckeditor|@codemirror|@marijn|ckeditor5|lodash-es|vanilla-colorful)',
 		],
 	};
 }
